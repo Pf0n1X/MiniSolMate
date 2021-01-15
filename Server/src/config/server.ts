@@ -1,10 +1,11 @@
 import express from "express";
 import * as bodyParser from "body-parser";
-import userRouter from "../routes/userRoute";
 import { connect } from "mongoose";
-import { Server, createServer } from "http";
+
+// Routes
+import userRouter from "../routes/userRoute";
+
 const app = express();
-let server = createServer(app);
 
 export const startServer = async () => {
   // support application/json type post data
