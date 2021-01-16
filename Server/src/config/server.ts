@@ -4,6 +4,9 @@ import { connect } from "mongoose";
 
 // Routes
 import userRouter from "../routes/userRoute";
+import matchRouter from "../routes/matchRoute";
+import chatRouter from "../routes/chatRoute";
+import messageRouter from "../routes/messageRoute";
 
 const app = express();
 
@@ -15,6 +18,9 @@ export const startServer = async () => {
 
   // Routes
   app.use("/user", userRouter);
+  app.use("/match", matchRouter);
+  app.use("/chat", chatRouter);
+  app.use("/message", messageRouter);
 
   await new Promise((resolve, reject) => {
     const PORT = 3000;
