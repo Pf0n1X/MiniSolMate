@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { CallbackError } from "mongoose";
+import { runInNewContext } from "vm";
 import User, { IUser } from "../modules/userModel";
 
 export const addUser = async (req: Request, res: Response) => {
@@ -17,7 +19,8 @@ export const addUser = async (req: Request, res: Response) => {
       youtubeSong: userBody.youtubeSong,
       radiusSearch: userBody.radiusSearch,
       intrestedSex: userBody.intrestedSex,
-      intrestedAge: userBody.intrestedAge,
+      intrestedAgeMin: userBody.intrestedAgeMin,
+      intrestedAgeMax: userBody.intrestedAgeMax,
       Genre: userBody.Genre,
       Artists: userBody.Artists,
       Chats: userBody.Chats,
@@ -28,4 +31,16 @@ export const addUser = async (req: Request, res: Response) => {
     console.log(e);
     res.status(500).send(e);
   }
+};
+export const getUserById = async (req: Request, res: Response) => {
+  await User.find(
+    { UserId: +(req.query.UserId + "") },
+    (err: CallbackError, user: IUser) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(user);
+      }
+    }
+  );
 };

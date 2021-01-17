@@ -3,7 +3,7 @@ import { IMessage } from "../modules/messageModel";
 
 export interface IChat {
   ChatId: number;
-  Messages: Array<IMessage>;
+  Messages: Array<number>;
 }
 export interface IChatModel extends Document, IChat {}
 
@@ -15,8 +15,7 @@ const schema = new Schema({
   },
   Messages: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "messages",
+      type: Number,
     },
   ],
 });

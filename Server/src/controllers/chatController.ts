@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+import { CallbackError } from "mongoose";
 import Chat, { IChat } from "../modules/chatModel";
+import { IUser } from "../modules/userModel";
 
 export const addChat = async (req: Request, res: Response) => {
   try {
@@ -14,4 +16,18 @@ export const addChat = async (req: Request, res: Response) => {
     console.log(e);
     res.status(500).send(e);
   }
+};
+export const getChatsByUser = async (req: Request, res: Response) => {
+  const userBody: IUser = req.body;
+
+  await Chat.find(
+    { ChatId: { $in: userBody.Chats } },
+    (err: CallbackError, user: IChat) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(user);
+      }
+    }
+  );
 };

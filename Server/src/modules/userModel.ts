@@ -13,7 +13,8 @@ export interface IUser {
   youtubeSong: string;
   radiusSearch: number;
   intrestedSex: number;
-  intrestedAge: number;
+  intrestedAgeMin: number;
+  intrestedAgeMax: number;
   Genre: Array<string>;
   Artists: Array<string>;
   Chats: Array<number>;
@@ -61,7 +62,6 @@ const schema = new Schema({
   },
   youtubeSong: {
     type: String,
-    required: true,
   },
   radiusSearch: {
     type: Number,
@@ -69,7 +69,10 @@ const schema = new Schema({
   intrestedSex: {
     type: Number,
   },
-  radiusAge: {
+  radiusAgeMin: {
+    type: Number,
+  },
+  radiusAgeMax: {
     type: Number,
   },
   Genre: [
