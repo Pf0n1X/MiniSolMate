@@ -45,6 +45,9 @@
   height: 14rem;
   border-radius: 50%;
 }
+.container .card .info {
+  transition: all 0.5s ease;
+}
 .container .card .info h1 {
   font-size: 3rem;
 }
@@ -55,6 +58,7 @@
   font-weight: lighter;
 }
 .container .card .mutual_artists {
+  transition: all 0.5s ease;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
