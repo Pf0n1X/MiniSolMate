@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    perspective: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    .card {
+        transform-style: preserve-3d;
+        min-height: 40vh;
+        // width: 70%;
+        background: linear-gradient(to top right, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.4));
+        box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.2), 0px 0px 50px rgba(0, 0, 0, 0.2);
+        border-radius: 30px;
+        padding: 0rem 5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        margin: 5rem 5rem;
+
+        .user_pic {
+            min-height: 35vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .circle {
+                width: 15rem;
+                height: 15rem;
+                background: linear-gradient(to right, rgba(#be65c6, 0.75), rgba(#e8bdfc, 0.75));
+                position: absolute;
+                z-index: 1;
+                border-radius: 50%;
+            };
+            img {
+                transition: all 0.5s ease;
+                z-index: 2;
+                width: 14rem;
+                height: 14rem;
+                border-radius: 50%;
+            }
+        };
+        .info {
+            h1 {
+                font-size: 3rem;
+            };
+            h3 {
+                font-size: 1.3rem;
+                padding: 2rem 0rem;
+                color: #585858;
+                font-weight: lighter;
+            }
+        };
+        .mutual_artists {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            img {
+                width: 5rem;
+                height: 5rem;
+                border-radius: 50%;
+            };
+        };
+        .buttons {
+            button {
+                padding: 0.5rem 2rem;
+                background: none;
+                border: none;
+                box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+                border-radius: 30px;
+                cursor: pointer;
+                font-weight: bold;
+                color: #585858;
+            }
+        }
+    }
+}
+
