@@ -8,7 +8,11 @@ $header_color: #be65c6;
   
   main {
     min-height: 100vh; /* full screen*/
-    background: linear-gradient(to right top, #a865df, #e2ace4);
+    // background: linear-gradient(to right top, #a865df, #e2ace4);
+    background-image: url('./images/bg.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     display: flex;
     align-items: center;
     justify-content: center;
