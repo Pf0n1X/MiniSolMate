@@ -1,14 +1,16 @@
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
 import profile_pic from './images/profile_pic.jpg';
 import './App.css';
-import { FaHeart, FaPersonBooth } from 'react-icons/fa';
+import { FaHeart, FaCalendar, FaTools, FaUser, FaMailBulk } from 'react-icons/fa';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Matches from './routes/Matches';
 import Events from './routes/Events';
 import Profile from './routes/Profile';
 import Settings from './routes/Settings';
+import Intro from './components/Intro';
 
-function App() {
+const App = () => {
+
   return (
     <div className="App">
       <Router>
@@ -22,27 +24,26 @@ function App() {
               </div>
               <div className="links">
                 <Link to="/" className="link">
-                  {/* <img src={profile_pic} /> */}
                   <FaHeart />
                   <h2>Matches</h2>
                 </Link>
                 <Link to="/profile" className="link">
-                  <FaHeart />
+                  <FaUser />
                   <h2>Profile</h2>
                 </Link>
                 <Link to="/events" className="link">
-                  <FaHeart />
+                  <FaCalendar />
                   <h2>Events</h2>
                 </Link>
+                <Link to="/chat" className="link">
+                  <FaMailBulk />
+                  <h2>Chat</h2>
+                </Link>
                 <Link to="/settings" className="link">
-                  <FaHeart />
+                  <FaTools />
                   <h2>Settings</h2>
                 </Link>
               </div>
-              {/* <div className="pro">
-              <h2>Go Pro for better matches.</h2>
-              <img src={profile_pic} />
-            </div> */}
             </div>
             <div className="routes_container">
               <Switch>
@@ -63,6 +64,7 @@ function App() {
           </section>
         </main>
       </Router>
+      <Intro />
     </div>
   );
 }

@@ -1,0 +1,34 @@
+/* Intro Animation */
+.intro {
+  background: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.intro .intro-text {
+  color: #ffcefb;
+  font-size: 3rem;
+}
+.intro .intro-text .hide {
+  background: black;
+  overflow: hidden;
+}
+.intro .intro-text .hide span {
+  transform: translateY(100%);
+  display: inline-block;
+}
+
+.slider {
+  background: #615863;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateY(100%);
+}/*# sourceMappingURL=Intro.css.map */

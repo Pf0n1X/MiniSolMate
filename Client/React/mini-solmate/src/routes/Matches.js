@@ -1,6 +1,7 @@
 import React, {useRef} from 'react';
 import profile_pic from '../images/profile_pic.jpg';
 import '../styles/Matches.css';
+import { FaHeart, FaHeartBroken } from 'react-icons/fa';
 
 const Matches = () => {
     const containerEl = useRef(null);
@@ -39,6 +40,7 @@ const Matches = () => {
                 infoEl.current.style.transform = 'translateZ(175px)';
                 mutualArtistsEl.current.style.transform = 'translateZ(150px)';
             }}>
+            <button className="swipe_button decline"><FaHeartBroken /></button>
             <div className="card" ref={cardEl}>
                 <div className="user_pic">
                     <div className="circle" />
@@ -59,6 +61,7 @@ const Matches = () => {
                     <button className="decline"></button>
                 </div>
             </div>
+            <button className="swipe_button accept"><FaHeart color={"#585858"} /></button>
         </div>
     );
 }
