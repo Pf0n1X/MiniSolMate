@@ -22,6 +22,7 @@ main {
   min-height: 80vh;
   /* 80 percent of the screen */
   width: 60%;
+  min-width: 1000px;
   background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
   border-radius: 2rem;
   -webkit-backdrop-filter: blur(2rem);

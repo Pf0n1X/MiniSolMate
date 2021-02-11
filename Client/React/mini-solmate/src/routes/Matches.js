@@ -17,8 +17,8 @@ const Matches = () => {
                 // let horizontalCenter = containerEl.current.X + containerEl.current.clientWidth / 2;
                 let horizontalCenter = event.currentTarget.getBoundingClientRect().x + containerEl.current.clientWidth / 2;
                 let verticalCenter = event.currentTarget.getBoundingClientRect().y + containerEl.current.clientHeight / 2;
-                let xAxis = (horizontalCenter - event.screenX) / 25;
-                let yAxis = (verticalCenter - event.screenY) / 25;
+                let xAxis = (horizontalCenter - event.pageX) / 25;
+                let yAxis = (verticalCenter - event.pageY) / 25;
                 console.log("center: " + verticalCenter);
                 console.log("screenX: " + event.screenY);
                 // console.log(event.clientX)
