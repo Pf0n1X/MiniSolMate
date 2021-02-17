@@ -11,7 +11,7 @@ main {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   font-family: "Poppins", sans-serif;
@@ -56,6 +56,7 @@ main {
 
 .link h2 {
   padding: 0rem 2rem;
+  margin-bottom: 0rem;
 }
 
 .routes_container {
@@ -84,5 +85,5 @@ h3 {
 
 a {
   text-decoration: none;
-  color: #be65c6;
+  color: #be65c6 !important;
 }/*# sourceMappingURL=App.css.map */

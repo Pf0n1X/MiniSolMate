@@ -1,101 +1,72 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.carousel-img {
+    height: 40vh;
+    object-fit: cover;
+    border-radius: 2rem 2rem 0rem 0rem;
 }
 
-.container {
-    perspective: 1000px;
+.user-info {
+    padding: 15px 15px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100%;
-    .card {
-        transform-style: preserve-3d;
-        min-height: 40vh;
-        // width: 70%;
-        background: linear-gradient(to top right, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.4));
-        box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.2), 0px 0px 50px rgba(0, 0, 0, 0.2);
-        border-radius: 30px;
-        // padding: 0rem 5rem;
+    flex-wrap: wrap;
+    align-items: space-between;
+    .bio {
+        flex: 50%;
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        justify-content: space-evenly;
-        margin: 5rem 5rem;
-
-        .user_pic {
-            min-height: 35vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            .circle {
-                width: 15rem;
-                height: 15rem;
-                background: linear-gradient(to right, rgba(#be65c6, 0.75), rgba(#e8bdfc, 0.75));
-                position: absolute;
-                z-index: 1;
-                border-radius: 50%;
-            };
-            img {
-                transition: all 0.5s ease;
-                z-index: 2;
-                // width: 14rem;
-                // height: 14rem;
-                // border-radius: 50%;
-                width: 25rem;
-                height: 25rem;
-                border-radius: 2rem 2rem 0rem 0rem;
-            }
-        };
-        .info {
-            transition: all 0.5s ease;
-            h1 {
-                font-size: 3rem;
-            };
-            h3 {
-                font-size: 1.3rem;
-                padding: 2rem 0rem;
-                color: #585858;
-                font-weight: lighter;
-            }
-        };
-        .mutual_artists {
-            transition: all 0.5s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-evenly;
-            img {
-                width: 5rem;
-                height: 5rem;
-                border-radius: 50%;
-            };
-        };
-        .buttons {
-            button {
-                padding: 0.5rem 2rem;
-                background: none;
-                border: none;
-                box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-                border-radius: 30px;
-                cursor: pointer;
-                font-weight: bold;
-                color: #585858;
-            }
+        flex-direction: column;
+        section {
+            text-align: center;
         }
-    }
+    };
+    .top-artists {
+        flex: 50%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        section {
+            .artist {
+                img {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    margin-right: 10px;
+                    margin-bottom: 10px;
+                    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+                };
+            };
+        };
+    };
 }
 
-.swipe_button {
-    // padding: 0.5rem 2rem;
+.carousel-container {
+    position: relative;
+    margin-bottom: 50px;
+    .user-name {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        h2 {
+            position: absolute;
+            z-index: 2;
+            top: 5px;
+            color: black;
+        };
+    };
+}
+
+.swipe-buttons{
+    position: absolute;
     display: flex;
-    font-size: xxx-large;
-    padding: 0.75rem 0.75rem;
-    background: none;
-    border: none;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 50%;
-    cursor: pointer;
-    font-weight: bold;
-    color: #585858;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    bottom: -50px;
+    .swipe-button {
+        background: linear-gradient(to top right, #ffffff, #b985c7);
+        box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+        border-radius: 50%;
+        width: 100px;
+        height: 100px
+    };
 }

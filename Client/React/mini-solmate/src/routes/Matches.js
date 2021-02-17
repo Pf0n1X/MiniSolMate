@@ -1,67 +1,83 @@
-import React, {useRef} from 'react';
+import React, { useRef } from 'react';
 import profile_pic from '../images/profile_pic.jpg';
+import random_chick from '../images/random_chick.jpg';
+import billie_eilish from '../images/billie_eilish.jpg';
 import '../styles/Matches.css';
 import { FaHeart, FaHeartBroken } from 'react-icons/fa';
+import $ from 'jquery';
+import Popper from 'popper.js';
+import Carousel from 'react-bootstrap/Carousel';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const Matches = () => {
-    const containerEl = useRef(null);
-    const cardEl = useRef(null);
-    const userPicEl = useRef(null);
-    const infoEl = useRef(null);
-    const mutualArtistsEl = useRef(null);
 
     return (
-        <div className="container"
-            ref={containerEl}
-            onMouseMove={event => {
-                // let verticalCenter = containerEl.current.offsetTop + containerEl.current.clientHeight / 2;
-                // let horizontalCenter = containerEl.current.X + containerEl.current.clientWidth / 2;
-                let horizontalCenter = event.currentTarget.getBoundingClientRect().x + containerEl.current.clientWidth / 2;
-                let verticalCenter = event.currentTarget.getBoundingClientRect().y + containerEl.current.clientHeight / 2;
-                let xAxis = (horizontalCenter - event.pageX) / 25;
-                let yAxis = (verticalCenter - event.pageY) / 25;
-                console.log("center: " + verticalCenter);
-                console.log("screenX: " + event.screenY);
-                // console.log(event.clientX)
+        <div className="wrapper">
+            <div className="carousel-container">
+                <div className="user-name">
+                    <h2>
+                        Sveta Boronov
+                </h2>
+                </div>
+                <Carousel>
+                    <Carousel.Item>
+                        <img
+                            className="d-block w-100 carousel-img"
+                            src={profile_pic}
+                            alt="First slide"
+                        />
+                        {/* <Carousel.Caption>
+                            <h3>First slide label</h3>
+                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                        </Carousel.Caption> */}
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <img
+                            className="d-block w-100 carousel-img"
+                            src={random_chick}
+                            alt="First slide"
+                        />
+                        {/* <Carousel.Caption>
+                            <h3>First slide label</h3>
+                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                        </Carousel.Caption> */}
+                    </Carousel.Item>
+                </Carousel>
+                <div className="swipe-buttons">
+                    <div className="swipe-button circle1">
 
-                cardEl.current.style.transform= `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        }}
-            onMouseLeave={event => {
-                cardEl.current.style.transform= `rotateY(0deg) rotateX(0deg)`;
-                cardEl.current.style.transition = 'all 0.5s ease';
-                // userPicEl.current.style.transition = 'all 0.5s ease';
-                userPicEl.current.style.transform = 'translateZ(0px) rotateZ(0deg)';
-                infoEl.current.style.transform = 'translateZ(0px)';
-                mutualArtistsEl.current.style.transform = 'translateZ(0px)';
-        }}
-            onMouseEnter={event => {
-                cardEl.current.style.transition = 'none';
-                userPicEl.current.style.transform = 'translateZ(150px) rotateZ(-10deg)';
-                infoEl.current.style.transform = 'translateZ(175px)';
-                mutualArtistsEl.current.style.transform = 'translateZ(150px)';
-            }}>
-            <button className="swipe_button decline"><FaHeartBroken /></button>
-            <div className="card" ref={cardEl}>
-                <div className="user_pic">
-                    <div className="circle" />
-                    <img ref={userPicEl} src={profile_pic} />
-                </div>
-                <div ref={infoEl} className="info">
-                    <h1 className="name">User Name</h1>
-                    <h3 className="age">Age: 21</h3>
-                    <h3 className="description">Music Connects People.</h3>
-                </div>
-                <div ref={mutualArtistsEl} className="mutual_artists">
-                    <img src={profile_pic} alt="" className="artist"/>
-                    <img src={profile_pic} alt="" className="artist"/>
-                    <img src={profile_pic} alt="" className="artist"/>
-                </div>
-                <div className="buttons">
-                    <button className="accept"></button>
-                    <button className="decline"></button>
+                    </div>
+                    <div className="swipe-button circle1">
+
+                    </div>
                 </div>
             </div>
-            <button className="swipe_button accept"><FaHeart color={"#585858"} /></button>
+            <div className="user-info">
+                <div className="bio">
+                    <h3>Bio</h3>
+                    <section>
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                    </section>
+                </div>
+                <div className="top-artists">
+                    <h3>Top Artists</h3>
+                    <section>
+                        <div className="artist">
+                            <img src={billie_eilish} alt="" className="artist-img" />
+                            <span>Billie Eilish</span>
+                        </div>
+                        <div className="artist">
+                            <img src={billie_eilish} alt="" className="artist-img" />
+                            <span>Billie Eilish</span>
+                        </div>
+                        <div className="artist">
+                            <img src={billie_eilish} alt="" className="artist-img" />
+                            <span>Billie Eilish</span>
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
     );
 }
