@@ -45,6 +45,7 @@ main {
   text-align: center;
   background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
   border-radius: 2rem;
+  position: relative;
 }
 
 .link {
@@ -86,4 +87,8 @@ h3 {
 a {
   text-decoration: none;
   color: #be65c6 !important;
+}
+
+.link:hover {
+  text-decoration: none;
 }/*# sourceMappingURL=App.css.map */

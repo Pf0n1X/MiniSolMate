@@ -47,6 +47,7 @@ $header_color: #be65c6;
       text-align: center;
       background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
       border-radius: 2rem;
+      position: relative;
   }
 
   .link {
@@ -89,4 +90,8 @@ $header_color: #be65c6;
   a {
       text-decoration: none;
       color: $header_color !important;
+  }
+
+  .link:hover {
+    text-decoration: none;
   }

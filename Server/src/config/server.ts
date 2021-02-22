@@ -32,7 +32,7 @@ export const startServer = async () => {
 };
 
 export const mongoSetup = async () => {
-  await connect(process.env.DB_CON ? process.env.DB_CON : "", {
+  await connect('mongodb://localhost/mini_solmate', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

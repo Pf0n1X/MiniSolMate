@@ -8,6 +8,7 @@ import Events from './routes/Events';
 import Profile from './routes/Profile';
 import Settings from './routes/Settings';
 import Intro from './components/Intro';
+import Login from './routes/Login';
 
 const App = () => {
 
@@ -47,6 +48,9 @@ const App = () => {
             </div>
             <div className="routes_container">
               <Switch>
+                <Route path="/login" component={Profile}>
+                  <Login />
+                </Route>
                 <Route path="/profile" component={Profile}>
                   <Profile />
                 </Route>

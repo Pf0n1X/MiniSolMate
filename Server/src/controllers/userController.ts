@@ -4,6 +4,7 @@ import { runInNewContext } from "vm";
 import User, { IUser } from "../modules/userModel";
 
 export const addUser = async (req: Request, res: Response) => {
+  console.log("T1");
   try {
     const userBody: IUser = req.body;
     const toAdd: IUser = {
@@ -33,6 +34,20 @@ export const addUser = async (req: Request, res: Response) => {
   }
 };
 export const getUserById = async (req: Request, res: Response) => {
+  console.log("userid: " + req.query.UserId);
+  await User.find(
+    { UserId: +(req.query.UserId + "") },
+    (err: CallbackError, user: IUser) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(user);
+      }
+    }
+  );
+};
+
+export const login = async (req: Request, res: Response) => {
   await User.find(
     { UserId: +(req.query.UserId + "") },
     (err: CallbackError, user: IUser) => {
