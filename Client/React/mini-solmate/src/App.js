@@ -25,23 +25,23 @@ const App = () => {
               </div>
               <div className="links">
                 <Link to="/" className="link">
-                  <FaHeart />
+                  <FaHeart size="25px" />
                   <h2>Matches</h2>
                 </Link>
                 <Link to="/profile" className="link">
-                  <FaUser />
+                  <FaUser size="25px" />
                   <h2>Profile</h2>
                 </Link>
                 <Link to="/events" className="link">
-                  <FaCalendar />
+                  <FaCalendar size="25px" />
                   <h2>Events</h2>
                 </Link>
                 <Link to="/chat" className="link">
-                  <FaMailBulk />
+                  <FaMailBulk size="25px" />
                   <h2>Chat</h2>
                 </Link>
                 <Link to="/settings" className="link">
-                  <FaTools />
+                  <FaTools size="25px" />
                   <h2>Settings</h2>
                 </Link>
               </div>
