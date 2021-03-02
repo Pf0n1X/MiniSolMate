@@ -1,16 +1,51 @@
-import React, { useEffect } from 'react';
-import profile_pic from './images/profile_pic.jpg';
-import './App.css';
-import { FaHeart, FaCalendar, FaTools, FaUser, FaMailBulk } from 'react-icons/fa';
+import React, { useEffect } from "react";
+import profile_pic from "./images/profile_pic.jpg";
+import "./App.css";
+import {
+  FaHeart,
+  FaCalendar,
+  FaTools,
+  FaUser,
+  FaMailBulk,
+} from "react-icons/fa";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Matches from './routes/Matches';
-import Events from './routes/Events';
-import Profile from './routes/Profile';
-import Settings from './routes/Settings';
-import Intro from './components/Intro';
-import Login from './routes/Login';
+import Matches from "./routes/Matches";
+import Events from "./routes/Events";
+import Profile from "./routes/Profile";
+import Settings from "./routes/Settings";
+import Intro from "./components/Intro";
+import Login from "./routes/Login";
+import Register from "./routes/Register";
+import useToken from "./hooks/useToken";
 
 const App = () => {
+  const { token, setToken } = useToken();
+
+  if (!token) {
+    return (
+      <main>
+        <section className="glass">
+          <div className="dashboard">
+            <div className="routes_container">
+              <Router>
+                <Switch>
+                  <Route path="/login" component={Login}>
+                    <Login setToken={setToken}/>
+                  </Route>
+                  <Route path="/register" component={Register}>
+                    <Register />
+                  </Route>
+                  <Route path="/">
+                  <Login setToken={setToken}/>
+                </Route>
+                </Switch>
+              </Router>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <div className="App">
@@ -48,8 +83,11 @@ const App = () => {
             </div>
             <div className="routes_container">
               <Switch>
-                <Route path="/login" component={Profile}>
+                <Route path="/login" component={Login}>
                   <Login />
+                </Route>
+                <Route path="/register" component={Register}>
+                  <Register />
                 </Route>
                 <Route path="/profile" component={Profile}>
                   <Profile />
@@ -71,6 +109,6 @@ const App = () => {
       <Intro />
     </div>
   );
-}
+};
 
 export default App;
