@@ -1,0 +1,140 @@
+.profile-container {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.profile_img {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+}
+
+.nav-tabs {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-bottom: 0px !important;
+}
+
+.edit-icon {
+  color: #fff;
+}
+
+.scroll-data {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 300px;
+  height: 300px;
+  -webkit-box-shadow: 0px 0px 7px 0px #f8f9fa;
+          box-shadow: 0px 0px 7px 0px #f8f9fa;
+  margin-left: 120px;
+  margin-right: 120px;
+  margin-top: 10px;
+}
+
+.change-desc {
+  background-color: transparent;
+  border: 0;
+  color: #be65c6;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.change-desc:focus {
+  outline: none;
+  border-bottom: 2px solid;
+  color: #fff;
+  margin-right: 10px;
+}
+
+.my-artists {
+  margin-top: 10px;
+  -webkit-box-flex: 50%;
+      -ms-flex: 50%;
+          flex: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.my-artists section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.my-artists section .artist img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  -webkit-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+          box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.my-media {
+  margin-top: 10px;
+  -webkit-box-flex: 50%;
+      -ms-flex: 50%;
+          flex: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.my-media section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.my-media section .media img {
+  width: 150px;
+  height: 150px;
+  border-radius: 20px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.uplaod-input {
+  display: none;
+}
+
+.avatar-upload {
+  position: relative;
+}
+
+.upload-profile-label {
+  position: absolute;
+  top: 50px;
+  right: 330px;
+  border: 1px solid white;
+  background: white;
+  border-radius: 20px;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+}
+
+upload-profile-icon {
+  color: black;
+}
+/*# sourceMappingURL=Profile.css.map */
