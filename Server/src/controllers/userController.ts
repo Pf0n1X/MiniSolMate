@@ -1,19 +1,20 @@
-import { Request, Response } from "express";
+import bcrypt from "bcrypt";
+import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import passport from "passport";
+import User, { IUser, IUserModel } from "../modules/userModel";
+import * as config from "../config/config.json";
 import { CallbackError } from "mongoose";
-import { runInNewContext } from "vm";
-import User, { IUser } from "../modules/userModel";
+import "../auth/passportConfig";
 
-export const addUser = async (req: Request, res: Response) => {
-  console.log("T1");
-  try {
-    const userBody: IUser = req.body;
-    const toAdd: IUser = {
-      UserId: userBody.UserId,
-      unername: userBody.unername,
-      password: userBody.password,
+export const registerUser = async(req: Request, res: Response) => {
+    const hashedPassword = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+      const userBody: IUser = req.body;
+    await User.create({
+      email: userBody.email,
+      password: hashedPassword,
       firstName: userBody.firstName,
       lastName: userBody.lastName,
-      email: userBody.email,
       sex: userBody.sex,
       age: userBody.age,
       picture: userBody.picture,
@@ -25,37 +26,28 @@ export const addUser = async (req: Request, res: Response) => {
       Genre: userBody.Genre,
       Artists: userBody.Artists,
       Chats: userBody.Chats,
-    };
-    const userAdded = await User.create(toAdd);
-    res.status(200).json({ message: "User added", ...userAdded });
-  } catch (e) {
-    console.log(e);
-    res.status(500).send(e);
-  }
-};
-export const getUserById = async (req: Request, res: Response) => {
-  console.log("userid: " + req.query.UserId);
-  await User.find(
-    { UserId: +(req.query.UserId + "") },
-    (err: CallbackError, user: IUser) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(200).json(user);
-      }
-    }
-  );
-};
 
-export const login = async (req: Request, res: Response) => {
-  await User.find(
-    { UserId: +(req.query.UserId + "") },
-    (err: CallbackError, user: IUser) => {
-      if (err) {
-        res.status(500).send(err);
+    });
+
+    const token = jwt.sign({ email: userBody.email}, config.secret,{
+      expiresIn: 86400 // expires in 24 hours
+    });
+    res.status(200).send({ token: token });
+  }
+
+
+  export const authenticateUser = ({ req, res, next }: { req: Request; res: Response; next: NextFunction; }) => {
+    passport.authenticate('local', {session: false} ,function (err: any, user: any,info ) {
+      console.log(user);
+
+      // no async/await because passport works only with callback ..
+      if (err) return next(err);
+      if (!user) {
+        return res.status(401).json({ status: "error", code: "unauthorized" });
       } else {
-        res.status(200).json(user);
+        const token = jwt.sign({ email: user.email }, config.secret);
+        res.status(200).send({ token: token });
       }
-    }
-  );
-};
+    });
+  }
+  

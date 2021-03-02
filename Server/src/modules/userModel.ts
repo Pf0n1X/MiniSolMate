@@ -1,12 +1,11 @@
 import { model, Schema, Document } from "mongoose";
+import bcrypt from "bcrypt";
 
-export interface IUser {
-  UserId: number;
-  unername: string;
+export interface IUser{
+  email: string;
   password: string;
   firstName: string;
   lastName: string;
-  email: string;
   sex: number;
   age: number;
   picture: string;
@@ -19,15 +18,10 @@ export interface IUser {
   Artists: Array<string>;
   Chats: Array<number>;
 }
-export interface IUserModel extends Document, IUser {}
-
+export interface IUserModel extends IUser,Document {
+}
 const schema = new Schema({
-  UserId: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  unername: {
+  email: {
     type: String,
     required: true,
     unique: true,
@@ -42,10 +36,6 @@ const schema = new Schema({
     required: true,
   },
   lastName: {
-    type: String,
-    required: true,
-  },
-  email: {
     type: String,
     required: true,
   },
@@ -92,4 +82,15 @@ const schema = new Schema({
   ],
 });
 
+// schema.pre<IUser>("save", function save(next) {
+//   const user = this;
+
+//   bcrypt.genSalt(10, (err, salt) => {
+//     if (err) { return next(err); }
+//     bcrypt.hash(this.password, salt, (err: Error, hash: string) => {
+//       if (err) { return next(err); }
+//       user.password = hash;
+//     });
+//   });
+// });
 export default model<IUserModel>("users", schema);
