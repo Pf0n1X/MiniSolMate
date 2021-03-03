@@ -5,11 +5,9 @@ import passport from "passport";
 import User, { IUser, IUserModel } from "../modules/userModel";
 import * as config from "../config/config.json";
 import { CallbackError } from "mongoose";
-import "../auth/passportConfig";
-
 export const registerUser = async(req: Request, res: Response) => {
     const hashedPassword = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-      const userBody: IUser = req.body;
+    const userBody: IUser = req.body;
     await User.create({
       email: userBody.email,
       password: hashedPassword,
@@ -36,7 +34,7 @@ export const registerUser = async(req: Request, res: Response) => {
   }
 
 
-  export const authenticateUser = ({ req, res, next }: { req: Request; res: Response; next: NextFunction; }) => {
+  export const authenticateUser = ( req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('local', {session: false} ,function (err: any, user: any,info ) {
       console.log(user);
 
@@ -46,8 +44,8 @@ export const registerUser = async(req: Request, res: Response) => {
         return res.status(401).json({ status: "error", code: "unauthorized" });
       } else {
         const token = jwt.sign({ email: user.email }, config.secret);
-        res.status(200).send({ token: token });
+        res.status(200).send({ user:user ,token: token });
       }
-    });
+    })(req, res, next);
   }
   

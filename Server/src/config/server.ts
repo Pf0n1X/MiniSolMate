@@ -1,6 +1,9 @@
 import express from "express";
 import * as bodyParser from "body-parser";
 import { connect } from "mongoose";
+import passport from "passport";
+import "../auth/passportConfig";
+
 
 // Routes
 import userRouter from "../routes/userRoute";
@@ -15,6 +18,8 @@ export const startServer = async () => {
   app.use(bodyParser.json());
   //support application/x-www-form-urlencoded post data
   app.use(bodyParser.urlencoded({ extended: false }));
+  passport.initialize();
+  passport.session();
 
   // Routes
   app.use("/user", userRouter);

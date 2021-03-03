@@ -14,12 +14,12 @@ const ExtractJwt = passportJwt.ExtractJwt;
 
 passport.use(new LocalStrategy({ usernameField: "email" ,passwordField: 'password',
 }, (email, password, done) => {
-  console.log("SADSADSADASDSA")
-  User.findOne({ email: email.toLowerCase() ,password}, (err: any, user: any) => {
+  User.findOne({ email: email.toLowerCase()}, (err: any, user: any) => {
     if (err) { return done(err); }
     if (!user) {
       return done(undefined, false, { message: `email ${email} not found.` });
     }
+
     bcrypt.compare(password, user.password, (err: Error, isMatch: boolean) => {
       if (err) { return done(err); }
       if (isMatch) {
