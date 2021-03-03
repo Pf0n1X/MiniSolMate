@@ -3,6 +3,8 @@ import { CallbackError } from "mongoose";
 import Chat, { IChat } from "../modules/chatModel";
 import { IUser } from "../modules/userModel";
 
+const currentUser = "Eden";
+
 export const addChat = async (req: Request, res: Response) => {
   try {
     const userBody: IChat = req.body;
@@ -23,12 +25,12 @@ export const getChatsByUser = async (req: Request, res: Response) => {
   const userBody: IUser = req.body;
 
   await Chat.find(
-    { ChatId: { $in: userBody.Chats } },
-    (err: CallbackError, user: IChat) => {
+    { UserId1: currentUser },
+    (err: CallbackError, chats: IChat) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        res.status(200).json(user);
+        res.status(200).json(chats);
       }
     }
   );
