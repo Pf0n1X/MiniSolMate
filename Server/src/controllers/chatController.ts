@@ -9,6 +9,8 @@ export const addChat = async (req: Request, res: Response) => {
     const toAdd: IChat = {
       ChatId: userBody.ChatId,
       Messages: userBody.Messages,
+      UserId1: userBody.UserId1,
+      UserId2: userBody.UserId2
     };
     const chatAdded = await Chat.create(toAdd);
     res.status(200).json({ message: "chat added", ...chatAdded });
