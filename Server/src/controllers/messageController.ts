@@ -10,6 +10,7 @@ export const addMsg = async (req: Request, res: Response) => {
       MsgId: userBody.MsgId,
       msgDate: userBody.msgDate,
       text: userBody.text,
+      sender: userBody.sender,
     };
     const chatMsg = await Message.create(toAdd);
     res.status(200).json({ message: "message added", ...chatMsg });
@@ -22,7 +23,7 @@ export const getMessagesById = async (req: Request, res: Response) => {
   const chatBody: IChat = req.body;
 
   await Message.find(
-    { MsgId: { $in: chatBody.Messages } },
+    { IMessage: { $in: chatBody.Messages } },
     (err: CallbackError, user: IMessage) => {
       if (err) {
         res.status(500).send(err);

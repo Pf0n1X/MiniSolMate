@@ -12,12 +12,12 @@ import { IMessage } from "../../../../../Server/src/modules/messageModel";
 export class AppComponent {
   title = 'mini-solmate';
   connected: Boolean = true;
-  currentUser = 1111;
+  currentUser = "Eden";
   currentChat!: IChat;
   messages: IMessage[] = [];
   newMessage = '';
   username = '';
-  chatList: IChat[] = [{ ChatId: 1, UserId1: 1111, UserId2: 2444444444444, Messages: [{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: 1111 },{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: 2 }] }];
+  chatList: IChat[] = [{ ChatId: 1, UserId1: "Eden", UserId2: "Other", Messages: [{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Eden" },{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Other" }] }];
 
   async openChat(chatID: number) {
     
