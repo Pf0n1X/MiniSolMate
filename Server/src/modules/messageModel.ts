@@ -25,7 +25,6 @@ const schema = new Schema({
   sender: {
     type: String,
     required: true,
-    unique: true,
   },
 });
 

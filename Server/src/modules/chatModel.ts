@@ -23,12 +23,10 @@ const schema = new Schema({
   UserId1: {
     type: String,
     required: true,
-    unique: true,
   },
   UserId2: {
     type: String,
     required: true,
-    unique: true,
   },
 });
 
