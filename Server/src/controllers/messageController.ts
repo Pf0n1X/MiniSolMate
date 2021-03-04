@@ -23,7 +23,7 @@ export const getMessagesById = async (req: Request, res: Response) => {
   const chatBody: IChat = req.body;
 
   await Message.find(
-    { sender: "Eden" },
+    { sender: req.body.sender },
     (err: CallbackError, message: IMessage[]) => {
       if (err) {
         res.status(500).send(err);
