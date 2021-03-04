@@ -4,8 +4,8 @@ import { IMessage } from "../modules/messageModel";
 export interface IChat {
   ChatId: number;
   Messages: Array<IMessage>;
-  UserId1: String;
-  UserId2: String;
+  UserId1: number;
+  UserId2: number;
 }
 export interface IChatModel extends Document, IChat {}
 
@@ -21,11 +21,11 @@ const schema = new Schema({
     },
   ],
   UserId1: {
-    type: String,
+    type: Number,
     required: true,
   },
   UserId2: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
