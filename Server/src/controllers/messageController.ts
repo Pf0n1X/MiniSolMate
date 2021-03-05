@@ -23,12 +23,12 @@ export const getMessagesById = async (req: Request, res: Response) => {
   const chatBody: IChat = req.body;
 
   await Message.find(
-    { IMessage: { $in: chatBody.Messages } },
-    (err: CallbackError, user: IMessage) => {
+    { sender: req.body.sender },
+    (err: CallbackError, message: IMessage[]) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        res.status(200).json(user);
+        res.status(200).json(message);
       }
     }
   );
