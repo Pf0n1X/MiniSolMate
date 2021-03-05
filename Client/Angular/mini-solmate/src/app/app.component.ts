@@ -1,18 +1,21 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { IChat } from "../../../../../Server/src/modules/chatModel";
 import { IMessage } from "../../../../../Server/src/modules/messageModel";
 import { IUser } from "../../../../../Server/src/modules/userModel";
 import { IClientChat } from './Interfaces/ClientChat';
+import { WebSocketService } from './web-socket.service';
+import { webSocket, WebSocketSubject } from "rxjs/webSocket";
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'mini-solmate';
-  connected: Boolean = true;
+  connected: Boolean = false;
   currentUser = 1;
   currentChat!: IClientChat;
   messages: IMessage[] = [];
@@ -24,16 +27,32 @@ export class AppComponent {
   private chatUrl = 'http://localhost:3000/chat'; // URL to web api
   private userUrl = 'http://localhost:3000/user'; // URL to web api
   @ViewChild('scroll', { static: true }) scroll: any;
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
+  headers!: HttpHeaders;
+  ws!: WebSocketSubject<any>;
 
-  constructor(private http: HttpClient) {
-    this.getChatsOfUser()
+  constructor(private http: HttpClient, private webSocketService: WebSocketService) {
+
+    this.headers = new HttpHeaders();
+    this.headers = this.headers.set('Content-Type', 'application/json; charset=utf-8');
+
+    this.ws = webSocket({
+      url: 'ws://localhost:8999',
+      deserializer: e => e.data
+    });
+    this.ws.subscribe({
+      next: (data) => { this.getChatsOfUser() },
+      error: (err) => { console.log(`Error: ${err}`) },
+      complete: () => { }
+    });
+  }
+
+  ngOnInit() {
+    // this.webSocketService.listen('status').subscribe((data) => {
+    //   console.log(data)
+    // });
   }
 
   async openChat(chatID: number) {
-
     const chat = this.clientChatList.find(chat => chat.ChatId == chatID)
     if (chat != undefined) {
       this.currentChat = chat;
@@ -64,15 +83,12 @@ export class AppComponent {
   }
 
   updateChat(chat: IChat) {
-
-    let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
-
     this.http.put(this.chatUrl, JSON.stringify(chat), {
-      headers: headers
+      headers: this.headers
     })
       .subscribe(data => {
         console.log(data);
+        this.ws.next("message");
       });
   }
 
@@ -90,11 +106,14 @@ export class AppComponent {
       sender: number;
     };
 
-    let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    this.clientChatList = [];
+
+    let params = new HttpParams();
+    params = params.append('UserId', this.currentUser.toString());
 
     this.http.get(this.chatUrl, {
-      headers: headers
+      headers: this.headers,
+      params: params
     })
       .subscribe(async data => {
         let arr: Array<IChat> = (data as Array<ClientChat>).map(item => {
@@ -115,30 +134,37 @@ export class AppComponent {
           const IclientChat: IClientChat = { ChatId: chat.ChatId, UserId1: chat.UserId1, UserId2: chat.UserId2, Messages: chat.Messages, Username: result[0].firstName + " " + result[0].lastName };
           this.clientChatList.push(IclientChat);
         }
+        if (this.currentChat != undefined)
+          this.openChat(this.currentChat.ChatId);
       });
   }
 
   async getUser(userID: number) {
-    let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+
     let params = new HttpParams();
     params = params.append('UserId', userID.toString());
 
     let result = await this.http.get(this.userUrl, {
-      headers: headers,
+      headers: this.headers,
       params: params
     })
       .toPromise();
     return result;
   }
 
+  async webSocket() {
+
+  }
+
   async connectToChat() {
     this.connected = true;
+    this.currentUser = Number(this.username);
+    this.getChatsOfUser()
   }
 
   public scrollToBottom() {
     const elementList = document.querySelectorAll('.' + "scroll");
     const element = elementList[0] as HTMLElement;
-    element.scroll(0, 1000);
+    element.scroll(0, Number.MAX_SAFE_INTEGER );
   }
 }
