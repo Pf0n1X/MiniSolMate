@@ -4,16 +4,14 @@ import { IChat } from "../../../../../Server/src/modules/chatModel";
 import { IMessage } from "../../../../../Server/src/modules/messageModel";
 import { IUser } from "../../../../../Server/src/modules/userModel";
 import { IClientChat } from './Interfaces/ClientChat';
-import { WebSocketService } from './web-socket.service';
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
-
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'mini-solmate';
   connected: Boolean = false;
   currentUser = 1;
@@ -21,20 +19,24 @@ export class AppComponent implements OnInit {
   messages: IMessage[] = [];
   newMessage = '';
   username = '';
+  chatName = '';
   chatList: IChat[] = []
   clientChatList: IClientChat[] = []
   // chatList: IChat[] = [{ ChatId: 1, UserId1: "Eden", UserId2: "Other", Messages: [{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Eden" }, { MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Other" }] }];
-  private chatUrl = 'http://localhost:3000/chat'; // URL to web api
-  private userUrl = 'http://localhost:3000/user'; // URL to web api
+  private chatUrl = 'http://localhost:3001/chat'; // URL to web api
+  private userUrl = 'http://localhost:3001/user'; // URL to web api
   @ViewChild('scroll', { static: true }) scroll: any;
   headers!: HttpHeaders;
   ws!: WebSocketSubject<any>;
 
-  constructor(private http: HttpClient, private webSocketService: WebSocketService) {
+  constructor(private http: HttpClient) {
 
     this.headers = new HttpHeaders();
     this.headers = this.headers.set('Content-Type', 'application/json; charset=utf-8');
+    this.webSocket();
+  }
 
+  async webSocket() {
     this.ws = webSocket({
       url: 'ws://localhost:8999',
       deserializer: e => e.data
@@ -44,12 +46,6 @@ export class AppComponent implements OnInit {
       error: (err) => { console.log(`Error: ${err}`) },
       complete: () => { }
     });
-  }
-
-  ngOnInit() {
-    // this.webSocketService.listen('status').subscribe((data) => {
-    //   console.log(data)
-    // });
   }
 
   async openChat(chatID: number) {
@@ -68,6 +64,21 @@ export class AppComponent implements OnInit {
       }
     }
     this.scrollToBottom();
+  }
+
+  async deleteChat() {
+
+    let params = new HttpParams();
+    params = params.append('ChatId', this.currentChat.ChatId.toString());
+    
+    this.http.delete(this.chatUrl, {
+      headers: this.headers,
+      params: params
+    })
+      .subscribe(data => {
+        console.log(data);
+        this.getChatsOfUser()
+      });
   }
 
   async sendMessage() {
@@ -152,10 +163,6 @@ export class AppComponent implements OnInit {
     return result;
   }
 
-  async webSocket() {
-
-  }
-
   async connectToChat() {
     this.connected = true;
     this.currentUser = Number(this.username);
@@ -165,6 +172,6 @@ export class AppComponent implements OnInit {
   public scrollToBottom() {
     const elementList = document.querySelectorAll('.' + "scroll");
     const element = elementList[0] as HTMLElement;
-    element.scroll(0, Number.MAX_SAFE_INTEGER );
+    element.scroll(0, Number.MAX_SAFE_INTEGER);
   }
 }
