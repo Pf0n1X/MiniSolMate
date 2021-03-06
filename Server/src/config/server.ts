@@ -1,13 +1,16 @@
-import * as express from "express";
+import express from "express";
 import * as bodyParser from "body-parser";
 import { connect } from "mongoose";
+import passport from "passport";
+import "../auth/passportConfig";
+
 
 // Routes
 import userRouter from "../routes/userRoute";
 import matchRouter from "../routes/matchRoute";
 import chatRouter from "../routes/chatRoute";
 import messageRouter from "../routes/messageRoute";
-import * as cors from "cors";
+import cors from "cors";
 
 const app = express();
 
@@ -16,6 +19,8 @@ export const startServer = async () => {
   app.use(bodyParser.json());
   //support application/x-www-form-urlencoded post data
   app.use(bodyParser.urlencoded({ extended: false }));
+  passport.initialize();
+  passport.session();
   app.use(cors());
 
   // Routes
