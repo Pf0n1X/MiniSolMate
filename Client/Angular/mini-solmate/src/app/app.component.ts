@@ -23,8 +23,8 @@ export class AppComponent {
   chatList: IChat[] = []
   clientChatList: IClientChat[] = []
   // chatList: IChat[] = [{ ChatId: 1, UserId1: "Eden", UserId2: "Other", Messages: [{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Eden" }, { MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Other" }] }];
-  private chatUrl = 'http://localhost:3000/chat'; // URL to web api
-  private userUrl = 'http://localhost:3000/user'; // URL to web api
+  private chatUrl = 'http://localhost:3001/chat'; // URL to web api
+  private userUrl = 'http://localhost:3001/user'; // URL to web api
   @ViewChild('scroll', { static: true }) scroll: any;
   headers!: HttpHeaders;
   ws!: WebSocketSubject<any>;
