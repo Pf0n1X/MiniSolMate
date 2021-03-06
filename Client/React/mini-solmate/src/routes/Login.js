@@ -2,18 +2,7 @@ import React , {useState} from "react";
 import { Form, Button, Nav } from "react-bootstrap";
 import solmate_logo from "../images/solMate_logo.png";
 import "../styles/Login.css";
-
-
-async function loginUser(credentials) {
-    return fetch('http://localhost:8080/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    })
-      .then(data => data.json())
-   }
+import axios from "axios";
 
    
 
@@ -21,13 +10,19 @@ const Login = ({ setToken }) => {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
 
+    async function loginUser(credentials) {
+      console.log(credentials)
+      return axios
+      .post("http://localhost:3001/user/login", credentials,{headers: { 'Content-Type': 'application/json' }})
+      .then(response => setToken(response.data.token))
+      .catch((error) => alert(error));
+     }
     const handleSubmit = async e => {
         e.preventDefault();
-        const token = await loginUser({
+        const res = await loginUser({
             email,
           password
         });
-        setToken(token);
       }
   return (
     <div className="login-container">

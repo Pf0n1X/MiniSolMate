@@ -19,9 +19,9 @@ import Register from "./routes/Register";
 import useToken from "./hooks/useToken";
 
 const App = () => {
-  const { token, setToken } = useToken();
+  const { isTokenSet, setToken } = useToken();
 
-  if (!token) {
+  if (!isTokenSet) {
     return (
       <main>
         <section className="glass">
