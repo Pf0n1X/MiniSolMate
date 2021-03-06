@@ -332,9 +332,13 @@
                             <h4>Chats</h4>
                         </div>
                     </div>
+                    <div class="form-group" id="search_div">
+                        <input type="text" class="form-control" placeholder="Search chat" [(ngModel)]="chatName" id="filter">
+                        <hr/>
+                    </div>
                     <div class="inbox_chat">
-                        <div class="channels" id="{{chat.ChatId}}" *ngFor="let chat of clientChatList"
-                            (click)="openChat(chat.ChatId)">
+                        <div class="channels" id="{{chat.ChatId}}"
+                            *ngFor="let chat of clientChatList | chatPipe: chatName" (click)="openChat(chat.ChatId)">
                             <div class="chat_list">
                                 <div class="chat_people">
                                     <div class="chat_ib">
@@ -352,9 +356,10 @@
                 </div>
                 <div class="mesgs">
                     <div class="chat_heading" *ngIf="currentChat">
-                        <h4>
+                        <h4 id="chat_username">
                             {{ currentChat.Username }}
                         </h4>
+                        <button class="btn" id="delete_btn"><i class="fa fa-trash" (click)="deleteChat()"></i></button>
                     </div>
 
                     <div class="chat_divider" *ngIf="currentChat">
@@ -391,7 +396,7 @@
                     </div>
                     <div class="type_msg" *ngIf="currentChat">
                         <form class="input_msg_write" (ngSubmit)="sendMessage()">
-                            <input style="width: 90%;" type="text" class="write_msg" placeholder="Type a message"
+                            <input id="message" style="width: 90%;" type="text" class="write_msg" placeholder="Type a message"
                                 name="newMessage" [(ngModel)]="newMessage" />
                             <button class="msg_send_btn" type="submit">
                                 <i class="fa fa-paper-plane-o" aria-hidden="true"></i>

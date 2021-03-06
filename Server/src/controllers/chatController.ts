@@ -25,12 +25,8 @@ wss.on('connection', (ws: WebSocket) => {
     for (var i = 0; i < clients.length; i++) {
       clients[i].send("sent to all");
     }
-    // ws.send("hi222");
   })
 });
-
-// setInterval(() => wss.clients.forEach(ws => ws.send(`ping!`)), 2000);
-
 
 // Start server
 server.listen(process.env.PORT || 8999, () => {
@@ -88,4 +84,17 @@ export const getChatsByUser = async (req: Request, res: Response) => {
       }
     }
   );
+};
+
+export const deleteChat = async (req: Request, res: Response) => {
+  try {
+    console.log(req.query.ChatId);
+    var query = { 'ChatId': Number(req.query.ChatId) };
+    const chatDeleted = await Chat.findOneAndDelete(query);
+    res.status(200).json({ message: "chat deleted", ...chatDeleted });
+
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
 };
