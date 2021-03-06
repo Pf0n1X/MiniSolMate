@@ -74,12 +74,18 @@ export class AppComponent {
     let params = new HttpParams();
     params = params.append('ChatId', this.currentChat.ChatId.toString());
 
+    var otherClient = this.currentChat.UserId1;
+    if (otherClient == this.currentUser)
+      otherClient = this.currentChat.UserId2;
+
     this.http.delete(this.chatUrl, {
       headers: this.headers,
       params: params
     })
       .subscribe(data => {
         console.log(data);
+        var serverMsg = { sender: this.currentUser, reciver: otherClient, ChatId: this.currentChat.ChatId }
+        this.ws.next(serverMsg);
         this.getChatsOfUser('', 0)
       });
   }
