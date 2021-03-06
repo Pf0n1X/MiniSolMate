@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { CallbackError } from "mongoose";
 import Chat, { IChat } from "../modules/chatModel";
 import { IUser } from "../modules/userModel";
-import * as express from "express";
+import express from "express";
 import * as http from "http";
 import * as WebSocket from "ws";
 
