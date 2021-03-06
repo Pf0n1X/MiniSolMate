@@ -59,3 +59,12 @@ export const login = async (req: Request, res: Response) => {
     }
   );
 };
+
+export const uploadFile = async (req: Request, res: Response) => {
+  try {
+    console.log("Check");
+    res.status(200).send(true);
+  } catch (e) {
+    res.sendStatus(500);
+  }
+};
