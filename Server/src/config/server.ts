@@ -10,6 +10,7 @@ import userRouter from "../routes/userRoute";
 import matchRouter from "../routes/matchRoute";
 import chatRouter from "../routes/chatRoute";
 import messageRouter from "../routes/messageRoute";
+import cors from "cors";
 
 const app = express();
 
@@ -20,15 +21,17 @@ export const startServer = async () => {
   app.use(bodyParser.urlencoded({ extended: false }));
   passport.initialize();
   passport.session();
+  app.use(cors());
 
   // Routes
+  app.use("/static", express.static("uploads"));
   app.use("/user", userRouter);
   app.use("/match", matchRouter);
   app.use("/chat", chatRouter);
   app.use("/message", messageRouter);
 
   await new Promise((resolve, reject) => {
-    const PORT = 3000;
+    const PORT = 3001;
     app.listen(PORT, () => {
       console.log("Express server listening on port " + PORT);
       resolve(true);
@@ -37,7 +40,7 @@ export const startServer = async () => {
 };
 
 export const mongoSetup = async () => {
-  await connect('mongodb://localhost/mini_solmate', {
+  await connect("mongodb://localhost/mini_solmate", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

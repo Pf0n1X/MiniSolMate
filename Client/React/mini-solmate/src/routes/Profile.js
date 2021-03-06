@@ -5,12 +5,30 @@ import { Tabs, Tab } from "react-bootstrap";
 import billie_eilish from "../images/billie_eilish.jpg";
 import { FiEdit2 } from "react-icons/fi";
 import { FiUpload } from "react-icons/fi";
+import axios from "axios";
 
 const Profile = () => {
   const inputEl = useRef(null);
   const uploadEl = useRef(null);
   const [key, setKey] = useState("Top Artists");
   const [desc, setDesc] = useState("Music is cool");
+
+  const onFileChange = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("myImage", e.target.files[0]);
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    axios
+      .post("http://localhost:3001/user/upload", formData, config)
+      .then((response) => {
+        alert("The file is successfully uploaded");
+      })
+      .catch((error) => {});
+  };
 
   const onEditClicked = () => {
     // `current` points to the mounted text input element
@@ -111,6 +129,7 @@ const Profile = () => {
                 type="file"
                 name="imageUpload"
                 accept="image/png, image/jpeg"
+                onChange={onFileChange}
               ></input>
               <label for="imageUpload">
                 <FiUpload className="edit-icon" />
