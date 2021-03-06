@@ -333,8 +333,9 @@
                         </div>
                     </div>
                     <div class="form-group" id="search_div">
-                        <input type="text" class="form-control" placeholder="Search chat" [(ngModel)]="chatName" id="filter">
-                        <hr/>
+                        <input type="text" class="form-control" placeholder="Search chat" [(ngModel)]="chatName"
+                            id="filter">
+                        <hr />
                     </div>
                     <div class="inbox_chat">
                         <div class="channels" id="{{chat.ChatId}}"
@@ -342,12 +343,23 @@
                             <div class="chat_list">
                                 <div class="chat_people">
                                     <div class="chat_ib">
-                                        <h5>
-                                            {{ chat.Username }}
-                                        </h5>
-                                        <p>
-                                            {{ chat.Messages[chat.Messages.length - 1].text }}
-                                        </p>
+                                        <div id="msg_header">
+                                            <h5 style="display: inline;">
+                                                {{ chat.Username }}
+                                            </h5>
+                                            <p *ngIf="chat.IsNew" style="display: inline; float: right; margin-right: -20px;">
+                                                New message
+                                            </p>
+                                        </div>
+
+                                        <div id="msg_details">
+                                            <p style="float: left;">
+                                                {{ chat.Messages[chat.Messages.length - 1].text }}
+                                            </p>
+                                            <p style="float: right; margin-right: -20px;">
+                                                {{ chat.Messages[chat.Messages.length - 1].msgDate }}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -396,8 +408,8 @@
                     </div>
                     <div class="type_msg" *ngIf="currentChat">
                         <form class="input_msg_write" (ngSubmit)="sendMessage()">
-                            <input id="message" style="width: 90%;" type="text" class="write_msg" placeholder="Type a message"
-                                name="newMessage" [(ngModel)]="newMessage" />
+                            <input id="message" style="width: 90%;" type="text" class="write_msg"
+                                placeholder="Type a message" name="newMessage" [(ngModel)]="newMessage" />
                             <button class="msg_send_btn" type="submit">
                                 <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                             </button>

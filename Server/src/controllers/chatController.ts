@@ -11,18 +11,24 @@ const app = express();
 const server = http.createServer(express());
 
 const wss = new WebSocket.Server({ server });
-var clients: WebSocket[] = [];
+// var clients: WebSocket[] = [];
+// var clients: { [id: string] : WebSocket } = {};
+let clients = new Map<string, WebSocket>();
 
-wss.on("connection", (ws: WebSocket) => {
-  var id = Math.random();
-  console.log("connection is established : " + id);
-  clients[id] = ws;
-  clients.push(ws);
-  // Print and echo
+wss.on("connection", (ws: WebSocket, incoming_request) => {
+
+  var email = incoming_request.url?.substr(1, incoming_request.url.length);
+  if (email != undefined) {
+    console.log("connection is established with user : " + email);
+    clients.set(email.toString(), ws);
+  }
+
   ws.on("message", (data) => {
     console.log(`received: ${data}`);
-    for (var i = 0; i < clients.length; i++) {
-      clients[i].send("sent to all");
+    var json = JSON.parse(data.toString())
+    if (clients.has(json.reciver)) {
+      var currWs = clients.get(json.reciver) as WebSocket;
+      currWs.send(json.ChatId)
     }
   })
 });
@@ -70,8 +76,7 @@ export const updateChat = async (req: Request, res: Response) => {
 };
 
 export const getChatsByUser = async (req: Request, res: Response) => {
-  var userID = Number(req.query.UserId);
-
+  var userID = req.query.UserId?.toString();
   await Chat.find(
     { $or: [{ UserId1: userID }, { UserId2: userID }] },
     (err: CallbackError, chats: IChat[]) => {

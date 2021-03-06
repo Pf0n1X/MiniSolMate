@@ -7,6 +7,10 @@
     transform: translate(-50%, -50%);
 }
 
+.toolbar {
+    background-color: purple !important;
+}
+
 .container {
     width: 100%;
     margin: auto;
@@ -97,13 +101,13 @@ hr {
 }
 
 .channel_heading h4 {
-    color: #05728f;
+    color: purple;
     font-size: 21px;
     margin: auto;
 }
 
 .btn {
-    background-color: DodgerBlue; /* Blue background */
+    background-color: purple; /* Blue background */
     border: none; /* Remove borders */
     color: white; /* White text */
     cursor: pointer; /* Mouse pointer on hover */
@@ -111,7 +115,8 @@ hr {
   
   /* Darker background on mouse-over */
   .btn:hover {
-    background-color: RoyalBlue;
+    background-color: rgb(75, 0, 75);
+    color: white; /* White text */
   }
 
 .chat_heading {
@@ -124,7 +129,7 @@ hr {
 }
 
 #chat_username {
-    color: #05728f;
+    color: purple;
     font-size: 21px;
     text-align:center;
   margin-left: auto;
@@ -230,12 +235,12 @@ hr {
 
 .received_withd_msg p {
     background: #ebebeb none repeat scroll 0 0;
-    border-radius: 3px;
+    border-radius: 20px;
     color: #646464;
     font-size: 14px;
     margin: 0;
     padding: 5px 10px 5px 12px;
-    width: 100%;
+    width: 80%;
 }
 
 .time_date {
@@ -255,14 +260,34 @@ hr {
     width: 60%;
 }
 
+#msg_header {
+    margin-bottom: 2vh;
+}
+
+#msg_header p {
+    background: purple none repeat scroll 0 0;
+    border-radius: 20px;
+    font-size: 14px;
+    margin: 0;
+    color: #fff;
+    padding: 1px 0px 0px 10px;
+    width: 110px;
+    height: 27px;
+}
+
 .sent_msg p {
-    background: #05728f none repeat scroll 0 0;
-    border-radius: 3px;
+    background: purple none repeat scroll 0 0;
+    border-radius: 20px;
     font-size: 14px;
     margin: 0;
     color: #fff;
     padding: 5px 10px 5px 12px;
     width: 100%;
+}
+
+
+#msg_details p{
+    display: inline;
 }
 
 .outgoing_msg {
@@ -290,7 +315,7 @@ hr {
 }
 
 .msg_send_btn {
-    background: #05728f none repeat scroll 0 0;
+    background: purple none repeat scroll 0 0;
     border: medium none;
     border-radius: 50%;
     color: #fff;

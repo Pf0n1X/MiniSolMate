@@ -66,3 +66,17 @@ export const uploadFile = async (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 };
+
+export const getUserByEmail = async (req: Request, res: Response) => {
+  var userEmail = req.query.UserId?.toString();
+  await User.find(
+    { email: userEmail },
+    (err: CallbackError, user: IUser) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(user);
+      }
+    }
+  );
+};

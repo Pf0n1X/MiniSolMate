@@ -4,7 +4,7 @@ export interface IMessage {
   MsgId: number;
   msgDate: string;
   text: string;
-  sender: number;
+  sender: string;
 }
 export interface IMessageModel extends Document, IMessage {}
 
@@ -23,7 +23,7 @@ const schema = new Schema({
     required: true,
   },
   sender: {
-    type: Number,
+    type: String,
     required: true,
   },
 });
