@@ -312,14 +312,18 @@
 <!-- Toolbar -->
 <div class="content" role="main">
     <div *ngIf="!connected" class="login">
-        <h2 class="title">Login to Chat</h2>
+        <h2 class="title">Login to Solmate Chat</h2>
         <form id="login-form" (ngSubmit)="connectToChat()">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" id="text" name="username" placeholder="Username"
                     [(ngModel)]="username" />
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="text" name="password" placeholder="Password"
+                    [(ngModel)]="password" />
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <h6 *ngIf="error" style="margin-bottom: 4vh; color:red">Wrong input, check your email and password or register in Solmate app</h6>
+            <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
 
@@ -347,7 +351,8 @@
                                             <h5 style="display: inline;">
                                                 {{ chat.Username }}
                                             </h5>
-                                            <p *ngIf="chat.IsNew" style="display: inline; float: right; margin-right: -20px;">
+                                            <p *ngIf="chat.IsNew"
+                                                style="display: inline; float: right; margin-right: -20px;">
                                                 New message
                                             </p>
                                         </div>
