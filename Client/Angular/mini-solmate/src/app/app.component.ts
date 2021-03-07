@@ -14,17 +14,20 @@ import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 export class AppComponent {
   title = 'mini-solmate';
   connected: Boolean = false;
+  error: Boolean = false;
   currentUser = '';
   currentChat!: IClientChat;
+  emptyChat!: IClientChat;
   messages: IMessage[] = [];
   newMessage = '';
   username = '';
+  password = '';
   chatName = '';
   chatList: IChat[] = []
   clientChatList: IClientChat[] = []
-  // chatList: IChat[] = [{ ChatId: 1, UserId1: "Eden", UserId2: "Other", Messages: [{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Eden" }, { MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Other" }] }];
+  // chatList: IChat[] = [{ ChatId: 1, UserId1: "Eden", UserId2: "Other", Messages: [{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Eden" }, { MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Other" }]];
   private chatUrl = 'http://localhost:3001/chat'; // URL to web api
-  private userUrl = 'http://localhost:3001/user'; // URL to web api
+  private userUrl = 'http://localhost:3001/user'; // URL to web api }
   @ViewChild('scroll', { static: true }) scroll: any;
   headers!: HttpHeaders;
   ws!: WebSocketSubject<any>;
@@ -56,6 +59,9 @@ export class AppComponent {
       this.clientChatList[index].IsNew = false;
       this.currentChat = chat;
       this.messages = chat.Messages;
+    } else {
+      this.currentChat = this.emptyChat;
+      this.messages = [];
     }
 
     let divs = Array.from(document.getElementsByClassName('channels'));
@@ -200,15 +206,32 @@ export class AppComponent {
   }
 
   async connectToChat() {
-    this.connected = true;
-    this.currentUser = this.username;
-    this.getChatsOfUser('', 0)
-    this.webSocket();
+    this.Login({
+      email: this.username,
+      password: this.password
+    })
+
   }
 
   public scrollToBottom() {
     const elementList = document.querySelectorAll('.' + "scroll");
     const element = elementList[0] as HTMLElement;
     element.scroll(0, Number.MAX_SAFE_INTEGER);
+  }
+
+  async Login(credentials: any) {
+    this.http.post("http://localhost:3001/user/login", credentials, {
+      headers: this.headers
+    })
+      .subscribe(data => {
+        this.connected = true;
+        this.currentUser = this.username;
+        this.getChatsOfUser('', 0)
+        this.webSocket();
+      }
+        , err => {
+          console.log(err);
+          this.error = true
+        });
   }
 }

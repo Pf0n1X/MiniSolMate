@@ -119,6 +119,12 @@ hr {
     color: white; /* White text */
   }
 
+/* Darker background on mouse-over */
+.btn:focus {
+    background-color: rgb(75, 0, 75);
+    color: white; /* White text */
+}
+
 .chat_heading {
     display: flex;
     justify-content: center;
