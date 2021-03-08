@@ -20,7 +20,29 @@ const Matches = () => {
     const [user, setUser] = useState();
     const [match, setMatch] = useState();
 
+    const getMatch = () => {
+        // Get the match from the server.
+        axios.get('http://localhost:3001/match?userId=' + CONNECTED_USER_ID)
+            .then((response) => {
+                if (response.data === null)
+                    return;
+
+                setMatch(response.data)
+        
+                // Check which one of the the user fields is the other user
+                // and set the state accordingly.
+                if (response.data.firstUser._id === CONNECTED_USER_ID) {
+                    setUser(response.data.secondUser)
+                } else {
+                    setUser(response.data.firstUser)
+                }
+            });
+    }
+
     const onUpdateMatchButtonClicked = (isAccept) => {
+        if (match === null)
+            return;
+            
         if (match.firstUser._id === CONNECTED_USER_ID) {
             match.Approve1 = isAccept;
         } else {
@@ -31,25 +53,15 @@ const Matches = () => {
             .then((a, b) => {
                 console.log(a);
                 console.log(b);
+
+                // Get a new match.
+                console.log("Getting a new match")
+                getMatch();
             });
     }
 
     useEffect(() => {
-
-        // Get the match from the server.
-        axios.get('http://localhost:3001/match?userId=' + CONNECTED_USER_ID)
-        .then((response) => {
-            console.log(response.data)
-            setMatch(response.data)
-
-            // Check which one of the the user fields is the other user
-            // and set the state accordingly.
-            if (response.data.firstUser._id === CONNECTED_USER_ID) {
-                setUser(response.data.secondUser)
-            } else {
-                setUser(response.data.firstUser)
-            }
-        });
+        getMatch();
     }, []);
 
     return (
