@@ -9,6 +9,7 @@ import Popper from 'popper.js';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { Button } from 'bootstrap';
 
 
 const Matches = () => {
@@ -18,6 +19,20 @@ const Matches = () => {
 
     const [user, setUser] = useState();
     const [match, setMatch] = useState();
+
+    const onUpdateMatchButtonClicked = (isAccept) => {
+        if (match.firstUser._id === CONNECTED_USER_ID) {
+            match.Approve1 = isAccept;
+        } else {
+            match.Approve2 = isAccept;
+        }
+
+        axios.put('http://localhost:3001/match', match)
+            .then((a, b) => {
+                console.log(a);
+                console.log(b);
+            });
+    }
 
     useEffect(() => {
 
@@ -42,7 +57,7 @@ const Matches = () => {
             <div className="carousel-container">
                 <div className="user-name">
                     <h2>
-                        {user.firstName} {user.lastName}
+                        {user?.firstName} {user?.lastName}
                 </h2>
                 </div>
                 <Carousel>
@@ -70,11 +85,11 @@ const Matches = () => {
                     </Carousel.Item>
                 </Carousel>
                 <div className="swipe-buttons">
-                    <div className="swipe-button circle1">
-
+                    <div className="swipe-button circle1 button-accept" onClick={() => { onUpdateMatchButtonClicked(true); }}>
+                        {/* <button onClick={() => { onUpdateMatchButtonClicked(true); }} /> */}
                     </div>
-                    <div className="swipe-button circle1">
-
+                    <div className="swipe-button circle1 button-decline" onClick={() => { onUpdateMatchButtonClicked(false); }}>
+                        {/* <button onClick={() => { onUpdateMatchButtonClicked(false); }} /> */}
                     </div>
                 </div>
             </div>

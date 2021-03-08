@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { CallbackError } from "mongoose";
 import Match, { IMatch, IMatchModel } from "../modules/matchModel";
+import Chat, { IChatModel } from "../modules/chatModel";
 import { IUser } from "../modules/userModel";
 import { Types, ObjectId } from "mongoose";
+import { IChat } from "../modules/chatModel";
 
-export const addMatch = async (req: Request, res: Response) => {
+export const addMatch = async (_req: Request, _res: Response) => {
   // try {
   //   const userBody: IMatch = req.body;
   //   const toAdd: IMatch = {
@@ -20,6 +22,44 @@ export const addMatch = async (req: Request, res: Response) => {
   //   res.status(500).send(e);
   // }
 };
+
+export const updateMatch = async(req: Request, res: Response) => {
+  var isApprove1 = req.body.Approve1;
+  var isApprove2 = req.body.Approve2;
+  var matchId = req.body._id;
+
+  await Match.updateOne({ _id: matchId },
+    { $set: { Approve1: isApprove1, Approve2: isApprove2 } })
+    .then((value: {ok: number, n: number, nModified: number}) => {
+      // Check if the update was successful and return an erorr if it wasn't
+      if (value.nModified < 1) {
+        res.status(500).send("ERROR: Unable to update match.");
+
+        return;
+      }
+    });
+
+  // if both users approved, create a chat.
+  if (isApprove1 && isApprove2) {
+
+  // Prepare the chat parameters.
+  const chat: IChat = {
+    ChatId: 1,
+    Messages: [],
+    UserId1: req.body.firstUser._id,
+    UserId2: req.body.secondUser._id,
+  };
+    
+  // Send a creation request to the database.
+  await Chat.create(chat)
+    .then((val: IChatModel) => {
+      res.status(200).json({ message: "Match created and chat added" });
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+  }
+}
 
 export const getMatchesById = async (req: Request, res: Response) => {
 
