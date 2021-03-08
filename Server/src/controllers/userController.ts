@@ -67,8 +67,33 @@ export const uploadFile = async (req: Request, res: Response) => {
   }
 };
 
+export const updateUser = async (req: Request, res: Response) => {
+  const userId = req.body._id;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const Artists = req.body.Artists;
+  const description = req.body.description;
+  
+  await User.updateOne({
+      _id: userId
+    }, { 
+      $set: {
+        firstName: firstName,
+        lastName: lastName,
+        Artists: Artists,
+        description: description
+    }})
+    .exec((err: CallbackError, user: any) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(user);
+      }
+  })
+};
+
 export const getUserByEmail = async (req: Request, res: Response) => {
-  var userEmail = req.query.UserId?.toString();
+  let userEmail = req.query.UserId?.toString();
   await User.find(
     { email: userEmail },
     (err: CallbackError, user: IUser) => {

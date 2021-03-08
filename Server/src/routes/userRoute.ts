@@ -1,4 +1,4 @@
-import {authenticateUser,registerUser,uploadFile, getUserByEmail}  from "../controllers/userController";
+import {authenticateUser,registerUser,uploadFile, getUserByEmail, updateUser }  from "../controllers/userController";
 import { response, Router } from "express";
 import multer from "multer";
 import * as path from "path";
@@ -32,6 +32,7 @@ router.post("/register", async (req, res, next) => {
   });
 router.get("/", getUserByEmail);
 router.post("/upload", upload, uploadFile);
+router.put("/", updateUser);
 
 
 export default router;

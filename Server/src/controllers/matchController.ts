@@ -24,9 +24,9 @@ export const addMatch = async (_req: Request, _res: Response) => {
 };
 
 export const updateMatch = async(req: Request, res: Response) => {
-  var isApprove1 = req.body.Approve1;
-  var isApprove2 = req.body.Approve2;
-  var matchId = req.body._id;
+  let isApprove1 = req.body.Approve1;
+  let isApprove2 = req.body.Approve2;
+  let matchId = req.body._id;
 
   await Match.updateOne({ _id: matchId },
     { $set: { Approve1: isApprove1, Approve2: isApprove2 } })
@@ -63,44 +63,44 @@ export const updateMatch = async(req: Request, res: Response) => {
 
 export const getMatchesById = async (req: Request, res: Response) => {
 
-  var userID = req.query.userId?.toString();
+  let userID = req.query.userId?.toString();
   console.log("The user id is: " + userID);
-  var objid = new Types.ObjectId(userID);
+  let objid = new Types.ObjectId(userID);
 
   // Find matches in
   if (userID !== undefined)
-  await Match.findOne({
-    $or: 
-      [
-        {
-          $and: [
-            {
-              firstUser: userID
-            },
-            {
-              Approve1: false
-            }
-          ]
-        },
-        {
-          $and: [
-            {
-              secondUser: userID
-            },
-            {
-              Approve2: false
-            }
-          ]
-        }
-      ]
-  })
-  .populate("firstUser")
-  .populate("secondUser")
-  .exec((err: CallbackError, user: any) => {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          res.status(200).json(user);
-        }
-    });
+    await Match.findOne({
+      $or: 
+        [
+          {
+            $and: [
+              {
+                firstUser: userID
+              },
+              {
+                Approve1: false
+              }
+            ]
+          },
+          {
+            $and: [
+              {
+                secondUser: userID
+              },
+              {
+                Approve2: false
+              }
+            ]
+          }
+        ]
+    })
+    .populate("firstUser")
+    .populate("secondUser")
+    .exec((err: CallbackError, user: any) => {
+          if (err) {
+            res.status(500).send(err);
+          } else {
+            res.status(200).json(user);
+          }
+      });
 }
