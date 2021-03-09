@@ -3,6 +3,7 @@ import {
   registerUser,
   uploadFile,
   getUserByEmail,
+  updateUser,
 } from "../controllers/userController";
 import { response, Router } from "express";
 import multer from "multer";
@@ -37,5 +38,6 @@ router.post("/register", async (req, res, next) => {
 });
 router.get("/", getUserByEmail);
 router.post("/upload", upload, uploadFile);
+router.put("/", updateUser);
 
 export default router;
