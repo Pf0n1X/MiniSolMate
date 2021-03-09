@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import profile_pic from "../images/profile_pic.jpg";
 import "../styles/Profile.css";
 import { Tabs, Tab } from "react-bootstrap";
@@ -12,6 +12,25 @@ const Profile = () => {
   const uploadEl = useRef(null);
   const [key, setKey] = useState("Top Artists");
   const [desc, setDesc] = useState("Music is cool");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    console.log("begin");
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/user", {
+          params: {
+            UserId: "adibigler@gmail.com",
+          },
+        });
+        setUser(res.data[0]);
+        setDesc(res.data[0].userDesc);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchData();
+  }, []);
 
   const onFileChange = (e) => {
     e.preventDefault();
@@ -34,6 +53,15 @@ const Profile = () => {
     // `current` points to the mounted text input element
     inputEl.current.focus();
   };
+
+  const onDescChange = async (e) => {
+    setDesc(e.target.value);
+
+    axios.post("/user", {
+      data: { ...user, userDesc: e.target.value + "" },
+    });
+  };
+
   return (
     <div>
       <div className="profile-container">
@@ -53,14 +81,14 @@ const Profile = () => {
           </div>
         </div>
 
-        <h3>Tomer Erusalimsky</h3>
+        <h3>{user !== null ? `${user.firstName} ${user.lastName}` : ""}</h3>
         <input
           ref={inputEl}
           name="desc"
           class="change-desc"
           type="input"
           value={desc}
-          onChange={(e) => setDesc(e.target.value)}
+          onChange={onDescChange}
         />
         <label>
           <FiEdit2 className="edit-icon" onClick={onEditClicked} />

@@ -1,7 +1,7 @@
 import { model, Schema, Document } from "mongoose";
 import bcrypt from "bcrypt";
 
-export interface IUser{
+export interface IUser {
   email: string;
   password: string;
   firstName: string;
@@ -9,6 +9,7 @@ export interface IUser{
   sex: number;
   age: number;
   picture: string;
+  userDesc: string;
   youtubeSong: string;
   radiusSearch: number;
   intrestedSex: number;
@@ -18,8 +19,7 @@ export interface IUser{
   Artists: Array<string>;
   Chats: Array<number>;
 }
-export interface IUserModel extends IUser,Document {
-}
+export interface IUserModel extends IUser, Document {}
 const schema = new Schema({
   email: {
     type: String,
