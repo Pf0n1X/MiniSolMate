@@ -17,6 +17,7 @@ import Intro from "./components/Intro";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import useToken from "./hooks/useToken";
+import axios from "axios";
 
 const App = () => {
   const { isTokenSet, setToken } = useToken();
@@ -30,14 +31,14 @@ const App = () => {
               <Router>
                 <Switch>
                   <Route path="/login" component={Login}>
-                    <Login setToken={setToken}/>
+                    <Login setToken={setToken} />
                   </Route>
                   <Route path="/register" component={Register}>
                     <Register />
                   </Route>
                   <Route path="/">
-                  <Login setToken={setToken}/>
-                </Route>
+                    <Login setToken={setToken} />
+                  </Route>
                 </Switch>
               </Router>
             </div>

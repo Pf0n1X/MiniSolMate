@@ -1,4 +1,10 @@
-import {authenticateUser,registerUser,uploadFile, getUserByEmail, updateUser }  from "../controllers/userController";
+import {
+  authenticateUser,
+  registerUser,
+  uploadFile,
+  getUserByEmail,
+  updateUser,
+} from "../controllers/userController";
 import { response, Router } from "express";
 import multer from "multer";
 import * as path from "path";
@@ -21,18 +27,17 @@ const upload = multer({
 }).single("myImage");
 
 const router = Router();
-router.post("/login", authenticateUser)
+router.post("/login", authenticateUser);
 router.post("/register", async (req, res, next) => {
-    try {
-    //listing messages in users mailbox 
-    registerUser (req, res)
-    } catch (err) {
-      next(err);
-    }
-  });
+  try {
+    //listing messages in users mailbox
+    registerUser(req, res);
+  } catch (err) {
+    next(err);
+  }
+});
 router.get("/", getUserByEmail);
 router.post("/upload", upload, uploadFile);
 router.put("/", updateUser);
-
 
 export default router;
