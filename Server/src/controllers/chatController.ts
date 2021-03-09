@@ -43,8 +43,13 @@ server.listen(process.env.PORT || 8999, () => {
 export const addChat = async (req: Request, res: Response) => {
   try {
     const userBody: IChat = req.body;
+    const maxChat = await Chat.findOne().sort({ ChatId: -1 }) as IChat
+    let chatId = 1;
+    if (maxChat != null)
+      chatId = maxChat.ChatId + 1;
+
     const toAdd: IChat = {
-      ChatId: userBody.ChatId,
+      ChatId: chatId,
       Messages: userBody.Messages,
       UserId1: userBody.UserId1,
       UserId2: userBody.UserId2,
