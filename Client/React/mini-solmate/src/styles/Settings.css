@@ -38,4 +38,8 @@
 .submit-button-group {
   display: flex;
   justify-content: center;
+}
+
+.MuiSlider-root {
+  color: #be65c6 !important;
 }/*# sourceMappingURL=Settings.css.map */
