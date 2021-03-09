@@ -1,23 +1,31 @@
-import { model, Schema, Document } from "mongoose";
+import { model, Schema, Document, Mongoose, Types } from "mongoose";
 
 export interface IMatch {
-  UserId1: number;
-  UserId2: number;
+  firstUser: String;
+  secondUser: String;
   Approve1: boolean;
   Approve2: boolean;
 }
 export interface IMatchModel extends Document, IMatch {}
 
 const schema = new Schema({
-  UserId1: {
-    type: Number,
-    required: true,
-    unique: true,
+  // UserId1: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  // },
+  // UserId2: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  // },
+  firstUser: {
+    type: String,
+    ref: 'users'
   },
-  UserId2: {
-    type: Number,
-    required: true,
-    unique: true,
+  secondUser: {
+    type: String,
+    ref: 'users'
   },
   Approve1: {
     type: Boolean,

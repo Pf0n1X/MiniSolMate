@@ -6,6 +6,7 @@ export interface IUser{
   password: string;
   firstName: string;
   lastName: string;
+  description: string;
   sex: number;
   age: number;
   picture: string;
@@ -38,6 +39,9 @@ const schema = new Schema({
   lastName: {
     type: String,
     required: true,
+  },
+  description: {
+    type: String
   },
   sex: {
     type: Number,
