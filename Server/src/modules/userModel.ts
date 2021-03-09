@@ -13,8 +13,8 @@ export interface IUser{
   youtubeSong: string;
   radiusSearch: number;
   intrestedSex: number;
-  intrestedAgeMin: number;
-  intrestedAgeMax: number;
+  radiusAgeMin: number;
+  radiusAgeMax: number;
   Genre: Array<string>;
   Artists: Array<string>;
   Chats: Array<number>;

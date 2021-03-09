@@ -22,8 +22,8 @@ export const registerUser = async (req: Request, res: Response) => {
     youtubeSong: userBody.youtubeSong,
     radiusSearch: userBody.radiusSearch,
     intrestedSex: userBody.intrestedSex,
-    intrestedAgeMin: userBody.intrestedAgeMin,
-    intrestedAgeMax: userBody.intrestedAgeMax,
+    radiusAgeMin: userBody.radiusAgeMin,
+    radiusAgeMax: userBody.radiusAgeMax,
     Genre: userBody.Genre,
     Artists: userBody.Artists,
     Chats: userBody.Chats,
@@ -104,4 +104,20 @@ export const getUserByEmail = async (req: Request, res: Response) => {
       }
     }
   );
+};
+
+export const getUsersForMatches = async () => {
+
+  const users = await User.find(
+    { },
+    (err: CallbackError, users: IUser[]) => {
+      if (err) {
+        console.log(err);
+      } else {
+        return users;
+      }
+    }
+  );
+
+  return users;
 };
