@@ -117,3 +117,19 @@ export const getUserByEmail = async (req: Request, res: Response) => {
     }
   );
 };
+
+export const getUsersForMatches = async () => {
+
+  const users = await User.find(
+    { },
+    (err: CallbackError, users: IUser[]) => {
+      if (err) {
+        console.log(err);
+      } else {
+        return users;
+      }
+    }
+  );
+
+  return users;
+};
