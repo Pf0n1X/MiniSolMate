@@ -143,16 +143,24 @@ export const calcMatchesForUser = async (userId: string) => {
         }
       }
 
+      var ageDifMs = Date.now() - new Date(1997, 11, 24).getTime();
+      var ageDate = new Date(ageDifMs); // miliseconds from epoch
+      var age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+      var ageDifMs = Date.now() - new Date(1998, 11, 24).getTime();
+      var ageDate = new Date(ageDifMs); // miliseconds from epoch
+      var currentUserAge = Math.abs(ageDate.getUTCFullYear() - 1970);
+
       //  If there isn't match with current user
       if (found == false &&
 
-        (user.age >= currentUser.radiusAgeMin &&
-          user.age <= currentUser.radiusAgeMax &&
-          user.sex == currentUser.intrestedSex) &&
+        (age >= currentUser.interestedAgeMin &&
+          age <= currentUser.interestedAgeMax &&
+          user.sex == currentUser.interestedSex) &&
 
-        (currentUser.age >= user.radiusAgeMin &&
-          currentUser.age <= user.radiusAgeMax &&
-          currentUser.sex == user.intrestedSex)) {
+        (currentUserAge >= user.interestedAgeMin &&
+          currentUserAge <= user.interestedAgeMax &&
+          currentUser.sex == user.interestedSex)) {
         potentialUsers.push(user);
       }
     }
