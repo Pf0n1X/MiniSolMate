@@ -17,16 +17,16 @@ export const registerUser = async (req: Request, res: Response) => {
     firstName: userBody.firstName,
     lastName: userBody.lastName,
     sex: userBody.sex,
-    age: userBody.age,
+    birthday: userBody.birthday,
     picture: userBody.picture,
     youtubeSong: userBody.youtubeSong,
     radiusSearch: userBody.radiusSearch,
-    intrestedSex: userBody.intrestedSex,
-    intrestedAgeMin: userBody.intrestedAgeMin,
-    intrestedAgeMax: userBody.intrestedAgeMax,
+    intrestedSex: userBody.interestedSex,
+    intrestedAgeMin: userBody.interestedAgeMin,
+    intrestedAgeMax: userBody.interestedAgeMax,
     Genre: userBody.Genre,
     Artists: userBody.Artists,
-    Chats: userBody.Chats,
+    Chats: userBody.Chats
   });
 
   const token = jwt.sign({ email: userBody.email }, config.secret, {
@@ -73,6 +73,12 @@ export const updateUser = async (req: Request, res: Response) => {
   const lastName = req.body.lastName;
   const Artists = req.body.Artists;
   const description = req.body.description;
+  const interestedAgeMin = req.body.interestedAgeMin;
+  const interestedAgeMax = req.body.interestedAgeMax;
+  const radiusSearch = req.body.radiusSearch;
+  const sex = req.body.sex;
+  const birthday = req.body.birthday;
+  const interestedSex = req.body.interestedSex;
   
   await User.updateOne({
       _id: userId
@@ -81,7 +87,13 @@ export const updateUser = async (req: Request, res: Response) => {
         firstName: firstName,
         lastName: lastName,
         Artists: Artists,
-        description: description
+        description: description,
+        interestedAgeMin: interestedAgeMin,
+        interestedAgeMax: interestedAgeMax,
+        radiusSearch: radiusSearch,
+        sex: sex,
+        birthday: birthday,
+        interestedSex: interestedSex
     }})
     .exec((err: CallbackError, user: any) => {
       if (err) {

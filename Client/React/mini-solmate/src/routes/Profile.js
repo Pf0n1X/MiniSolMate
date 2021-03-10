@@ -76,7 +76,7 @@ const Profile = () => {
               accept="image/png, image/jpeg"
             ></input>
             <label for="profileImageUpload" className="upload-profile-label">
-              <FiUpload className="upload-profile-icon " />
+              <FiUpload className="upload-profile-icon" />
             </label>
           </div>
         </div>
