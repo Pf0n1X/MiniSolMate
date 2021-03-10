@@ -20,7 +20,7 @@ const Profile = () => {
       try {
         const res = await axios.get("http://localhost:3001/user", {
           params: {
-            UserId: "adibigler@gmail.com",
+            UserId: "tom.eru.98@gmail.com",
           },
         });
         setUser(res.data[0]);

@@ -67,7 +67,7 @@ const schema = new Schema({
     type: Number,
   },
   interestedAgeMax: {
-    type: Number,
+    type: Number
   },
   Genre: [
     {

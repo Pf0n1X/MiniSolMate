@@ -21,9 +21,9 @@ export const registerUser = async (req: Request, res: Response) => {
     picture: userBody.picture,
     youtubeSong: userBody.youtubeSong,
     radiusSearch: userBody.radiusSearch,
-    intrestedSex: userBody.interestedSex,
-    intrestedAgeMin: userBody.interestedAgeMin,
-    intrestedAgeMax: userBody.interestedAgeMax,
+    interestedSex: userBody.interestedSex,
+    interestedAgeMin: userBody.interestedAgeMin,
+    interestedAgeMax: userBody.interestedAgeMax,
     Genre: userBody.Genre,
     Artists: userBody.Artists,
     Chats: userBody.Chats
