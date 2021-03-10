@@ -3,6 +3,7 @@ import * as bodyParser from "body-parser";
 import { connect } from "mongoose";
 import passport from "passport";
 import "../auth/passportConfig";
+import { authenticateJWT } from "../controllers/authController";
 
 
 // Routes
@@ -24,6 +25,11 @@ export const startServer = async () => {
   app.use(cors());
 
   // Routes
+  userRouter.use(authenticateJWT);
+  chatRouter.use(authenticateJWT);
+  matchRouter.use(authenticateJWT);
+  messageRouter.use(authenticateJWT);
+
   app.use("/static", express.static("uploads"));
   app.use("/user", userRouter);
   app.use("/match", matchRouter);
