@@ -8,14 +8,14 @@ export interface IUser {
   lastName: string;
   description: string;
   sex: number;
-  age: number;
+  birthday: string;
   picture: string;
   userDesc: string;
   youtubeSong: string;
   radiusSearch: number;
-  intrestedSex: number;
-  radiusAgeMin: number;
-  radiusAgeMax: number;
+  interestedSex: number;
+  interestedAgeMin: number;
+  interestedAgeMax: number;
   Genre: Array<string>;
   Artists: Array<string>;
   Chats: Array<number>;
@@ -47,8 +47,8 @@ const schema = new Schema({
     type: Number,
     required: true,
   },
-  age: {
-    type: Number,
+  birthday: {
+    type: String,
     required: true,
   },
   picture: {
@@ -60,13 +60,13 @@ const schema = new Schema({
   radiusSearch: {
     type: Number,
   },
-  intrestedSex: {
+  interestedSex: {
     type: Number,
   },
-  radiusAgeMin: {
+  interestedAgeMin: {
     type: Number,
   },
-  radiusAgeMax: {
+  interestedAgeMax: {
     type: Number,
   },
   Genre: [
