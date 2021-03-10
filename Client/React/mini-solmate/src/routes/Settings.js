@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { MenuItem, Slider, FormControl, FormGroup, Input, InputLabel, Select, TextField, Button, FormLabel, Radio, FormControlLabel, RadioGroup, TextareaAutosize } from '@material-ui/core';
+import { IconButton, MenuItem, Slider, FormControl, FormGroup, Input, InputLabel, Select, TextField, Button, FormLabel, Radio, FormControlLabel, RadioGroup, TextareaAutosize } from '@material-ui/core';
 import user_pic from '../images/profile_pic.jpg';
 import '../styles/Settings.css';
 import axios from 'axios';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
+import AddAPhotoRoundedIcon from '@material-ui/icons/AddAPhotoRounded';
 
 const Settings = () => {
 
@@ -41,6 +42,25 @@ const Settings = () => {
                 setPrefGender(response.data[0].interestedSex);
             });
     }, []);
+
+    const onPhotoButtonClicked = () => {
+        const onFileChange = (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append("myImage", e.target.files[0]);
+            const config = {
+              headers: {
+                "content-type": "multipart/form-data",
+              },
+            };
+            axios
+              .post("http://localhost:3001/user/upload", formData, config)
+              .then((response) => {
+                alert("The file is successfully uploaded");
+              })
+              .catch((error) => {});
+          };
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -99,6 +119,13 @@ const Settings = () => {
         <div className="settings-wrapper">
             <div className="picture-area">
                 <img src={user_pic} />
+                <input id="profileImageUpload"
+                    className="upload-input"
+                        type="file"
+                        name="profileImageUpload"
+                        accept="image/png, image/jpeg"
+                        onChange={onPhotoButtonClicked} />
+                <label className="file-label" for="profileImageUpload"><AddAPhotoRoundedIcon fontSize='20px'/></label>
             </div>
             <div className="preferences-wrapper">
                 <h4>Edit Settings</h4>
