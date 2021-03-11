@@ -10,7 +10,6 @@ export interface IUser {
   sex: number;
   age: number;
   picture: string;
-  userDesc: string;
   youtubeSong: string;
   radiusSearch: number;
   intrestedSex: number;
@@ -19,6 +18,7 @@ export interface IUser {
   Genre: Array<string>;
   Artists: Array<string>;
   Chats: Array<number>;
+  Media: Array<string>;
 }
 export interface IUserModel extends IUser, Document {}
 const schema = new Schema({
@@ -41,7 +41,7 @@ const schema = new Schema({
     required: true,
   },
   description: {
-    type: String
+    type: String,
   },
   sex: {
     type: Number,

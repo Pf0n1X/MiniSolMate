@@ -8,6 +8,9 @@ import { FiUpload } from "react-icons/fi";
 import axios from "axios";
 
 const Profile = () => {
+  // TODO: Replace with the actual id of the connected user.
+  const CONNECTED_USER_ID = "adibigler@gmail.com";
+
   const inputEl = useRef(null);
   const uploadEl = useRef(null);
   const [key, setKey] = useState("Top Artists");
@@ -20,7 +23,7 @@ const Profile = () => {
       try {
         const res = await axios.get("http://localhost:3001/user", {
           params: {
-            UserId: "adibigler@gmail.com",
+            UserId: CONNECTED_USER_ID,
           },
         });
         setUser(res.data[0]);
@@ -32,17 +35,38 @@ const Profile = () => {
     fetchData();
   }, []);
 
-  const onFileChange = (e) => {
+  const onMediaChange = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("myImage", e.target.files[0]);
+    formData.append("userId", CONNECTED_USER_ID);
+
     const config = {
       headers: {
         "content-type": "multipart/form-data",
       },
     };
     axios
-      .post("http://localhost:3001/user/upload", formData, config)
+      .post("http://localhost:3001/user/uploadMedia", formData, config)
+      .then((response) => {
+        alert("The file is successfully uploaded");
+      })
+      .catch((error) => {});
+  };
+
+  const onProfileChange = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("myImage", e.target.files[0]);
+    formData.append("userId", CONNECTED_USER_ID);
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    axios
+      .post("http://localhost:3001/user/uploadProfile", formData, config)
       .then((response) => {
         alert("The file is successfully uploaded");
       })
@@ -58,7 +82,7 @@ const Profile = () => {
     setDesc(e.target.value);
 
     axios.post("/user", {
-      data: { ...user, userDesc: e.target.value + "" },
+      data: { ...user, description: e.target.value + "" },
     });
   };
 
@@ -74,6 +98,7 @@ const Profile = () => {
               type="file"
               name="profileImageUpload"
               accept="image/png, image/jpeg"
+              onChange={onProfileChange}
             ></input>
             <label for="profileImageUpload" className="upload-profile-label">
               <FiUpload className="upload-profile-icon " />
@@ -157,7 +182,7 @@ const Profile = () => {
                 type="file"
                 name="imageUpload"
                 accept="image/png, image/jpeg"
-                onChange={onFileChange}
+                onChange={onMediaChange}
               ></input>
               <label for="imageUpload">
                 <FiUpload className="edit-icon" />

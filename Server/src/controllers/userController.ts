@@ -27,6 +27,7 @@ export const registerUser = async (req: Request, res: Response) => {
     Genre: userBody.Genre,
     Artists: userBody.Artists,
     Chats: userBody.Chats,
+    Media: userBody.Media,
   });
 
   const token = jwt.sign({ email: userBody.email }, config.secret, {
@@ -58,13 +59,58 @@ export const authenticateUser = (
   )(req, res, next);
 };
 
-export const uploadFile = async (req: Request, res: Response) => {
-  try {
-    console.log("Check");
-    res.status(200).send(true);
-  } catch (e) {
-    res.sendStatus(500);
-  }
+export const uploadMedia = async (req: Request, res: Response) => {
+  const userId = req.body.UserId;
+  const Media = req.body.Media;
+
+  await User.updateOne(
+    {
+      email: userId,
+    },
+    {
+      $set: {
+        Media: Media,
+      },
+    }
+  ).exec((err: CallbackError, user: any) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(user);
+    }
+  });
+};
+
+export const uploadProfile = async (req: Request, res: Response) => {
+  // try {
+  // const userId = req.body._id;
+  // const picture = req.body.picture;
+  const pic = req.body.myImage;
+  const userEmail = req.body.UserId;
+
+  await User.updateOne(
+    {
+      // _id: userId,
+      email: userEmail,
+    },
+    {
+      $set: {
+        picture: pic,
+      },
+    }
+  ).exec((err: CallbackError, user: any) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(user);
+    }
+  });
+
+  //   console.log("Check");
+  //   res.status(200).send(true);
+  // } catch (e) {
+  //   res.sendStatus(500);
+  // }
 };
 
 export const updateUser = async (req: Request, res: Response) => {
@@ -73,35 +119,35 @@ export const updateUser = async (req: Request, res: Response) => {
   const lastName = req.body.lastName;
   const Artists = req.body.Artists;
   const description = req.body.description;
-  
-  await User.updateOne({
-      _id: userId
-    }, { 
+
+  await User.updateOne(
+    {
+      _id: userId,
+    },
+    {
       $set: {
         firstName: firstName,
         lastName: lastName,
         Artists: Artists,
-        description: description
-    }})
-    .exec((err: CallbackError, user: any) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(200).json(user);
-      }
-  })
+        description: description,
+      },
+    }
+  ).exec((err: CallbackError, user: any) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(user);
+    }
+  });
 };
 
 export const getUserByEmail = async (req: Request, res: Response) => {
   let userEmail = req.query.UserId?.toString();
-  await User.find(
-    { email: userEmail },
-    (err: CallbackError, user: IUser) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(200).json(user);
-      }
+  await User.find({ email: userEmail }, (err: CallbackError, user: IUser) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(user);
     }
-  );
+  });
 };
