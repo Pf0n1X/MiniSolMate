@@ -71,7 +71,7 @@ export const getMatchesById = async (req: Request, res: Response) => {
   // Find matches in
   if (userID !== undefined) {
 
-    await calcMatchesForUser("6047b86ed60d8745dcef1d2e");
+    await calcMatchesForUser(userID);
 
     await Match.findOne({
       $or:

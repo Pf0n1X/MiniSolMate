@@ -82,16 +82,24 @@ export const updateChat = async (req: Request, res: Response) => {
 
 export const getChatsByUser = async (req: Request, res: Response) => {
   var userID = req.query.UserId?.toString();
-  await Chat.find(
-    { $or: [{ UserId1: userID }, { UserId2: userID }] },
-    (err: CallbackError, chats: IChat[]) => {
+
+  await Chat.find({ $or: [{ UserId1: userID }, { UserId2: userID }] })
+    .populate("UserId1")
+    .populate("UserId2")
+    .populate({
+      path: 'Messages',
+      populate: {
+        path: 'sender',
+        model: 'users'
+      }
+    })
+    .exec((err: CallbackError, user: any) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        res.status(200).json(chats);
+        res.status(200).json(user);
       }
-    }
-  );
+    });
 };
 
 export const deleteChat = async (req: Request, res: Response) => {
