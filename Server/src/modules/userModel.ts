@@ -8,7 +8,7 @@ export interface IUser {
   lastName: string;
   description: string;
   sex: number;
-  birthday: string;
+  birthday: Date;
   picture: string;
   userDesc: string;
   youtubeSong: string;
@@ -49,7 +49,7 @@ const schema = new Schema({
     required: true,
   },
   birthday: {
-    type: String,
+    type: Date,
     required: true,
   },
   picture: {
