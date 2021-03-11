@@ -10,6 +10,7 @@ import userRouter from "../routes/userRoute";
 import matchRouter from "../routes/matchRoute";
 import chatRouter from "../routes/chatRoute";
 import messageRouter from "../routes/messageRoute";
+import songRouter from "../routes/songRoute";
 import cors from "cors";
 
 const app = express();
@@ -29,6 +30,7 @@ export const startServer = async () => {
   app.use("/match", matchRouter);
   app.use("/chat", chatRouter);
   app.use("/message", messageRouter);
+  app.use("/song", songRouter);
 
   await new Promise((resolve, reject) => {
     const PORT = 3001;

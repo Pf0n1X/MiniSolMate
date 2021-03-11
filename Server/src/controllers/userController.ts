@@ -17,13 +17,13 @@ export const registerUser = async (req: Request, res: Response) => {
     firstName: userBody.firstName,
     lastName: userBody.lastName,
     sex: userBody.sex,
-    age: userBody.age,
+    birthday: userBody.birthday,
     picture: userBody.picture,
     youtubeSong: userBody.youtubeSong,
     radiusSearch: userBody.radiusSearch,
-    intrestedSex: userBody.intrestedSex,
-    intrestedAgeMin: userBody.intrestedAgeMin,
-    intrestedAgeMax: userBody.intrestedAgeMax,
+    interestedSex: userBody.interestedSex,
+    interestedAgeMin: userBody.interestedAgeMin,
+    interestedAgeMax: userBody.interestedAgeMax,
     Genre: userBody.Genre,
     Artists: userBody.Artists,
     Chats: userBody.Chats,
@@ -119,6 +119,12 @@ export const updateUser = async (req: Request, res: Response) => {
   const lastName = req.body.lastName;
   const Artists = req.body.Artists;
   const description = req.body.description;
+  const interestedAgeMin = req.body.interestedAgeMin;
+  const interestedAgeMax = req.body.interestedAgeMax;
+  const radiusSearch = req.body.radiusSearch;
+  const sex = req.body.sex;
+  const birthday = req.body.birthday;
+  const interestedSex = req.body.interestedSex;
 
   await User.updateOne(
     {
@@ -130,6 +136,12 @@ export const updateUser = async (req: Request, res: Response) => {
         lastName: lastName,
         Artists: Artists,
         description: description,
+        interestedAgeMin: interestedAgeMin,
+        interestedAgeMax: interestedAgeMax,
+        radiusSearch: radiusSearch,
+        sex: sex,
+        birthday: birthday,
+        interestedSex: interestedSex,
       },
     }
   ).exec((err: CallbackError, user: any) => {
@@ -148,6 +160,16 @@ export const getUserByEmail = async (req: Request, res: Response) => {
       res.status(500).send(err);
     } else {
       res.status(200).json(user);
+    }
+  });
+};
+
+export const getUsersForMatches = async () => {
+  const users = await User.find({}, (err: CallbackError, users: IUser[]) => {
+    if (err) {
+      console.log(err);
+    } else {
+      return users;
     }
   });
 };
