@@ -1,20 +1,24 @@
-import React , {useState} from "react";
+import React , {useContext, useState} from "react";
 import { Form, Button, Nav } from "react-bootstrap";
 import solmate_logo from "../images/solMate_logo.png";
 import "../styles/Login.css";
 import axios from "axios";
+import { userContext} from "../context/userContext";
 
    
 
 const Login = ({ setToken }) => {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
+    const {dispatch} = useContext(userContext);
 
+    
     async function loginUser(credentials) {
       console.log(credentials)
       return axios
       .post("http://localhost:3001/user/login", credentials,{headers: { 'Content-Type': 'application/json' }})
-      .then(response => setToken(response.data.token))
+      .then(response => {setToken(response.data.token)
+        dispatch({type: 'SET_USER',payload: response.data.user})})
       .catch((error) => alert(error));
      }
     const handleSubmit = async e => {

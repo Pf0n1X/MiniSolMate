@@ -34,7 +34,7 @@ const App = () => {
                     <Login setToken={setToken} />
                   </Route>
                   <Route path="/register" component={Register}>
-                    <Register />
+                    <Register setToken={setToken} />
                   </Route>
                   <Route path="/">
                     <Login setToken={setToken} />

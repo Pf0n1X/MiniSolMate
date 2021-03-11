@@ -5,6 +5,9 @@ import passport from "passport";
 import User, { IUser, IUserModel } from "../modules/userModel";
 import * as config from "../config/config.json";
 import { CallbackError } from "mongoose";
+import multer from "multer";
+import * as path from "path";
+
 export const registerUser = async (req: Request, res: Response) => {
   const hashedPassword = bcrypt.hashSync(
     req.body.password,
@@ -32,6 +35,22 @@ export const registerUser = async (req: Request, res: Response) => {
   const token = jwt.sign({ email: userBody.email }, config.secret, {
     expiresIn: 86400, // expires in 24 hours
   });
+
+  const storage = multer.diskStorage({
+    destination: "./uploads/",
+    filename: function (
+      req: any,
+      file: { originalname: string },
+      cb: (arg0: null, arg1: string) => void
+    ) {
+      cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
+    },
+  });
+  
+  const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1000000 },
+  }).single("myImage");
   res.status(200).send({ token: token });
 };
 
