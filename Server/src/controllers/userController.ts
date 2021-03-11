@@ -71,7 +71,7 @@ export const updateUser = async (req: Request, res: Response) => {
   const userId = req.body._id;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
-  const Artists = req.body.Artists;
+  const Songs = req.body.Songs;
   const description = req.body.description;
   const interestedAgeMin = req.body.interestedAgeMin;
   const interestedAgeMax = req.body.interestedAgeMax;
@@ -86,7 +86,7 @@ export const updateUser = async (req: Request, res: Response) => {
       $set: {
         firstName: firstName,
         lastName: lastName,
-        Artists: Artists,
+        Songs: Songs,
         description: description,
         interestedAgeMin: interestedAgeMin,
         interestedAgeMax: interestedAgeMax,

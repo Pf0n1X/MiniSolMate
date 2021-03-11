@@ -72,7 +72,7 @@ const Settings = () => {
 
     const renderSongOptions = () => {
         return songOptions.map(option => (
-            <MenuItem key={option['_id']} name={option.songName}>{option.songName}</MenuItem>
+            <MenuItem key={option['_id']} value={option} name={option['_id']}>{option.songName}</MenuItem>
         ))
     };
 
@@ -84,7 +84,7 @@ const Settings = () => {
             firstName: firstName,
             lastName: lastName,
             description: description,
-            Songs: songs,
+            Songs: songs.map(song => song['_id']),
             interestedAgeMin: ageRange[0],
             interestedAgeMax: ageRange[1],
             radiusSearch: distanceRange,
@@ -120,27 +120,26 @@ const Settings = () => {
                 console.log("Song Search response")
                 console.log(response.data)
                 setSongOptions(response.data);
-                setSongs(originalSongs);
+                // setSongs(originalSongs);
             });
     }
 
     const useStyles = makeStyles((theme) => ({
         formControl: {
             //   margin: theme.spacing(1),
-            minWidth: 300,
+            minWidth: 250,
             maxWidth: 400,
         },
         TextField: {
             margin: "16px 0",
-            minWidth: 300,
+            minWidth: 250,
             maxWidth: 400
         },
         Slider: {
-            root: {
                 margin: "16px 0",
-                minWidth: 300,
+                minWidth: 250,
                 maxWidth: 400
-            }
+            
         }
     }));
 
@@ -205,8 +204,9 @@ const Settings = () => {
                             id="demo-mutiple-name"
                             multiple
                             value={songs}
-                            onChange={(e, val) => setSongs(e.target.value)}
-                            input={<Input />} >
+                            onChange={(e, val) => {setSongs(e.target.value)}}
+                            input={<Input />}
+                            renderValue={values => values.map(o => o.songName).join()} >
                             {renderSongOptions()}
                         </Select>
                     </FormControl>
@@ -228,7 +228,7 @@ const Settings = () => {
                     <FormGroup controlId="formBasicRange">
                         <InputLabel>Ages</InputLabel>
                         <Slider
-                            color={classes.Slider}
+                            className={classes.Slider}
                             onChange={(e, val) => setAgeRange(val)}
                             aria-labelledby="track-inverted-range-slider"
                             getAriaValueText={() => "test"}
