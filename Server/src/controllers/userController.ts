@@ -115,7 +115,8 @@ export const getUserByEmail = async (req: Request, res: Response) => {
         res.status(200).json(user);
       }
     }
-  );
+  )
+  .populate("Songs");
 };
 
 export const getUsersForMatches = async () => {

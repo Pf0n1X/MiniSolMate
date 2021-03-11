@@ -17,7 +17,24 @@ const schema = new Schema({
   },
   Messages: [
     {
-      type: Array,
+      MsgId: {
+        type: Number,
+        required: true,
+        unique: true,
+      },
+      msgDate: {
+        type: String,
+        required: true,
+      },
+      text: {
+        type: String,
+        required: true,
+      },
+      sender: {
+        type: String,
+        required: true,
+        ref: 'users'
+      },
     },
   ],
   UserId1: {

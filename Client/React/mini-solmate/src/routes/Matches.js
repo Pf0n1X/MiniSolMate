@@ -59,18 +59,18 @@ const Matches = () => {
             });
     }
 
-    const renderArtists = () => {
-        var domArtists = [];
+    const renderSongs = () => {
+        var domSongs = [];
 
-        for (var i = 0; i < user?.Artists.length || i < 3; i++) {
-            domArtists.push(
-            <div className="artist">
-                <img src={user?.Artists[i]?.img} alt="" className="artist-img" />
-                <span>{user?.Artists[i]?.name}</span>
+        for (var i = 0; i < user?.Songs?.length && i < 3; i++) {
+            domSongs.push(
+            <div className="song">
+                <img src={user?.Songs[i]?.imgUrl} alt="" className="song-img" />
+                <span>{user?.Songs[i]?.songName}</span>
             </div>);
         }
 
-        return domArtists;
+        return domSongs;
     }
 
     useEffect(() => {
@@ -120,10 +120,10 @@ const Matches = () => {
                         {user?.description}
                     </section>
                 </div>
-                <div className="top-artists">
-                    <h3>Top Artists</h3>
+                <div className="top-songs">
+                    <h3>Top Songs</h3>
                     <section>
-                        {renderArtists()}
+                        {renderSongs()}
                     </section>
                 </div>
             </div>
