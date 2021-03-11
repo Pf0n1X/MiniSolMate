@@ -1,9 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { IChat } from "../../../../../Server/src/modules/chatModel";
-import { IMessage } from "../../../../../Server/src/modules/messageModel";
-import { IUser } from "../../../../../Server/src/modules/userModel";
-import { IClientChat } from './Interfaces/ClientChat';
+import { IClientUser, IClientMessage, IClientData, IClientChat } from './Interfaces/Interfaces';
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 
 @Component({
@@ -15,17 +12,17 @@ export class AppComponent {
   title = 'mini-solmate';
   connected: Boolean = false;
   error: Boolean = false;
-  currentUser = '';
+  currentUser!:IClientUser;
   currentChat!: IClientChat;
   emptyChat!: IClientChat;
-  messages: IMessage[] = [];
+  messages: IClientMessage[] = [];
+  chatName = '';
   newMessage = '';
   username = '';
   password = '';
-  chatName = '';
-  chatList: IChat[] = []
+  token = '';
+  chatList: IClientChat[] = []
   clientChatList: IClientChat[] = []
-  // chatList: IChat[] = [{ ChatId: 1, UserId1: "Eden", UserId2: "Other", Messages: [{ MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Eden" }, { MsgId: 1, msgDate: new Date().toLocaleString(), text: "hi", sender: "Other" }]];
   private chatUrl = 'http://localhost:3001/chat'; // URL to web api
   private userUrl = 'http://localhost:3001/user'; // URL to web api }
   @ViewChild('scroll', { static: true }) scroll: any;
@@ -40,7 +37,7 @@ export class AppComponent {
 
   async webSocket() {
     this.ws = webSocket({
-      url: 'ws://localhost:8999/' + this.currentUser,
+      url: 'ws://localhost:8999/' + this.currentUser._id,
       deserializer: e => e.data
     });
     this.ws.subscribe({
@@ -81,7 +78,7 @@ export class AppComponent {
     params = params.append('ChatId', this.currentChat.ChatId.toString());
 
     var otherClient = this.currentChat.UserId1;
-    if (otherClient == this.currentUser)
+    if (otherClient._id == this.currentUser._id)
       otherClient = this.currentChat.UserId2;
 
     this.http.delete(this.chatUrl, {
@@ -90,7 +87,7 @@ export class AppComponent {
     })
       .subscribe(data => {
         console.log(data);
-        var serverMsg = { sender: this.currentUser, reciver: otherClient, ChatId: this.currentChat.ChatId }
+        var serverMsg = { sender: this.currentUser._id, reciver: otherClient._id , ChatId: this.currentChat.ChatId }
         this.ws.next(serverMsg);
         this.getChatsOfUser('', 0)
       });
@@ -101,17 +98,17 @@ export class AppComponent {
       return;
     }
 
-    const newMessage: IMessage = { MsgId: this.currentChat.Messages.length + 1, msgDate: new Date().toLocaleString(), sender: this.currentUser, text: this.newMessage };
+    const newMessage: IClientMessage = { MsgId: this.currentChat.Messages.length + 1, msgDate: new Date().toLocaleString(), sender: this.currentUser, text: this.newMessage };
     this.currentChat.Messages.push(newMessage);
     this.messages = this.currentChat.Messages;
     this.newMessage = "";
     this.updateChat(this.currentChat);
   }
 
-  updateChat(chat: IChat) {
+  updateChat(chat: IClientChat) {
 
     var otherClient = chat.UserId1;
-    if (otherClient == this.currentUser)
+    if (otherClient._id == this.currentUser._id)
       otherClient = chat.UserId2;
 
     this.http.put(this.chatUrl, JSON.stringify(chat), {
@@ -119,57 +116,42 @@ export class AppComponent {
     })
       .subscribe(data => {
         console.log(data);
-        var serverMsg = { sender: this.currentUser, reciver: otherClient, ChatId: chat.ChatId }
+        var serverMsg = { sender: this.currentUser._id, reciver: otherClient._id, ChatId: chat.ChatId }
         this.ws.next(serverMsg);
         this.getChatsOfUser('', 0)
       });
   }
 
   getChatsOfUser(event: string, chatID: number) {
-    interface ClientChat {
-      ChatId: number,
-      Messages: Array<Array<ClientMsg>>,
-      UserId1: string,
-      UserId2: string,
-    };
-    interface ClientMsg {
-      MsgId: number;
-      msgDate: string;
-      text: string;
-      sender: string;
-    };
 
     this.clientChatList = [];
 
     let params = new HttpParams();
-    params = params.append('UserId', this.currentUser.toString());
+    params = params.append('UserId', this.currentUser._id);
 
     this.http.get(this.chatUrl, {
       headers: this.headers,
       params: params
     })
       .subscribe(async data => {
-        let arr: Array<IChat> = (data as Array<ClientChat>).map(item => {
+
+        let arr: Array<IClientChat> = (data as Array<IClientChat>).map(item => {
           return {
             ...item,
-            Messages: item.Messages.map(msg => {
-              return msg[0];
-            })
-
           }
         });
 
         for (let chat of arr) {
           let result;
-          if (chat.UserId1 != this.currentUser)
-            result = await this.getUser(chat.UserId1) as IUser[];
-          else result = await this.getUser(chat.UserId2) as IUser[];
+          if (chat.UserId1._id != this.currentUser._id)
+            result = chat.UserId1;
+          else result = chat.UserId2;
           const IclientChat: IClientChat = {
             ChatId: chat.ChatId,
             UserId1: chat.UserId1,
             UserId2: chat.UserId2,
             Messages: chat.Messages,
-            Username: result[0].firstName + " " + result[0].lastName,
+            Username: result.firstName + " " + result.lastName,
             IsNew: false
           };
           this.clientChatList.push(IclientChat);
@@ -202,7 +184,7 @@ export class AppComponent {
       params: params
     })
       .toPromise();
-    return result;
+    return result as IClientUser;
   }
 
   async connectToChat() {
@@ -223,9 +205,12 @@ export class AppComponent {
     this.http.post("http://localhost:3001/user/login", credentials, {
       headers: this.headers
     })
-      .subscribe(data => {
+      .subscribe(async data => {
+        var clientData = data as IClientData;
+        this.token = clientData.token;
+        this.currentUser = clientData.user;
         this.connected = true;
-        this.currentUser = this.username;
+        // this.currentUser = (await this.getUser(this.username) as unknown as IClientUser[])[0];
         this.getChatsOfUser('', 0)
         this.webSocket();
       }

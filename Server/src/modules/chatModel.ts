@@ -40,10 +40,13 @@ const schema = new Schema({
   UserId1: {
     type: String,
     required: true,
+    ref: 'users'
+
   },
   UserId2: {
     type: String,
-    required: true,
+    required: true,        
+    ref: 'users'
   },
 });
 
