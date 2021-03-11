@@ -3,13 +3,11 @@ import profile_pic from '../images/profile_pic.jpg';
 import random_chick from '../images/random_chick.jpg';
 import billie_eilish from '../images/billie_eilish.jpg';
 import '../styles/Matches.css';
-import { FaHeart, FaHeartBroken } from 'react-icons/fa';
-import $ from 'jquery';
-import Popper from 'popper.js';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import { Button } from 'bootstrap';
+import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
 
 const Matches = () => {
@@ -27,6 +25,7 @@ const Matches = () => {
                 if (response.data === null)
                     return;
 
+                console.log(response.data)
                 setMatch(response.data)
         
                 // Check which one of the the user fields is the other user
@@ -60,6 +59,20 @@ const Matches = () => {
             });
     }
 
+    const renderSongs = () => {
+        var domSongs = [];
+
+        for (var i = 0; i < user?.Songs?.length && i < 3; i++) {
+            domSongs.push(
+            <div className="song">
+                <img src={user?.Songs[i]?.imgUrl} alt="" className="song-img" />
+                <span>{user?.Songs[i]?.songName}</span>
+            </div>);
+        }
+
+        return domSongs;
+    }
+
     useEffect(() => {
         getMatch();
     }, []);
@@ -79,10 +92,6 @@ const Matches = () => {
                             src={profile_pic}
                             alt="First slide"
                         />
-                        {/* <Carousel.Caption>
-                            <h3>First slide label</h3>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                        </Carousel.Caption> */}
                     </Carousel.Item>
                     <Carousel.Item>
                         <img
@@ -90,18 +99,17 @@ const Matches = () => {
                             src={random_chick}
                             alt="First slide"
                         />
-                        {/* <Carousel.Caption>
-                            <h3>First slide label</h3>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                        </Carousel.Caption> */}
                     </Carousel.Item>
                 </Carousel>
                 <div className="swipe-buttons">
-                    <div className="swipe-button circle1 button-accept" onClick={() => { onUpdateMatchButtonClicked(true); }}>
-                        {/* <button onClick={() => { onUpdateMatchButtonClicked(true); }} /> */}
-                    </div>
                     <div className="swipe-button circle1 button-decline" onClick={() => { onUpdateMatchButtonClicked(false); }}>
                         {/* <button onClick={() => { onUpdateMatchButtonClicked(false); }} /> */}
+                        <SentimentVeryDissatisfiedIcon style={{ fontSize: 30 }} />
+
+                    </div>
+                    <div className="swipe-button circle1 button-accept" onClick={() => { onUpdateMatchButtonClicked(true); }}>
+                        {/* <button onClick={() => { onUpdateMatchButtonClicked(true); }} /> */}
+                        <SentimentVerySatisfiedIcon style={{ fontSize: 30 }} />
                     </div>
                 </div>
             </div>
@@ -109,24 +117,13 @@ const Matches = () => {
                 <div className="bio">
                     <h3>Bio</h3>
                     <section>
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                        {user?.description}
                     </section>
                 </div>
-                <div className="top-artists">
-                    <h3>Top Artists</h3>
+                <div className="top-songs">
+                    <h3>Top Songs</h3>
                     <section>
-                        <div className="artist">
-                            <img src={billie_eilish} alt="" className="artist-img" />
-                            <span>Billie Eilish</span>
-                        </div>
-                        <div className="artist">
-                            <img src={billie_eilish} alt="" className="artist-img" />
-                            <span>Billie Eilish</span>
-                        </div>
-                        <div className="artist">
-                            <img src={billie_eilish} alt="" className="artist-img" />
-                            <span>Billie Eilish</span>
-                        </div>
+                        {renderSongs()}
                     </section>
                 </div>
             </div>

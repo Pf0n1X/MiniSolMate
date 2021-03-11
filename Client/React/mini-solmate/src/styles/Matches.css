@@ -14,26 +14,27 @@
 .user-info .bio {
   flex: 50%;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 .user-info .bio section {
   text-align: center;
 }
-.user-info .top-artists {
+.user-info .top-songs {
   flex: 50%;
   display: flex;
   align-items: center;
   flex-direction: column;
 }
-.user-info .top-artists section .artist img {
+.user-info .top-songs section .song img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   margin-right: 10px;
   margin-bottom: 10px;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .carousel-container {
@@ -57,13 +58,20 @@
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  width: 100%;
-  bottom: -50px;
+  width: 120px;
+  bottom: -20px;
+  margin: 0 20px;
 }
 .swipe-buttons .swipe-button {
   background: linear-gradient(to top right, #ffffff, #b985c7);
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
   border-radius: 50%;
-  width: 100px;
-  height: 100px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.swipe-buttons .swipe-button:hover {
+  background: linear-gradient(to top right, #bebebe, #83618d);
 }/*# sourceMappingURL=Matches.css.map */

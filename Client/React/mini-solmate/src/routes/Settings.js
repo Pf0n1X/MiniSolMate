@@ -14,7 +14,7 @@ const Settings = () => {
 
     // State declaration.
     const [description, setDescription] = useState("");
-    const [artists, setArtists] = useState([]);
+    const [songs, setSongs] = useState([]);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [userGender, setUserGender] = useState(0);
@@ -22,6 +22,11 @@ const Settings = () => {
     const [ageRange, setAgeRange] = useState([20, 30]);
     const [distanceRange, setDistanceRange] = useState(30);
     const [birthDate, setBirthDate] = useState("");
+    const [songOptions, setSongOptions] = useState([]);
+    const [songNameParam, setSongNameParam] = useState("");
+    const [songArtistParam, setSongArtistParam] = useState("");
+    const [songAlbumParam, setSongAlbumParam] = useState("");
+    const [originalSongs, setOriginalSongs] = useState([]);
 
     useEffect(() => {
         axios.get('http://localhost:3001/user?UserId=' + USER_EMAIL)
@@ -34,13 +39,16 @@ const Settings = () => {
                 setDescription(response.data[0].description);
                 setFirstName(response.data[0].firstName);
                 setLastName(response.data[0].lastName);
-                setArtists(response.data[0].Artists);
+                setSongs(response.data[0].Songs);
+                setOriginalSongs(response.data[0].Songs);
                 setAgeRange([response.data[0].interestedAgeMin, response.data[0].interestedAgeMax]);
                 setUserGender(response.data[0].sex);
                 setBirthDate(response.data[0].birthday);
                 setDistanceRange(response.data[0].radiusSearch);
                 setPrefGender(response.data[0].interestedSex);
             });
+
+            getSongsAccordingToParams("", "", "");
     }, []);
 
     const onPhotoButtonClicked = () => {
@@ -62,6 +70,12 @@ const Settings = () => {
           };
     }
 
+    const renderSongOptions = () => {
+        return songOptions.map(option => (
+            <MenuItem key={option['_id']} name={option.songName}>{option.songName}</MenuItem>
+        ))
+    };
+
     const onSubmit = (e) => {
         e.preventDefault();
 
@@ -70,7 +84,7 @@ const Settings = () => {
             firstName: firstName,
             lastName: lastName,
             description: description,
-            Artists: artists,
+            Songs: songs,
             interestedAgeMin: ageRange[0],
             interestedAgeMax: ageRange[1],
             radiusSearch: distanceRange,
@@ -89,6 +103,27 @@ const Settings = () => {
             });
     };
 
+    const onSubmitSearch = (e) => {
+        e.preventDefault();
+
+        getSongsAccordingToParams(songNameParam, songArtistParam, songAlbumParam);
+    }
+
+    const getSongsAccordingToParams = (name, artist, album) => {
+
+        // Get the songs from the server.
+        axios.get(`http://localhost:3001/song?name=${name}&artist=${artist}&album=${album}`)
+            .then((response) => {
+                if (response.data === null)
+                    return;
+
+                console.log("Song Search response")
+                console.log(response.data)
+                setSongOptions(response.data);
+                setSongs(originalSongs);
+            });
+    }
+
     const useStyles = makeStyles((theme) => ({
         formControl: {
             //   margin: theme.spacing(1),
@@ -99,6 +134,13 @@ const Settings = () => {
             margin: "16px 0",
             minWidth: 300,
             maxWidth: 400
+        },
+        Slider: {
+            root: {
+                margin: "16px 0",
+                minWidth: 300,
+                maxWidth: 400
+            }
         }
     }));
 
@@ -126,6 +168,19 @@ const Settings = () => {
                         accept="image/png, image/jpeg"
                         onChange={onPhotoButtonClicked} />
                 <label className="file-label" for="profileImageUpload"><AddAPhotoRoundedIcon fontSize='20px'/></label>
+                <div className="song-params">
+                    <h4>Search Songs</h4>
+                    <form className={classes.container} onSubmit={onSubmitSearch}>
+                        <TextField name="song-name-param" className={classes.TextField} label="Song Name" value={songNameParam} onChange={(e, val1) => setSongNameParam(e.target.value)} type="text" />
+                        <TextField name="song-artist-param" className={classes.TextField} label="Artist Name" value={songArtistParam} onChange={(e, val1) => setSongArtistParam(e.target.value)} type="text" />
+                        <TextField name="song-album-param" className={classes.TextField} label="Album Name" value={songAlbumParam} onChange={(e, val1) => setSongAlbumParam(e.target.value)} type="text" />
+                        <FormGroup className="submit-button-group">
+                            <Button variant="secondary" type="submit">
+                                Search
+                            </Button>
+                        </FormGroup>
+                    </form>
+                </div>
             </div>
             <div className="preferences-wrapper">
                 <h4>Edit Settings</h4>
@@ -144,25 +199,22 @@ const Settings = () => {
                             shrink: true,
                         }} />
                     <FormControl className={classes.formControl}>
-                        <InputLabel>Favorite Artists</InputLabel>
+                        <InputLabel>Favorite Songs</InputLabel>
                         <Select
                             labelId="demo-mutiple-name-label"
                             id="demo-mutiple-name"
                             multiple
-                            value={artists}
-                            onChange={(e, val) => setArtists(e.target.value)}
+                            value={songs}
+                            onChange={(e, val) => setSongs(e.target.value)}
                             input={<Input />} >
-                            <MenuItem key="Billie Eilish" value="Billie Eilish">Billie Eilish</MenuItem>
-                            <MenuItem key="Arctic Monkeys" value="Arctic Monkeys">Arctic Monkeys</MenuItem>
-                            <MenuItem key="Tame Impala" name="Tame Impala">Tame Impala</MenuItem>
-                            <MenuItem key="Mac Miller" name="Mac Miller">Mac Miller</MenuItem>
-                            <MenuItem key="Feng Suave" name="Feng Suave">Feng Suave</MenuItem>
+                            {renderSongOptions()}
                         </Select>
                     </FormControl>
                     <TextField className={classes.TextField} label="Description" variant="outlined" multiline value={description} onChange={(e) => { setDescription(e.target.value); }} />
                     <FormGroup controlId="formBasicRange">
                         <InputLabel>Search Range</InputLabel>
                         <Slider
+                            className={classes.Slider}
                             onChange={(e, val) => setDistanceRange(val)}
                             aria-labelledby="continuous-slider"
                             getAriaValueText={() => "test"}

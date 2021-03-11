@@ -19,6 +19,7 @@ export interface IUser {
   Genre: Array<string>;
   Artists: Array<string>;
   Chats: Array<number>;
+  Songs: Array<string>;
 }
 export interface IUserModel extends IUser, Document {}
 const schema = new Schema({
@@ -67,7 +68,7 @@ const schema = new Schema({
     type: Number,
   },
   interestedAgeMax: {
-    type: Number,
+    type: Number
   },
   Genre: [
     {
@@ -84,6 +85,12 @@ const schema = new Schema({
       type: Number,
     },
   ],
+  Songs: [
+    {
+      type: String,
+      ref: 'songs'
+    }
+  ]
 });
 
 // schema.pre<IUser>("save", function save(next) {
