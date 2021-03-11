@@ -384,7 +384,7 @@
 
                     <div class="msg_history scroll">
                         <li class="message" *ngFor="let message of messages; let last = last">
-                            <div *ngIf=" message.sender !== currentUser;
+                            <div *ngIf=" message.sender._id !== currentUser._id;
                                          then incoming_msg;
                                          else outgoing_msg"></div>
                             <ng-template #incoming_msg>
