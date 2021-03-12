@@ -1,6 +1,5 @@
 import React from "react";
 import profile_pic from "./images/profile_pic.jpg";
-import axios from "axios";
 import "./App.css";
 import {
   FaHeart,
