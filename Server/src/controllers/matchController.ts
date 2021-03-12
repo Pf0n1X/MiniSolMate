@@ -51,8 +51,8 @@ export const updateMatch = async (req: Request, res: Response) => {
       UserId1: req.body.firstUser._id,
       UserId2: req.body.secondUser._id,
     };
-    
-    await addChatAfterMatch(chat);
+
+    await addChatAfterMatch(req, res, chat);
 
     // // Send a creation request to the database.
     // await Chat.create(chat)
@@ -62,7 +62,7 @@ export const updateMatch = async (req: Request, res: Response) => {
     //   .catch((err) => {
     //     res.status(500).json(err);
     //   });
-  }
+  } else res.status(200).json({ message: "Match updated" })
 };
 
 export const getMatchesById = async (req: Request, res: Response) => {
@@ -72,7 +72,6 @@ export const getMatchesById = async (req: Request, res: Response) => {
 
   // Find matches in
   if (userID !== undefined) {
-    await calcMatchesForUser(userID);
 
     await Match.findOne({
       $or: [
@@ -126,13 +125,15 @@ export const getMatchesById = async (req: Request, res: Response) => {
   }
 };
 
-export const calcMatchesForUser = async (userId: string) => {
+export const calcMatchesForUser = async (req: Request, res: Response) => {
+  let userId = req.query.userId?.toString();
   console.log("Calculating matches for : " + userId);
   let users = await getUsersForMatches();
   let currentUser = users.find((user) => user._id == userId);
 
   if (currentUser !== undefined) {
     users = users.filter((user) => user._id != currentUser?._id);
+    var newMatches = 0;
 
     const exsistsMatches = await Match.find(
       {
@@ -144,6 +145,7 @@ export const calcMatchesForUser = async (userId: string) => {
       (err: CallbackError, matches: IMatch[]) => {
         if (err) {
           console.log(err);
+          res.status(500).send(err);
         } else {
           return matches;
         }
@@ -195,9 +197,12 @@ export const calcMatchesForUser = async (userId: string) => {
         console.log(toAdd);
         const matchAdded = await Match.create(toAdd);
         console.log("Match added: " + matchAdded);
+        newMatches += 1;
       } catch (e) {
         console.log(e);
+        res.status(500).send(e);
       }
     }
-  }
+    res.status(200).send(newMatches + " Matches were added for user " + userId );
+  } else res.status(500).send("User " + userId + " not found");
 };
