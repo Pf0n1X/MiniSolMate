@@ -20,6 +20,14 @@
 .user-info .bio section {
   text-align: center;
 }
+.user-info .bio img {
+  margin: 40px 0px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
 .user-info .top-songs {
   flex: 50%;
   display: flex;

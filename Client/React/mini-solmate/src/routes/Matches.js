@@ -8,13 +8,16 @@ import axios from "axios";
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import { userContext } from "../context/userContext";
+import useToken from "../hooks/useToken";
 
 const Matches = () => {
   const [user, setUser] = useState();
   const [match, setMatch] = useState();
   const uCon = useContext(userContext);
+  const { token } = useToken();
 
   const getMatch = () => {
+    
     // Get the match from the server.
     axios
       .get("http://localhost:3001/match?userId=" + uCon.state.user["_id"])
@@ -55,7 +58,7 @@ const Matches = () => {
 
     for (var i = 0; i < user?.Songs?.length && i < 3; i++) {
       domSongs.push(
-        <div className="song">
+        <div className="song" key={i}>
           <img src={user?.Songs[i]?.imgUrl} alt="" className="song-img" />
           <span>{user?.Songs[i]?.songName}</span>
         </div>
@@ -65,11 +68,35 @@ const Matches = () => {
     return domSongs;
   };
 
-useEffect(() => {
-    if (uCon.state.user) {
-        getMatch();
+  const renderCarouselItems = () => {
+    if (user?.Media.length > 0) {
+        return user?.Media.map((pic, index) => 
+            (<Carousel.Item key={index}>
+                <img
+                className="d-block w-100 carousel-img"
+                src={`http://localhost:3001/static/${pic}`}
+                />
+            </Carousel.Item>)
+            );
+    } else {
+        return (<Carousel.Item key="random_key">
+                <img
+                className="d-block w-100 carousel-img"
+                src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"
+                />
+            </Carousel.Item>)
     }
-}, [uCon.state.user]);
+  }
+
+    useEffect(() => {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    }, []);
+
+    useEffect(() => {
+        if (uCon.state.user) {
+            getMatch();
+        }
+    }, [uCon.state.user]);
 
   return (
     <div className="wrapper">
@@ -79,21 +106,9 @@ useEffect(() => {
             {user?.firstName} {user?.lastName}
           </h2>
         </div>
+        
         <Carousel>
-          <Carousel.Item>
-            <img
-              className="d-block w-100 carousel-img"
-              src={profile_pic}
-              alt="First slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="d-block w-100 carousel-img"
-              src={random_chick}
-              alt="First slide"
-            />
-          </Carousel.Item>
+          {renderCarouselItems()}
         </Carousel>
         <div className="swipe-buttons">
           <div
@@ -102,7 +117,6 @@ useEffect(() => {
               onUpdateMatchButtonClicked(false);
             }}
           >
-            {/* <button onClick={() => { onUpdateMatchButtonClicked(false); }} /> */}
             <SentimentVeryDissatisfiedIcon style={{ fontSize: 30 }} />
           </div>
           <div
@@ -111,7 +125,6 @@ useEffect(() => {
               onUpdateMatchButtonClicked(true);
             }}
           >
-            {/* <button onClick={() => { onUpdateMatchButtonClicked(true); }} /> */}
             <SentimentVerySatisfiedIcon style={{ fontSize: 30 }} />
           </div>
         </div>
@@ -120,6 +133,7 @@ useEffect(() => {
         <div className="bio">
           <h3>Bio</h3>
           <section>{user?.description}</section>
+          <img src={`http://localhost:3001/static/${user?.picture}`} />
         </div>
         <div className="top-songs">
           <h3>Top Songs</h3>

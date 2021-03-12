@@ -7,6 +7,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AddAPhotoRoundedIcon from '@material-ui/icons/AddAPhotoRounded';
 import { userContext } from "../context/userContext";
 import moment from "moment";
+import useToken from '../hooks/useToken';
 
 const Settings = () => {
 
@@ -24,49 +25,51 @@ const Settings = () => {
     const [songNameParam, setSongNameParam] = useState("");
     const [songArtistParam, setSongArtistParam] = useState("");
     const [songAlbumParam, setSongAlbumParam] = useState("");
+    const [profilePic, setProfilePic] = useState("");
     const uCon = useContext(userContext);
 
     useEffect(() => {
-        axios.get('http://localhost:3001/user?UserEmail=' + uCon.state.user.email)
-            .then((response) => {
-                console.log("Response arrived");
-                console.log(response.data[0]);
-                if (response.data === null || response.data === undefined)
-                    return;
-
-                setDescription(response.data[0].description);
-                setFirstName(response.data[0].firstName);
-                setLastName(response.data[0].lastName);
-                setSongs(response.data[0].Songs);
-                setAgeRange([response.data[0].interestedAgeMin, response.data[0].interestedAgeMax]);
-                setUserGender(response.data[0].sex);
-                console.log("The date is ");
-                console.log(moment(response.data[0].birthday).format('YYYY-MM-DD'));
-                setBirthDate(moment(response.data[0].birthday).format('YYYY-MM-DD'));
-                setDistanceRange(response.data[0].radiusSearch);
-                setPrefGender(response.data[0].interestedSex);
-            });
-
-            getSongsAccordingToParams("", "", "");
+        uCon.fetch(uCon.state.user.email);
+        getSongsAccordingToParams("", "", "");
     }, []);
 
-    const onPhotoButtonClicked = () => {
-        const onFileChange = (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append("myImage", e.target.files[0]);
-            const config = {
-              headers: {
-                "content-type": "multipart/form-data",
-              },
-            };
-            axios
-              .post("http://localhost:3001/user/upload", formData, config)
-              .then((response) => {
-                alert("The file is successfully uploaded");
-              })
-              .catch((error) => {});
-          };
+    useEffect(() => {
+        if (uCon.data !== null && uCon.data !== undefined && uCon.data != {}) {
+            console.log("The data is:");
+            console.log(uCon);
+            setDescription(uCon.data.description);
+                    setFirstName(uCon.data.firstName);
+                    setLastName(uCon.data.lastName);
+                    setSongs(uCon.data.Songs);
+                    setAgeRange([uCon.data.interestedAgeMin, uCon.data.interestedAgeMax]);
+                    setUserGender(uCon.data.sex);;
+                    setBirthDate(moment(uCon.data.birthday).format('YYYY-MM-DD'));
+                    setDistanceRange(uCon.data.radiusSearch);
+                    setPrefGender(uCon.data.interestedSex);
+                    setProfilePic(uCon.data.picture);
+        }
+
+    }, [uCon]);
+
+    const onPhotoButtonClicked = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        console.log("uploading pic");
+        console.log(uCon);
+        formData.append("myImage", e.target.files[0]);
+        formData.append("userId", uCon.state.user['email']);
+    
+        const config = {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        };
+        axios
+          .post("http://localhost:3001/user/uploadProfile", formData, config)
+          .then((response) => {
+            uCon.fetch(uCon.state.user.email);
+          })
+          .catch((error) => {});
     }
 
     const renderSongOptions = () => {
@@ -114,8 +117,6 @@ const Settings = () => {
                 if (response.data === null)
                     return;
 
-                console.log("Song Search response")
-                console.log(response.data)
                 setSongOptions(response.data);
             });
     }
@@ -155,14 +156,14 @@ const Settings = () => {
 
         <div className="settings-wrapper">
             <div className="picture-area">
-                <img src={user_pic} />
+                <img src={`http://localhost:3001/static/${profilePic}`} />
                 <input id="profileImageUpload"
                     className="upload-input"
                         type="file"
                         name="profileImageUpload"
                         accept="image/png, image/jpeg"
                         onChange={onPhotoButtonClicked} />
-                <label className="file-label" for="profileImageUpload"><AddAPhotoRoundedIcon fontSize='20px'/></label>
+                <label className="file-label" htmlFor="profileImageUpload"><AddAPhotoRoundedIcon/></label>
                 <div className="song-params">
                     <h4>Search Songs</h4>
                     <form className={classes.container} onSubmit={onSubmitSearch}>
@@ -170,7 +171,7 @@ const Settings = () => {
                         <TextField name="song-artist-param" className={classes.TextField} label="Artist Name" value={songArtistParam} onChange={(e, val1) => setSongArtistParam(e.target.value)} type="text" />
                         <TextField name="song-album-param" className={classes.TextField} label="Album Name" value={songAlbumParam} onChange={(e, val1) => setSongAlbumParam(e.target.value)} type="text" />
                         <FormGroup className="submit-button-group">
-                            <Button variant="secondary" type="submit">
+                            <Button type="submit">
                                 Search
                             </Button>
                         </FormGroup>
@@ -186,7 +187,7 @@ const Settings = () => {
                         className={classes.TextField}
                         value={birthDate}
                         onChange={(e) => { setBirthDate(e.target.value) }}
-                        defaultValue="2017-05-24"
+                        // defaultValue="2017-05-24"
                         id="birth-date"
                         label="Birthday"
                         type="date"
@@ -195,6 +196,7 @@ const Settings = () => {
                         }} />
                     <FormControl className={classes.formControl}>
                         <InputLabel>Favorite Songs</InputLabel>
+                        {console.log("he songs are")} {console.log(songs)}
                         <Select
                             labelId="demo-mutiple-name-label"
                             id="demo-mutiple-name"
@@ -207,7 +209,7 @@ const Settings = () => {
                         </Select>
                     </FormControl>
                     <TextField className={classes.TextField} label="Description" variant="outlined" multiline value={description} onChange={(e) => { setDescription(e.target.value); }} />
-                    <FormGroup controlId="formBasicRange">
+                    <FormGroup controlid="formBasicRange">
                         <InputLabel>Search Range</InputLabel>
                         <Slider
                             className={classes.Slider}
@@ -221,7 +223,7 @@ const Settings = () => {
                         // marks={true}
                         />
                     </FormGroup>
-                    <FormGroup controlId="formBasicRange">
+                    <FormGroup controlid="formBasicRange">
                         <InputLabel>Ages</InputLabel>
                         <Slider
                             className={classes.Slider}
@@ -245,7 +247,7 @@ const Settings = () => {
                         <FormControlLabel key={1} value={1} control={<MyRadioButton />} label="Female" />
                     </RadioGroup>
                     <FormGroup className="submit-button-group">
-                        <Button variant="secondary" type="submit">
+                        <Button type="submit">
                             Save
                         </Button>
                     </FormGroup>

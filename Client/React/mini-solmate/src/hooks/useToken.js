@@ -14,9 +14,10 @@ export default function useToken() {
   
   const getToken = () => {
     const tokenString = localStorage.getItem('token');
-    if (!tokenString) {
-    const userToken = JSON.parse(tokenString);
-    return userToken?.token
+    if (tokenString) {
+      const userToken = JSON.parse(tokenString);
+
+    return userToken;
     }
   };
 
