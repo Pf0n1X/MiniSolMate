@@ -32,6 +32,7 @@ export const registerUser = async (req: Request, res: Response) => {
     Artists: userBody.Artists,
     Chats: userBody.Chats,
     Media: userBody.Media,
+    Songs: userBody.Songs,
   });
 
   const token = jwt.sign({ email: userBody.email }, config.secret, {
@@ -170,7 +171,6 @@ export const updateUser = async (req: Request, res: Response) => {
         res.status(200).json(user);
       }
     });
-
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
@@ -199,9 +199,35 @@ export const getUsersForMatches = async () => {
   return users;
 };
 
-export const getStatistics = async () => {
-  await User.aggregate([
-    { $match: { sex: { $eq: 1 } } },
-    { $group: { _id: "$_id" } },
+export const getStatistics = async (req: Request, res: Response) => {
+  const keys = ["Male", "Female"];
+  const groupKey = "Num of songs";
+  const data_to_d3 = [
+    { [groupKey]: "10", Male: 0, Female: 0 },
+    { [groupKey]: "20", Male: 0, Female: 0 },
+    { [groupKey]: "30", Male: 0, Female: 0 },
+    { [groupKey]: "40", Male: 0, Female: 0 },
+    { [groupKey]: "50", Male: 0, Female: 0 },
+  ];
+
+  const data = await User.aggregate([
+    {
+      $group: {
+        _id: "$sex",
+        obj: { $push: { Songs: "$Songs" } },
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $let: {
+            vars: { obj: [{ k: { $substr: ["$_id", 0, -1] }, v: "$obj" }] },
+            in: { $arrayToObject: "$$obj" },
+          },
+        },
+      },
+    },
   ]);
+
+  res.status(200).send(data);
 };
