@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import profile_pic from "../images/profile_pic.jpg";
 import "../styles/Profile.css";
 import { Tabs, Tab } from "react-bootstrap";
@@ -6,6 +6,7 @@ import billie_eilish from "../images/billie_eilish.jpg";
 import { FiEdit2 } from "react-icons/fi";
 import { FiUpload } from "react-icons/fi";
 import axios from "axios";
+import { userContext } from "../context/userContext";
 
 const Profile = () => {
   // TODO: Replace with the actual id of the connected user.
@@ -17,26 +18,39 @@ const Profile = () => {
   const [desc, setDesc] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { state, dispatch } = useContext(userContext);
 
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:3001/user", {
         params: {
-          UserId: CONNECTED_USER_ID,
+          UserId: state.email,
         },
       });
-      setUser(res.data[0]);
-      setDesc(res.data[0].description);
-      setLoading(false);
+      dispatch({ type: "SET_USER", payload: res.data[0] });
+      // setUser(res.data[0]);
+      // setDesc(res.data[0].description);
+      // setLoading(false);
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    console.log("begin");
-    fetchData();
-  }, []);
+    console.log("begin", state.user);
+    // fetchData();
+    if (state.user) {
+      console.log(state.user);
+      setUser(state.user);
+      setDesc(state.user.description);
+      setLoading(false);
+    }
+  }, [state.user]);
+
+  // useEffect(() => {
+  //   console.log("begin", state.user);
+  //   fetchData();
+  // }, []);
 
   const onMediaChange = (e) => {
     e.preventDefault();
@@ -51,7 +65,7 @@ const Profile = () => {
     };
     axios
       .post("http://localhost:3001/user/uploadMedia", formData, config)
-      .then((response) => {
+      .then(() => {
         fetchData();
       })
       .catch((error) => {});
@@ -96,19 +110,20 @@ const Profile = () => {
 
     return domMedia;
   };
-  const renderArtists = () => {
-    var domArtists = [];
-
-    for (var i = 0; i < user?.Artists.length || i < 3; i++) {
-      domArtists.push(
-        <div className="artist">
-          <img src={user?.Artists[i]?.img} alt="" className="artist-img" />
-          <span>{user?.Artists[i]?.name}</span>
-        </div>
+  const renderSongs = () => {
+    console.log(user?.Songs);
+    var domSongs = [];
+    for (var i = 0; i < user?.Songs?.length && i < 3; i++) {
+      domSongs.push(
+        <section>
+          <div className="artist">
+            <img src={user?.Songs[i]?.imgUrl} alt="" className="artist-img" />
+            <span>{user?.Songs[i]?.songName}</span>
+          </div>
+        </section>
       );
     }
-
-    return domArtists;
+    return domSongs;
   };
   const onEditClicked = () => {
     // `current` points to the mounted text input element
@@ -163,38 +178,10 @@ const Profile = () => {
 
           <div>
             <Tabs id="profile-tabs" activeKey={key} onSelect={(k) => setKey(k)}>
-              <Tab eventKey="Top Artists" title="Top Artists">
+              <Tab eventKey="Top Artists" title="Top Songs">
                 <div className="scroll-data">
                   <div className="my-artists">
-                    <section>{renderArtists()}</section>
-                    {/* <section>
-                    <div className="artist">
-                      <img src={billie_eilish} alt="" className="artist-img" />
-                    </div>
-                    <div className="artist">
-                      <img src={billie_eilish} alt="" className="artist-img" />
-                    </div>
-                    <div className="artist">
-                      <img src={billie_eilish} alt="" className="artist-img" />
-                    </div>
-                    <div className="artist">
-                      <img src={billie_eilish} alt="" className="artist-img" />
-                    </div>
-                  </section>
-                  <section>
-                    <div className="artist">
-                      <img src={billie_eilish} alt="" className="artist-img" />
-                    </div>
-                    <div className="artist">
-                      <img src={billie_eilish} alt="" className="artist-img" />
-                    </div>
-                    <div className="artist">
-                      <img src={billie_eilish} alt="" className="artist-img" />
-                    </div>
-                    <div className="artist">
-                      <img src={billie_eilish} alt="" className="artist-img" />
-                    </div>
-                  </section> */}
+                    <div> {renderSongs()}</div>
                   </div>
                 </div>
               </Tab>
