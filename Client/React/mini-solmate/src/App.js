@@ -18,6 +18,7 @@ import Login from "./routes/Login";
 import Register from "./routes/Register";
 import useToken from "./hooks/useToken";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
 
 const App = () => {
   const { isTokenSet, setToken } = useToken();
@@ -84,12 +85,6 @@ const App = () => {
             </div>
             <div className="routes_container">
               <Switch>
-                <Route path="/login" component={Login}>
-                  <Login />
-                </Route>
-                <Route path="/register" component={Register}>
-                  <Register />
-                </Route>
                 <Route path="/profile" component={Profile}>
                   <Profile />
                 </Route>
@@ -99,6 +94,12 @@ const App = () => {
                 <Route path="/settings">
                   <Settings />
                 </Route>
+                <Redirect from='/login' to="/" >
+                  <Matches />
+                </Redirect>
+                <Redirect from='/register' to="/" >
+                  <Matches />
+                </Redirect>
                 <Route path="/">
                   <Matches />
                 </Route>
