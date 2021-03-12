@@ -25,10 +25,16 @@ const Settings = () => {
     const [songNameParam, setSongNameParam] = useState("");
     const [songArtistParam, setSongArtistParam] = useState("");
     const [songAlbumParam, setSongAlbumParam] = useState("");
+    const [profilePic, setProfilePic] = useState("");
     const uCon = useContext(userContext);
     const {token} = useToken();
 
     useEffect(() => {
+        getUser();
+        getSongsAccordingToParams("", "", "");
+    }, []);
+
+    const getUser = () => {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
         axios.get('http://localhost:3001/user?UserEmail=' + uCon.state.user.email)
             .then((response) => {
@@ -44,10 +50,9 @@ const Settings = () => {
                 setBirthDate(moment(response.data[0].birthday).format('YYYY-MM-DD'));
                 setDistanceRange(response.data[0].radiusSearch);
                 setPrefGender(response.data[0].interestedSex);
+                setProfilePic(response.data[0].picture);
             });
-
-            getSongsAccordingToParams("", "", "");
-    }, []);
+    }
 
     const onPhotoButtonClicked = (e) => {
         e.preventDefault();
@@ -65,8 +70,7 @@ const Settings = () => {
         axios
           .post("http://localhost:3001/user/uploadProfile", formData, config)
           .then((response) => {
-            // fetchData();
-            // TODO: Get the new picture
+            getUser();
           })
           .catch((error) => {});
     }
@@ -155,7 +159,7 @@ const Settings = () => {
 
         <div className="settings-wrapper">
             <div className="picture-area">
-                <img src={user_pic} />
+                <img src={`http://localhost:3001/static/${profilePic}`} />
                 <input id="profileImageUpload"
                     className="upload-input"
                         type="file"

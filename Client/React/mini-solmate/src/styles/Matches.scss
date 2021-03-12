@@ -17,6 +17,13 @@
         flex-direction: column;
         section {
             text-align: center;
+        };
+        img {
+            margin: 40px 0px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
         }
     };
     .top-songs {
@@ -33,7 +40,7 @@
                     margin-right: 10px;
                     margin-bottom: 10px;
                     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
-                    object-fit: cover
+                    object-fit: cover;
                 };
             };
         };

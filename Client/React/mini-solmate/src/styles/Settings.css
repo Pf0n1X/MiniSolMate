@@ -11,7 +11,11 @@
 }
 .settings-wrapper .picture-area {
   padding: 50px 0;
-  height: 300px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .settings-wrapper .picture-area img {
   width: 200px;
@@ -29,6 +33,12 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
+}
+.settings-wrapper .song-params {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .description {
@@ -69,6 +79,7 @@
   justify-content: center;
   position: relative;
   bottom: 50px;
+  left: 70px;
 }
 
 form {
