@@ -53,23 +53,26 @@ const Settings = () => {
             getSongsAccordingToParams("", "", "");
     }, []);
 
-    const onPhotoButtonClicked = () => {
-        const onFileChange = (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append("myImage", e.target.files[0]);
-            const config = {
-              headers: {
-                "content-type": "multipart/form-data",
-              },
-            };
-            axios
-              .post("http://localhost:3001/user/upload", formData, config)
-              .then((response) => {
-                alert("The file is successfully uploaded");
-              })
-              .catch((error) => {});
-          };
+    const onPhotoButtonClicked = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        console.log("uploading pic");
+        console.log(uCon);
+        formData.append("myImage", e.target.files[0]);
+        formData.append("userId", uCon.state.user['email']);
+    
+        const config = {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        };
+        axios
+          .post("http://localhost:3001/user/uploadProfile", formData, config)
+          .then((response) => {
+            // fetchData();
+            // TODO: Get the new picture
+          })
+          .catch((error) => {});
     }
 
     const renderSongOptions = () => {
