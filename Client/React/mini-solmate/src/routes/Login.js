@@ -18,13 +18,7 @@ const Login = ({ setToken }) => {
       })
       .then(async (response) => {
         setToken(response.data.token);
-        const res = await axios.get("http://localhost:3001/user", {
-          params: {
-            UserId: response.data.user.email,
-          },
-        });
-        dispatch({ type: "SET_USER", payload: res.data[0] });
-        // dispatch({ type: "SET_USER", payload: response.data.user });
+        dispatch({ type: "SET_USER", payload: response.data.user });
       })
       .catch((error) => alert(error));
   }
