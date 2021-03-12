@@ -19,6 +19,7 @@ export const registerUser = async (req: Request, res: Response) => {
     password: hashedPassword,
     firstName: userBody.firstName,
     lastName: userBody.lastName,
+    description: userBody.description,
     sex: userBody.sex,
     birthday: userBody.birthday,
     picture: userBody.picture,
@@ -29,7 +30,8 @@ export const registerUser = async (req: Request, res: Response) => {
     interestedAgeMax: userBody.interestedAgeMax,
     Genre: userBody.Genre,
     Artists: userBody.Artists,
-    Chats: userBody.Chats
+    Chats: userBody.Chats,
+    Media: userBody.Media,
   });
 
   const token = jwt.sign({ email: userBody.email }, config.secret, {
@@ -46,7 +48,7 @@ export const registerUser = async (req: Request, res: Response) => {
       cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
     },
   });
-  
+
   const upload = multer({
     storage: storage,
     limits: { fileSize: 1000000 },
@@ -77,20 +79,64 @@ export const authenticateUser = (
   )(req, res, next);
 };
 
-export const uploadFile = async (req: Request, res: Response) => {
-  try {
-    console.log("Check");
-    res.status(200).send(true);
-  } catch (e) {
-    res.sendStatus(500);
-  }
+export const uploadMedia = async (req: Request, res: Response) => {
+  const userId = req.body.userId;
+  const pic = req.file.filename;
+  console.log("try", pic, userId);
+  await User.updateOne(
+    {
+      email: userId,
+    },
+    {
+      $push: { Media: { $each: [pic] } },
+    }
+  ).exec((err: CallbackError, user: any) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(user);
+    }
+  });
+};
+
+export const uploadProfile = async (req: Request, res: Response) => {
+  // try {
+  // const userId = req.body._id;
+  // const picture = req.body.picture;
+  const pic = req.body.myImage;
+  const userEmail = req.body.userId;
+  console.log("here", req, req.file, req.body);
+  await User.updateOne(
+    {
+      // _id: userId,
+      email: userEmail,
+    },
+    {
+      $set: {
+        picture: req.file.filename,
+      },
+    }
+  ).exec((err: CallbackError, user: any) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(user);
+    }
+  });
+
+  //   console.log("Check");
+  //   res.status(200).send(true);
+  // } catch (e) {
+  //   res.sendStatus(500);
+  // }
 };
 
 export const updateUser = async (req: Request, res: Response) => {
+  console.log(req.body);
   const userId = req.body._id;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
-  const Artists = req.body.Artists;
+  const Songs = req.body.Songs;
   const description = req.body.description;
   const interestedAgeMin = req.body.interestedAgeMin;
   const interestedAgeMax = req.body.interestedAgeMax;
@@ -98,58 +144,65 @@ export const updateUser = async (req: Request, res: Response) => {
   const sex = req.body.sex;
   const birthday = req.body.birthday;
   const interestedSex = req.body.interestedSex;
-  
-  await User.updateOne({
-      _id: userId
-    }, { 
-      $set: {
-        firstName: firstName,
-        lastName: lastName,
-        Artists: Artists,
-        description: description,
-        interestedAgeMin: interestedAgeMin,
-        interestedAgeMax: interestedAgeMax,
-        radiusSearch: radiusSearch,
-        sex: sex,
-        birthday: birthday,
-        interestedSex: interestedSex
-    }})
-    .exec((err: CallbackError, user: any) => {
+  try {
+    await User.updateOne(
+      {
+        _id: userId,
+      },
+      {
+        $set: {
+          firstName: firstName,
+          lastName: lastName,
+          Songs: Songs,
+          description: description,
+          interestedAgeMin: interestedAgeMin,
+          interestedAgeMax: interestedAgeMax,
+          radiusSearch: radiusSearch,
+          sex: sex,
+          birthday: birthday,
+          interestedSex: interestedSex,
+        },
+      }
+    ).exec((err: CallbackError, user: any) => {
       if (err) {
         res.status(500).send(err);
       } else {
         res.status(200).json(user);
       }
-  })
+    });
+
+    res.status(200).json(User);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
 };
 
 export const getUserByEmail = async (req: Request, res: Response) => {
   let userEmail = req.query.UserId?.toString();
-  await User.find(
-    { email: userEmail },
-    (err: CallbackError, user: IUser) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(200).json(user);
-      }
+  await User.find({ email: userEmail }, (err: CallbackError, user: IUser) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(user);
     }
-  )
-  .populate("Songs");
+  }).populate("Songs");
 };
 
 export const getUsersForMatches = async () => {
-
-  const users = await User.find(
-    { },
-    (err: CallbackError, users: IUser[]) => {
-      if (err) {
-        console.log(err);
-      } else {
-        return users;
-      }
+  const users = await User.find({}, (err: CallbackError, users: IUser[]) => {
+    if (err) {
+      console.log(err);
+    } else {
+      return users;
     }
-  );
-
+  });
   return users;
+};
+
+export const getStatistics = async () => {
+  await User.aggregate([
+    { $match: { sex: { $eq: 1 } } },
+    { $group: { _id: "$_id" } },
+  ]);
 };

@@ -30,20 +30,20 @@ export const updateMatch = async (req: Request, res: Response) => {
   let isApprove2 = req.body.Approve2;
   let matchId = req.body._id;
 
-  await Match.updateOne({ _id: matchId },
-    { $set: { Approve1: isApprove1, Approve2: isApprove2 } })
-    .then((value: { ok: number, n: number, nModified: number }) => {
-      // Check if the update was successful and return an erorr if it wasn't
-      if (value.nModified < 1) {
-        res.status(500).send("ERROR: Unable to update match.");
+  await Match.updateOne(
+    { _id: matchId },
+    { $set: { Approve1: isApprove1, Approve2: isApprove2 } }
+  ).then((value: { ok: number; n: number; nModified: number }) => {
+    // Check if the update was successful and return an erorr if it wasn't
+    if (value.nModified < 1) {
+      res.status(500).send("ERROR: Unable to update match.");
 
-        return;
-      }
-    });
+      return;
+    }
+  });
 
   // if both users approved, create a chat.
   if (isApprove1 && isApprove2) {
-
     // Prepare the chat parameters.
     const chat: IChat = {
       ChatId: 1,
@@ -63,61 +63,58 @@ export const updateMatch = async (req: Request, res: Response) => {
     //     res.status(500).json(err);
     //   });
   }
-}
+};
 
 export const getMatchesById = async (req: Request, res: Response) => {
-
   let userID = req.query.userId?.toString();
   console.log("The user id is: " + userID);
   let objid = new Types.ObjectId(userID);
 
   // Find matches in
   if (userID !== undefined) {
-
     await calcMatchesForUser(userID);
 
     await Match.findOne({
-      $or:
-        [
-          {
-            $and: [
-              {
-                firstUser: userID
-              },
-              {
-                Approve1: false
-              }
-            ]
-          },
-          {
-            $and: [
-              {
-                secondUser: userID
-              },
-              {
-                Approve2: false
-              }
-            ]
-          }
-        ]
+      $or: [
+        {
+          $and: [
+            {
+              firstUser: userID,
+            },
+            {
+              Approve1: false,
+            },
+          ],
+        },
+        {
+          $and: [
+            {
+              secondUser: userID,
+            },
+            {
+              Approve2: false,
+            },
+          ],
+        },
+      ],
     })
       // .populate("firstUser")
       // .populate("secondUser")
       .populate({
-        path: 'firstUser',
-        model: 'users',
+        path: "firstUser",
+        model: "users",
         populate: {
-          path: 'Songs',
-          model: 'songs'
-        }
+          path: "Songs",
+          model: "songs",
+        },
       })
       .populate({
-        path: 'secondUser',
-        model: 'users',
+        path: "secondUser",
+        model: "users",
         populate: {
-          path: 'Songs',
-          model: 'songs'
-        }
+          path: "Songs",
+          model: "songs",
+        },
       })
       .exec((err: CallbackError, user: any) => {
         if (err) {
@@ -127,19 +124,23 @@ export const getMatchesById = async (req: Request, res: Response) => {
         }
       });
   }
-}
+};
 
 export const calcMatchesForUser = async (userId: string) => {
-
-  console.log("Calculating matches for : " + userId)
+  console.log("Calculating matches for : " + userId);
   let users = await getUsersForMatches();
-  let currentUser = users.find(user => user._id == userId);
+  let currentUser = users.find((user) => user._id == userId);
 
   if (currentUser !== undefined) {
-    users = users.filter(user => user._id != currentUser?._id);
+    users = users.filter((user) => user._id != currentUser?._id);
 
     const exsistsMatches = await Match.find(
-      { $or: [{ firstUser: currentUser?._id }, { secondUser: currentUser?._id }] },
+      {
+        $or: [
+          { firstUser: currentUser?._id },
+          { secondUser: currentUser?._id },
+        ],
+      },
       (err: CallbackError, matches: IMatch[]) => {
         if (err) {
           console.log(err);
@@ -158,7 +159,7 @@ export const calcMatchesForUser = async (userId: string) => {
       for (let match of exsistsMatches) {
         if (match.firstUser == user._id || match.secondUser == user._id) {
           found = true;
-          break
+          break;
         }
       }
 
@@ -171,15 +172,15 @@ export const calcMatchesForUser = async (userId: string) => {
       var currentUserAge = Math.abs(ageDate.getUTCFullYear() - 1970);
 
       //  If there isn't match with current user
-      if (found == false &&
-
-        (age >= currentUser.interestedAgeMin &&
-          age <= currentUser.interestedAgeMax &&
-          user.sex == currentUser.interestedSex) &&
-
-        (currentUserAge >= user.interestedAgeMin &&
-          currentUserAge <= user.interestedAgeMax &&
-          currentUser.sex == user.interestedSex)) {
+      if (
+        found == false &&
+        age >= currentUser.interestedAgeMin &&
+        age <= currentUser.interestedAgeMax &&
+        user.sex == currentUser.interestedSex &&
+        currentUserAge >= user.interestedAgeMin &&
+        currentUserAge <= user.interestedAgeMax &&
+        currentUser.sex == user.interestedSex
+      ) {
         potentialUsers.push(user);
       }
     }
