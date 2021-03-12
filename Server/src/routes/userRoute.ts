@@ -5,6 +5,7 @@ import {
   uploadProfile,
   getUserByEmail,
   updateUser,
+  getStatistics,
 } from "../controllers/userController";
 import { response, Router } from "express";
 import multer from "multer";
@@ -33,14 +34,15 @@ router.post("/login", authenticateUser);
 router.post("/register", async (req, res, next) => {
   try {
     //listing messages in users mailbox
-    registerUser(req, res);
+    await registerUser(req, res);
   } catch (err) {
     next(err);
   }
 });
+
 router.get("/",authenticateJWT, getUserByEmail);
 router.post("/uploadProfile", authenticateJWT, upload, uploadProfile);
 router.post("/uploadMedia", authenticateJWT, upload, uploadMedia);
 router.put("/",authenticateJWT, updateUser);
-
+router.get("/statistic", getStatistics);
 export default router;

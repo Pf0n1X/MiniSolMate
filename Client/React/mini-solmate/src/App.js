@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import profile_pic from "./images/profile_pic.jpg";
+import axios from "axios";
 import "./App.css";
 import {
   FaHeart,
@@ -17,10 +18,17 @@ import Intro from "./components/Intro";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import useToken from "./hooks/useToken";
-import axios from "axios";
 
 const App = () => {
-  const { isTokenSet, setToken } = useToken();
+  const { isTokenSet, setToken, token } = useToken();
+
+  useEffect(() => {
+    if (isTokenSet) {
+      axios.defaults.headers.post['Authorization'] = 'Bearer ' + token;
+      axios.defaults.headers.get['Authorization'] = 'Bearer ' + token;
+      axios.defaults.headers.put['Authorization'] = 'Bearer ' + token;
+    }
+  }, [isTokenSet]);
 
   if (!isTokenSet) {
     return (

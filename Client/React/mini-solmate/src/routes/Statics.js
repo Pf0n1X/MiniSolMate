@@ -38,7 +38,7 @@ const Statics = () => {
       { [groupKey]: "20", Male: 2, Female: 3 },
       { [groupKey]: "30", Male: 2, Female: 3 },
       { [groupKey]: "40", Male: 2, Female: 3 },
-      { [groupKey]: "60", Male: 2, Female: 3 },
+      { [groupKey]: "50", Male: 2, Female: 3 },
     ];
     const y = "Population";
 
@@ -81,7 +81,7 @@ const Statics = () => {
             .text(y)
         );
 
-    const color = d3.scaleOrdinal().range(["#d0743c", "#ff8c00"]);
+    const color = d3.scaleOrdinal().range(["#000066", "#b30059"]);
 
     const legend = (svg) => {
       const g = svg
