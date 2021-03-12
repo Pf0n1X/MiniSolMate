@@ -7,56 +7,62 @@ import { FiEdit2 } from "react-icons/fi";
 import { FiUpload } from "react-icons/fi";
 import axios from "axios";
 import { userContext } from "../context/userContext";
+import useToken from "../hooks/useToken";
 
 const Profile = () => {
   // TODO: Replace with the actual id of the connected user.
   const CONNECTED_USER_ID = "adibigler@gmail.com";
-
+  // const { token } = useToken();
   const inputEl = useRef(null);
   const uploadEl = useRef(null);
   const [key, setKey] = useState("Top Artists");
   const [desc, setDesc] = useState(null);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
   const { state, dispatch } = useContext(userContext);
+  const { token } = useToken();
 
   const fetchData = async () => {
     try {
+      // debugger;
       const res = await axios.get("http://localhost:3001/user", {
         params: {
-          UserId: state.email,
+          UserEmail: state.user["email"],
         },
       });
+
       dispatch({ type: "SET_USER", payload: res.data[0] });
-      // setUser(res.data[0]);
-      // setDesc(res.data[0].description);
-      // setLoading(false);
+      setUser(res.data[0]);
+      setDesc(res.data[0].description);
+      setLoading(false);
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    console.log("begin", state.user);
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    console.log("begin", state);
     // fetchData();
     if (state.user) {
       console.log(state.user);
-      setUser(state.user);
-      setDesc(state.user.description);
-      setLoading(false);
+      // setUser(state.user);
+      // setDesc(state.user.description);
+      // setLoading(false);
     }
   }, [state.user]);
 
-  // useEffect(() => {
-  //   console.log("begin", state.user);
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    console.log("begin", state.user);
+    fetchData();
+  }, []);
 
   const onMediaChange = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("myImage", e.target.files[0]);
-    formData.append("userId", CONNECTED_USER_ID);
+    debugger;
+    formData.append("userId", user.email);
 
     const config = {
       headers: {
@@ -75,7 +81,7 @@ const Profile = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("myImage", e.target.files[0]);
-    formData.append("userId", CONNECTED_USER_ID);
+    formData.append("userId", user.email);
 
     const config = {
       headers: {
