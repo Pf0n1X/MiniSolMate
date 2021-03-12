@@ -211,6 +211,7 @@ export class AppComponent {
         this.token = clientData.token;
         this.currentUser = clientData.user;
         this.currentUserName = this.currentUser.firstName + " " + this.currentUser.lastName;
+        this.headers = this.headers.append('Authorization',  'Bearer ' + this.token);
         this.connected = true;
         this.getChatsOfUser('', 0)
         this.webSocket();
