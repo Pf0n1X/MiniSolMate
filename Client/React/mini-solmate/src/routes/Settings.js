@@ -27,32 +27,29 @@ const Settings = () => {
     const [songAlbumParam, setSongAlbumParam] = useState("");
     const [profilePic, setProfilePic] = useState("");
     const uCon = useContext(userContext);
-    const {token} = useToken();
 
     useEffect(() => {
-        getUser();
+        uCon.fetch(uCon.state.user.email);
         getSongsAccordingToParams("", "", "");
     }, []);
 
-    const getUser = () => {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-        axios.get('http://localhost:3001/user?UserEmail=' + uCon.state.user.email)
-            .then((response) => {
-                if (response.data === null || response.data === undefined)
-                    return;
+    useEffect(() => {
+        if (uCon.data !== null && uCon.data !== undefined && uCon.data != {}) {
+            console.log("The data is:");
+            console.log(uCon);
+            setDescription(uCon.data.description);
+                    setFirstName(uCon.data.firstName);
+                    setLastName(uCon.data.lastName);
+                    setSongs(uCon.data.Songs);
+                    setAgeRange([uCon.data.interestedAgeMin, uCon.data.interestedAgeMax]);
+                    setUserGender(uCon.data.sex);;
+                    setBirthDate(moment(uCon.data.birthday).format('YYYY-MM-DD'));
+                    setDistanceRange(uCon.data.radiusSearch);
+                    setPrefGender(uCon.data.interestedSex);
+                    setProfilePic(uCon.data.picture);
+        }
 
-                setDescription(response.data[0].description);
-                setFirstName(response.data[0].firstName);
-                setLastName(response.data[0].lastName);
-                setSongs(response.data[0].Songs);
-                setAgeRange([response.data[0].interestedAgeMin, response.data[0].interestedAgeMax]);
-                setUserGender(response.data[0].sex);;
-                setBirthDate(moment(response.data[0].birthday).format('YYYY-MM-DD'));
-                setDistanceRange(response.data[0].radiusSearch);
-                setPrefGender(response.data[0].interestedSex);
-                setProfilePic(response.data[0].picture);
-            });
-    }
+    }, [uCon]);
 
     const onPhotoButtonClicked = (e) => {
         e.preventDefault();
@@ -70,7 +67,7 @@ const Settings = () => {
         axios
           .post("http://localhost:3001/user/uploadProfile", formData, config)
           .then((response) => {
-            getUser();
+            uCon.fetch(uCon.state.user.email);
           })
           .catch((error) => {});
     }
@@ -199,6 +196,7 @@ const Settings = () => {
                         }} />
                     <FormControl className={classes.formControl}>
                         <InputLabel>Favorite Songs</InputLabel>
+                        {console.log("he songs are")} {console.log(songs)}
                         <Select
                             labelId="demo-mutiple-name-label"
                             id="demo-mutiple-name"
