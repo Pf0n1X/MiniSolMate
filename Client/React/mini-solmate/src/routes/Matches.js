@@ -16,8 +16,21 @@ const Matches = () => {
   const uCon = useContext(userContext);
   const { token } = useToken();
 
+  const calcNewMatches = () => {
+
+    // Add new matches
+    axios
+      .post("http://localhost:3001/match/calc/?userId=" + uCon.state.user["_id"])
+      .then((response) => {
+        if (response.data === null || response.data === undefined) return;
+
+        console.log(response.data);
+        getMatch();
+      });
+  };
+
   const getMatch = () => {
-    
+
     // Get the match from the server.
     axios
       .get("http://localhost:3001/match?userId=" + uCon.state.user["_id"])
@@ -70,33 +83,33 @@ const Matches = () => {
 
   const renderCarouselItems = () => {
     if (user?.Media.length > 0) {
-        return user?.Media.map((pic, index) => 
-            (<Carousel.Item key={index}>
-                <img
-                className="d-block w-100 carousel-img"
-                src={`http://localhost:3001/static/${pic}`}
-                />
-            </Carousel.Item>)
-            );
+      return user?.Media.map((pic, index) =>
+      (<Carousel.Item key={index}>
+        <img
+          className="d-block w-100 carousel-img"
+          src={`http://localhost:3001/static/${pic}`}
+        />
+      </Carousel.Item>)
+      );
     } else {
-        return (<Carousel.Item key="random_key">
-                <img
-                className="d-block w-100 carousel-img"
-                src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"
-                />
-            </Carousel.Item>)
+      return (<Carousel.Item key="random_key">
+        <img
+          className="d-block w-100 carousel-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"
+        />
+      </Carousel.Item>)
     }
   }
 
-    useEffect(() => {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-    }, []);
+  useEffect(() => {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+  }, []);
 
-    useEffect(() => {
-        if (uCon.state.user) {
-            getMatch();
-        }
-    }, [uCon.state.user]);
+  useEffect(() => {
+    if (uCon.state.user) {
+      calcNewMatches();
+    }
+  }, [uCon.state.user]);
 
   return (
     <div className="wrapper">
@@ -106,7 +119,7 @@ const Matches = () => {
             {user?.firstName} {user?.lastName}
           </h2>
         </div>
-        
+
         <Carousel>
           {renderCarouselItems()}
         </Carousel>
