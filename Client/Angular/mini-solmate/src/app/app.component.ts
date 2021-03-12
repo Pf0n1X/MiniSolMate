@@ -19,6 +19,7 @@ export class AppComponent {
   chatName = '';
   newMessage = '';
   username = '';
+  currentUserName = '';
   password = '';
   token = '';
   chatList: IClientChat[] = []
@@ -209,8 +210,8 @@ export class AppComponent {
         var clientData = data as IClientData;
         this.token = clientData.token;
         this.currentUser = clientData.user;
+        this.currentUserName = this.currentUser.firstName + " " + this.currentUser.lastName;
         this.connected = true;
-        // this.currentUser = (await this.getUser(this.username) as unknown as IClientUser[])[0];
         this.getChatsOfUser('', 0)
         this.webSocket();
       }
