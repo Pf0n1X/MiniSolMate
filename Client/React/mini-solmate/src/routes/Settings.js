@@ -32,8 +32,6 @@ const Settings = () => {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
         axios.get('http://localhost:3001/user?UserEmail=' + uCon.state.user.email)
             .then((response) => {
-                console.log("Response arrived");
-                console.log(response.data[0]);
                 if (response.data === null || response.data === undefined)
                     return;
 
@@ -42,9 +40,7 @@ const Settings = () => {
                 setLastName(response.data[0].lastName);
                 setSongs(response.data[0].Songs);
                 setAgeRange([response.data[0].interestedAgeMin, response.data[0].interestedAgeMax]);
-                setUserGender(response.data[0].sex);
-                console.log("The date is ");
-                console.log(moment(response.data[0].birthday).format('YYYY-MM-DD'));
+                setUserGender(response.data[0].sex);;
                 setBirthDate(moment(response.data[0].birthday).format('YYYY-MM-DD'));
                 setDistanceRange(response.data[0].radiusSearch);
                 setPrefGender(response.data[0].interestedSex);
@@ -120,8 +116,6 @@ const Settings = () => {
                 if (response.data === null)
                     return;
 
-                console.log("Song Search response")
-                console.log(response.data)
                 setSongOptions(response.data);
             });
     }
@@ -168,7 +162,7 @@ const Settings = () => {
                         name="profileImageUpload"
                         accept="image/png, image/jpeg"
                         onChange={onPhotoButtonClicked} />
-                <label className="file-label" for="profileImageUpload"><AddAPhotoRoundedIcon fontSize='20px'/></label>
+                <label className="file-label" htmlFor="profileImageUpload"><AddAPhotoRoundedIcon/></label>
                 <div className="song-params">
                     <h4>Search Songs</h4>
                     <form className={classes.container} onSubmit={onSubmitSearch}>
@@ -176,7 +170,7 @@ const Settings = () => {
                         <TextField name="song-artist-param" className={classes.TextField} label="Artist Name" value={songArtistParam} onChange={(e, val1) => setSongArtistParam(e.target.value)} type="text" />
                         <TextField name="song-album-param" className={classes.TextField} label="Album Name" value={songAlbumParam} onChange={(e, val1) => setSongAlbumParam(e.target.value)} type="text" />
                         <FormGroup className="submit-button-group">
-                            <Button variant="secondary" type="submit">
+                            <Button type="submit">
                                 Search
                             </Button>
                         </FormGroup>
@@ -192,7 +186,7 @@ const Settings = () => {
                         className={classes.TextField}
                         value={birthDate}
                         onChange={(e) => { setBirthDate(e.target.value) }}
-                        defaultValue="2017-05-24"
+                        // defaultValue="2017-05-24"
                         id="birth-date"
                         label="Birthday"
                         type="date"
@@ -213,7 +207,7 @@ const Settings = () => {
                         </Select>
                     </FormControl>
                     <TextField className={classes.TextField} label="Description" variant="outlined" multiline value={description} onChange={(e) => { setDescription(e.target.value); }} />
-                    <FormGroup controlId="formBasicRange">
+                    <FormGroup controlid="formBasicRange">
                         <InputLabel>Search Range</InputLabel>
                         <Slider
                             className={classes.Slider}
@@ -227,7 +221,7 @@ const Settings = () => {
                         // marks={true}
                         />
                     </FormGroup>
-                    <FormGroup controlId="formBasicRange">
+                    <FormGroup controlid="formBasicRange">
                         <InputLabel>Ages</InputLabel>
                         <Slider
                             className={classes.Slider}
@@ -251,7 +245,7 @@ const Settings = () => {
                         <FormControlLabel key={1} value={1} control={<MyRadioButton />} label="Female" />
                     </RadioGroup>
                     <FormGroup className="submit-button-group">
-                        <Button variant="secondary" type="submit">
+                        <Button type="submit">
                             Save
                         </Button>
                     </FormGroup>
