@@ -18,11 +18,8 @@ export interface IUser {
   Genre: Array<string>;
   Artists: Array<string>;
   Chats: Array<number>;
-<<<<<<< HEAD
   Songs: Array<string>;
-=======
   Media: Array<string>;
->>>>>>> origin/ProfilePage
 }
 export interface IUserModel extends IUser, Document {}
 const schema = new Schema({
@@ -88,20 +85,17 @@ const schema = new Schema({
       type: Number,
     },
   ],
-<<<<<<< HEAD
   Songs: [
     {
       type: String,
-      ref: 'songs'
-    }
-  ]
-=======
+      ref: "songs",
+    },
+  ],
   Media: [
     {
       type: String,
     },
   ],
->>>>>>> origin/ProfilePage
 });
 
 // schema.pre<IUser>("save", function save(next) {

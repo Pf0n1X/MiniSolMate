@@ -48,7 +48,7 @@ export const registerUser = async (req: Request, res: Response) => {
       cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
     },
   });
-  
+
   const upload = multer({
     storage: storage,
     limits: { fileSize: 1000000 },
@@ -144,32 +144,8 @@ export const updateUser = async (req: Request, res: Response) => {
   const sex = req.body.sex;
   const birthday = req.body.birthday;
   const interestedSex = req.body.interestedSex;
-<<<<<<< HEAD
-  
-  await User.updateOne({
-      _id: userId
-    }, { 
-      $set: {
-        firstName: firstName,
-        lastName: lastName,
-        Songs: Songs,
-        description: description,
-        interestedAgeMin: interestedAgeMin,
-        interestedAgeMax: interestedAgeMax,
-        radiusSearch: radiusSearch,
-        sex: sex,
-        birthday: birthday,
-        interestedSex: interestedSex
-    }})
-    .exec((err: CallbackError, user: any) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(200).json(user);
-=======
-
   try {
-    const myUser = await User.updateOne(
+    await User.updateOne(
       {
         _id: userId,
       },
@@ -177,7 +153,7 @@ export const updateUser = async (req: Request, res: Response) => {
         $set: {
           firstName: firstName,
           lastName: lastName,
-          Artists: Artists,
+          Songs: Songs,
           description: description,
           interestedAgeMin: interestedAgeMin,
           interestedAgeMax: interestedAgeMax,
@@ -186,9 +162,14 @@ export const updateUser = async (req: Request, res: Response) => {
           birthday: birthday,
           interestedSex: interestedSex,
         },
->>>>>>> origin/ProfilePage
       }
-    );
+    ).exec((err: CallbackError, user: any) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(user);
+      }
+    });
 
     res.status(200).json(myUser);
   } catch (e) {
@@ -205,12 +186,7 @@ export const getUserByEmail = async (req: Request, res: Response) => {
     } else {
       res.status(200).json(user);
     }
-<<<<<<< HEAD
-  )
-  .populate("Songs");
-=======
-  });
->>>>>>> origin/ProfilePage
+  }).populate("Songs");
 };
 
 export const getUsersForMatches = async () => {
