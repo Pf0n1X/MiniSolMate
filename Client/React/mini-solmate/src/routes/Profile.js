@@ -62,7 +62,7 @@ const Profile = () => {
     const formData = new FormData();
     formData.append("myImage", e.target.files[0]);
     debugger;
-    formData.append("userId", user._id);
+    formData.append("userId", user.email);
 
     const config = {
       headers: {
@@ -81,7 +81,7 @@ const Profile = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("myImage", e.target.files[0]);
-    formData.append("userId", user._id);
+    formData.append("userId", user.email);
 
     const config = {
       headers: {
