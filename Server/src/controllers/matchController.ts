@@ -52,7 +52,7 @@ export const updateMatch = async (req: Request, res: Response) => {
       UserId2: req.body.secondUser._id,
     };
 
-    await addChatAfterMatch(chat);
+    await addChatAfterMatch(req, res, chat);
 
     // // Send a creation request to the database.
     // await Chat.create(chat)
@@ -62,7 +62,7 @@ export const updateMatch = async (req: Request, res: Response) => {
     //   .catch((err) => {
     //     res.status(500).json(err);
     //   });
-  }
+  } else res.status(200).json({ message: "Match updated" })
 };
 
 export const getMatchesById = async (req: Request, res: Response) => {
