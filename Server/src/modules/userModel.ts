@@ -10,7 +10,6 @@ export interface IUser {
   sex: number;
   birthday: Date;
   picture: string;
-  userDesc: string;
   youtubeSong: string;
   radiusSearch: number;
   interestedSex: number;
@@ -19,7 +18,11 @@ export interface IUser {
   Genre: Array<string>;
   Artists: Array<string>;
   Chats: Array<number>;
+<<<<<<< HEAD
   Songs: Array<string>;
+=======
+  Media: Array<string>;
+>>>>>>> origin/ProfilePage
 }
 export interface IUserModel extends IUser, Document {}
 const schema = new Schema({
@@ -42,7 +45,7 @@ const schema = new Schema({
     required: true,
   },
   description: {
-    type: String
+    type: String,
   },
   sex: {
     type: Number,
@@ -68,7 +71,7 @@ const schema = new Schema({
     type: Number,
   },
   interestedAgeMax: {
-    type: Number
+    type: Number,
   },
   Genre: [
     {
@@ -85,12 +88,20 @@ const schema = new Schema({
       type: Number,
     },
   ],
+<<<<<<< HEAD
   Songs: [
     {
       type: String,
       ref: 'songs'
     }
   ]
+=======
+  Media: [
+    {
+      type: String,
+    },
+  ],
+>>>>>>> origin/ProfilePage
 });
 
 // schema.pre<IUser>("save", function save(next) {

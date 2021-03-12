@@ -3,14 +3,14 @@ import profile_pic from "./images/profile_pic.jpg";
 import "./App.css";
 import {
   FaHeart,
-  FaCalendar,
+  FaCalculator,
   FaTools,
   FaUser,
   FaMailBulk,
 } from "react-icons/fa";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Matches from "./routes/Matches";
-import Events from "./routes/Events";
+import Statics from "./routes/Statics";
 import Profile from "./routes/Profile";
 import Settings from "./routes/Settings";
 import Intro from "./components/Intro";
@@ -68,9 +68,9 @@ const App = () => {
                   <FaUser size="25px" />
                   <h2>Profile</h2>
                 </Link>
-                <Link to="/events" className="link">
-                  <FaCalendar size="25px" />
-                  <h2>Events</h2>
+                <Link to="/statics" className="link">
+                  <FaCalculator size="25px" />
+                  <h2>Statistics</h2>
                 </Link>
                 <Link to="/chat" className="link">
                   <FaMailBulk size="25px" />
@@ -93,8 +93,8 @@ const App = () => {
                 <Route path="/profile" component={Profile}>
                   <Profile />
                 </Route>
-                <Route path="/events">
-                  <Events />
+                <Route path="/statics">
+                  <Statics />
                 </Route>
                 <Route path="/settings">
                   <Settings />

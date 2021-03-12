@@ -1,7 +1,8 @@
 import {
   authenticateUser,
   registerUser,
-  uploadFile,
+  uploadMedia,
+  uploadProfile,
   getUserByEmail,
   updateUser,
 } from "../controllers/userController";
@@ -37,7 +38,8 @@ router.post("/register", async (req, res, next) => {
   }
 });
 router.get("/", getUserByEmail);
-router.post("/upload", upload, uploadFile);
+router.post("/uploadProfile", upload, uploadProfile);
+router.post("/uploadMedia", upload, uploadMedia);
 router.put("/", updateUser);
 
 export default router;
