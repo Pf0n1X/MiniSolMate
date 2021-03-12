@@ -171,7 +171,7 @@ export const updateUser = async (req: Request, res: Response) => {
       }
     });
 
-    res.status(200).json(User);
+    // res.status(200).json(User);
   } catch (e) {
     console.log(e);
     res.sendStatus(500);

@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { IconButton, MenuItem, Slider, FormControl, FormGroup, Input, InputLabel, Select, TextField, Button, FormLabel, Radio, FormControlLabel, RadioGroup, TextareaAutosize } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
+import { MenuItem, Slider, FormControl, FormGroup, Input, InputLabel, Select, TextField, Button, FormLabel, Radio, FormControlLabel, RadioGroup, TextareaAutosize } from '@material-ui/core';
 import user_pic from '../images/profile_pic.jpg';
 import '../styles/Settings.css';
 import axios from 'axios';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AddAPhotoRoundedIcon from '@material-ui/icons/AddAPhotoRounded';
+import { userContext } from "../context/userContext";
+import moment from "moment";
 
 const Settings = () => {
-
-    // TODO: Replace this with the connected user's id and email.
-    const USER_ID = "604639ae4ad4fa1dcc6822e5";
-    const USER_EMAIL = "tom.eru.98@gmail.com";
 
     // State declaration.
     const [description, setDescription] = useState("");
@@ -26,10 +24,11 @@ const Settings = () => {
     const [songNameParam, setSongNameParam] = useState("");
     const [songArtistParam, setSongArtistParam] = useState("");
     const [songAlbumParam, setSongAlbumParam] = useState("");
-    const [originalSongs, setOriginalSongs] = useState([]);
+    // const [originalSongs, setOriginalSongs] = useState([]);
+    const uCon = useContext(userContext);
 
     useEffect(() => {
-        axios.get('http://localhost:3001/user?UserId=' + USER_EMAIL)
+        axios.get('http://localhost:3001/user?UserId=' + uCon.state.user.email)
             .then((response) => {
                 console.log("Response arrived");
                 console.log(response.data[0]);
@@ -40,10 +39,12 @@ const Settings = () => {
                 setFirstName(response.data[0].firstName);
                 setLastName(response.data[0].lastName);
                 setSongs(response.data[0].Songs);
-                setOriginalSongs(response.data[0].Songs);
+                // setOriginalSongs(response.data[0].Songs);
                 setAgeRange([response.data[0].interestedAgeMin, response.data[0].interestedAgeMax]);
                 setUserGender(response.data[0].sex);
-                setBirthDate(response.data[0].birthday);
+                console.log("The date is ");
+                console.log(moment(response.data[0].birthday).format('YYYY-MM-DD'));
+                setBirthDate(moment(response.data[0].birthday).format('YYYY-MM-DD'));
                 setDistanceRange(response.data[0].radiusSearch);
                 setPrefGender(response.data[0].interestedSex);
             });
@@ -80,7 +81,7 @@ const Settings = () => {
         e.preventDefault();
 
         const user = {
-            _id: USER_ID,
+            _id: uCon.state.user['_id'],
             firstName: firstName,
             lastName: lastName,
             description: description,
