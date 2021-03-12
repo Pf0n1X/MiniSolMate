@@ -69,12 +69,7 @@ export const getMatchesById = async (req: Request, res: Response) => {
 
   // Find matches in
   if (userID !== undefined) {
-<<<<<<< HEAD
-
     await calcMatchesForUser(userID);
-=======
-    await calcMatchesForUser("6047b86ed60d8745dcef1d2e");
->>>>>>> origin/ProfilePage
 
     await Match.findOne({
       $or: [
@@ -103,20 +98,20 @@ export const getMatchesById = async (req: Request, res: Response) => {
       // .populate("firstUser")
       // .populate("secondUser")
       .populate({
-        path: 'firstUser',
-        model: 'users',
+        path: "firstUser",
+        model: "users",
         populate: {
-          path: 'Songs',
-          model: 'songs'
-        }
+          path: "Songs",
+          model: "songs",
+        },
       })
       .populate({
-        path: 'secondUser',
-        model: 'users',
+        path: "secondUser",
+        model: "users",
         populate: {
-          path: 'Songs',
-          model: 'songs'
-        }
+          path: "Songs",
+          model: "songs",
+        },
       })
       .exec((err: CallbackError, user: any) => {
         if (err) {
