@@ -68,11 +68,11 @@ export const updateMatch = async (req: Request, res: Response) => {
 export const getMatchesById = async (req: Request, res: Response) => {
   let userID = req.query.userId?.toString();
   console.log("The user id is: " + userID);
-  let objid = new Types.ObjectId(userID);
+  // let objid = new Types.ObjectId(userID);
 
   // Find matches in
   if (userID !== undefined) {
-    await calcMatchesForUser(userID);
+    // await calcMatchesForUser(userID);
 
     await Match.findOne({
       $or: [

@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import profile_pic from '../images/profile_pic.jpg';
 import random_chick from '../images/random_chick.jpg';
-import billie_eilish from '../images/billie_eilish.jpg';
 import '../styles/Matches.css';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import { userContext } from "../context/userContext";
 
 
 const Matches = () => {
@@ -17,6 +17,7 @@ const Matches = () => {
 
     const [user, setUser] = useState();
     const [match, setMatch] = useState();
+    const a = useContext(userContext);
 
     const getMatch = () => {
         // Get the match from the server.
@@ -74,6 +75,8 @@ const Matches = () => {
     }
 
     useEffect(() => {
+        console.log("The user is");
+        console.log(a)
         getMatch();
     }, []);
 
