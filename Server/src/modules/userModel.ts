@@ -67,7 +67,7 @@ const schema = new Schema({
     type: Number,
   },
   interestedAgeMax: {
-    type: Number
+    type: Number,
   },
   Genre: [
     {
@@ -82,6 +82,11 @@ const schema = new Schema({
   Chats: [
     {
       type: Number,
+    },
+  ],
+  Media: [
+    {
+      type: String,
     },
   ],
 });
