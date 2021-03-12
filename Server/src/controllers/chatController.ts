@@ -11,8 +11,6 @@ const app = express();
 const server = http.createServer(express());
 
 const wss = new WebSocket.Server({ server });
-// var clients: WebSocket[] = [];
-// var clients: { [id: string] : WebSocket } = {};
 let clients = new Map<string, WebSocket>();
 
 wss.on("connection", (ws: WebSocket, incoming_request) => {
