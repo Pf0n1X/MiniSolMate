@@ -26,11 +26,6 @@ export const startServer = async () => {
   app.use(cors());
 
   // Routes
-  userRouter.use(authenticateJWT);
-  chatRouter.use(authenticateJWT);
-  matchRouter.use(authenticateJWT);
-  messageRouter.use(authenticateJWT);
-
   app.use("/static", express.static("uploads"));
   app.use("/user", userRouter);
   app.use("/match", matchRouter);

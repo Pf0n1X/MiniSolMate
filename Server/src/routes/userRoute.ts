@@ -11,6 +11,7 @@ import { response, Router } from "express";
 import multer from "multer";
 import * as path from "path";
 import { Request, Response } from "express";
+import { authenticateJWT } from "../controllers/authController";
 
 const storage = multer.diskStorage({
   destination: "./uploads/",
@@ -38,9 +39,10 @@ router.post("/register", async (req, res, next) => {
     next(err);
   }
 });
-router.get("/", getUserByEmail);
-router.post("/uploadProfile", upload, uploadProfile);
-router.post("/uploadMedia", upload, uploadMedia);
-router.put("/", updateUser);
+
+router.get("/",authenticateJWT, getUserByEmail);
+router.post("/uploadProfile", authenticateJWT, upload, uploadProfile);
+router.post("/uploadMedia", authenticateJWT, upload, uploadMedia);
+router.put("/",authenticateJWT, updateUser);
 router.get("/statistic", getStatistics);
 export default router;
