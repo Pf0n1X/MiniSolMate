@@ -21,7 +21,7 @@ const Matches = () => {
             .then((response) => {
                 if (response.data === null || response.data === undefined)
                     return;
-
+                
                 console.log(response.data)
                 setMatch(response.data)
         
@@ -69,8 +69,10 @@ const Matches = () => {
     }
 
     useEffect(() => {
-        getMatch();
-    }, []);
+        if (uCon.state.user) {
+            getMatch();
+        }
+    }, [uCon.state.user]);
 
     return (
         <div className="wrapper">
