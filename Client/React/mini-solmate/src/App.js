@@ -17,16 +17,9 @@ import Intro from "./components/Intro";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import useToken from "./hooks/useToken";
-import axios from "axios";
 
 const App = () => {
   const { isTokenSet, setToken, token } = useToken();
-
-  useEffect(() => {
-    axios.defaults.headers.post['Authorization'] = 'Bearer ' + token;
-    axios.defaults.headers.get['Authorization'] = 'Bearer ' + token;
-    axios.defaults.headers.put['Authorization'] = 'Bearer ' + token;
-  }, [isTokenSet]);
 
   if (!isTokenSet) {
     return (

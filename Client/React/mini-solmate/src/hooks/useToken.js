@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 
 export default function useToken() {
   const initialTokenState = () => {
@@ -23,6 +24,9 @@ export default function useToken() {
   const saveToken = userToken => {
     localStorage.setItem('token', JSON.stringify(userToken));
     setIsTokenSet(true);
+    axios.defaults.headers.post['Authorization'] = 'Bearer ' + userToken;
+    axios.defaults.headers.get['Authorization'] = 'Bearer ' + userToken;
+    axios.defaults.headers.put['Authorization'] = 'Bearer ' + userToken;
   };
 
   return {

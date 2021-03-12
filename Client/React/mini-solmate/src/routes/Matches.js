@@ -19,7 +19,7 @@ const Matches = () => {
     axios
       .get("http://localhost:3001/match?userId=" + uCon.state.user["_id"])
       .then((response) => {
-        if (response.data === null) return;
+        if (response.data === null || response.data === undefined) return;
 
         console.log(response.data);
         setMatch(response.data);
