@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import profile_pic from "./images/profile_pic.jpg";
 import axios from "axios";
 import "./App.css";
@@ -22,14 +22,6 @@ import { Redirect } from "react-router-dom";
 
 const App = () => {
   const { isTokenSet, setToken, token } = useToken();
-
-  useEffect(() => {
-    if (isTokenSet) {
-      axios.defaults.headers.post['Authorization'] = 'Bearer ' + token;
-      axios.defaults.headers.get['Authorization'] = 'Bearer ' + token;
-      axios.defaults.headers.put['Authorization'] = 'Bearer ' + token;
-    }
-  }, [isTokenSet]);
 
   if (!isTokenSet) {
     return (

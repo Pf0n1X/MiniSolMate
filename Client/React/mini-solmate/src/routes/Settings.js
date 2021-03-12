@@ -7,6 +7,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AddAPhotoRoundedIcon from '@material-ui/icons/AddAPhotoRounded';
 import { userContext } from "../context/userContext";
 import moment from "moment";
+import useToken from '../hooks/useToken';
 
 const Settings = () => {
 
@@ -25,8 +26,10 @@ const Settings = () => {
     const [songArtistParam, setSongArtistParam] = useState("");
     const [songAlbumParam, setSongAlbumParam] = useState("");
     const uCon = useContext(userContext);
+    const {token} = useToken();
 
     useEffect(() => {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
         axios.get('http://localhost:3001/user?UserEmail=' + uCon.state.user.email)
             .then((response) => {
                 console.log("Response arrived");

@@ -8,13 +8,16 @@ import axios from "axios";
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import { userContext } from "../context/userContext";
+import useToken from "../hooks/useToken";
 
 const Matches = () => {
   const [user, setUser] = useState();
   const [match, setMatch] = useState();
   const uCon = useContext(userContext);
+  const { token } = useToken();
 
   const getMatch = () => {
+    
     // Get the match from the server.
     axios
       .get("http://localhost:3001/match?userId=" + uCon.state.user["_id"])
@@ -70,6 +73,10 @@ useEffect(() => {
         getMatch();
     }
 }, [uCon.state.user]);
+
+useEffect(() => {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}, []);
 
   return (
     <div className="wrapper">
