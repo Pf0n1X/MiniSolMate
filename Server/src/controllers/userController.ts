@@ -210,23 +210,26 @@ export const getStatistics = async (req: Request, res: Response) => {
     { [groupKey]: "50", Male: 0, Female: 0 },
   ];
 
+  // await User.mapReduce()
+
   const data = await User.aggregate([
     {
       $group: {
         _id: "$sex",
-        obj: { $push: { Songs: "$Songs" } },
+        count: { $sum: 1 },
+        // obj: { $push: { Songs: "$Songs" } },
       },
     },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $let: {
-            vars: { obj: [{ k: { $substr: ["$_id", 0, -1] }, v: "$obj" }] },
-            in: { $arrayToObject: "$$obj" },
-          },
-        },
-      },
-    },
+    // {
+    // $replaceRoot: {
+    //   newRoot: {
+    //     $let: {
+    //       vars: { obj: [{ k: { $substr: ["$_id", 0, -1] }, v: "$obj" }] },
+    //       in: { $arrayToObject: "$$obj" },
+    //     },
+    //   },
+    // },
+    // },
   ]);
 
   res.status(200).send(data);

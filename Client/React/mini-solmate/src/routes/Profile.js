@@ -26,6 +26,9 @@ const Profile = () => {
         params: {
           UserId: state.email,
         },
+        headers: {
+          Authorization: "Bearer " + token,
+        },
       });
       dispatch({ type: "SET_USER", payload: res.data[0] });
       // setUser(res.data[0]);
