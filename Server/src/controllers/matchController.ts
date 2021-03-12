@@ -6,6 +6,7 @@ import { IUser } from "../modules/userModel";
 import { Types, ObjectId } from "mongoose";
 import { IChat } from "../modules/chatModel";
 import { getUsersForMatches } from "../controllers/userController";
+import { addChatAfterMatch } from "../controllers/chatController";
 
 export const addMatch = async (req: Request, res: Response) => {
   // try {
@@ -50,15 +51,17 @@ export const updateMatch = async (req: Request, res: Response) => {
       UserId1: req.body.firstUser._id,
       UserId2: req.body.secondUser._id,
     };
+    
+    await addChatAfterMatch(chat);
 
-    // Send a creation request to the database.
-    await Chat.create(chat)
-      .then((val: IChatModel) => {
-        res.status(200).json({ message: "Match created and chat added" });
-      })
-      .catch((err) => {
-        res.status(500).json(err);
-      });
+    // // Send a creation request to the database.
+    // await Chat.create(chat)
+    //   .then((val: IChatModel) => {
+    //     res.status(200).json({ message: "Match created and chat added" });
+    //   })
+    //   .catch((err) => {
+    //     res.status(500).json(err);
+    //   });
   }
 }
 
@@ -159,11 +162,11 @@ export const calcMatchesForUser = async (userId: string) => {
         }
       }
 
-      var ageDifMs = Date.now() - new Date(1997, 11, 24).getTime();
+      var ageDifMs = Date.now() - user.birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
       var age = Math.abs(ageDate.getUTCFullYear() - 1970);
 
-      var ageDifMs = Date.now() - new Date(1998, 11, 24).getTime();
+      var ageDifMs = Date.now() - currentUser.birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
       var currentUserAge = Math.abs(ageDate.getUTCFullYear() - 1970);
 
