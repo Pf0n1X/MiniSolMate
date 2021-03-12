@@ -171,7 +171,6 @@ export const updateUser = async (req: Request, res: Response) => {
       }
     });
 
-    // res.status(200).json(User);
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
@@ -179,7 +178,7 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 export const getUserByEmail = async (req: Request, res: Response) => {
-  let userEmail = req.query.UserId?.toString();
+  let userEmail = req.query.UserEmail?.toString();
   await User.find({ email: userEmail }, (err: CallbackError, user: IUser) => {
     if (err) {
       res.status(500).send(err);

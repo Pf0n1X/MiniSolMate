@@ -24,22 +24,20 @@ const Settings = () => {
     const [songNameParam, setSongNameParam] = useState("");
     const [songArtistParam, setSongArtistParam] = useState("");
     const [songAlbumParam, setSongAlbumParam] = useState("");
-    // const [originalSongs, setOriginalSongs] = useState([]);
     const uCon = useContext(userContext);
 
     useEffect(() => {
-        axios.get('http://localhost:3001/user?UserId=' + uCon.state.user.email)
+        axios.get('http://localhost:3001/user?UserEmail=' + uCon.state.user.email)
             .then((response) => {
                 console.log("Response arrived");
                 console.log(response.data[0]);
-                if (response.data === null)
+                if (response.data === null || response.data === undefined)
                     return;
 
                 setDescription(response.data[0].description);
                 setFirstName(response.data[0].firstName);
                 setLastName(response.data[0].lastName);
                 setSongs(response.data[0].Songs);
-                // setOriginalSongs(response.data[0].Songs);
                 setAgeRange([response.data[0].interestedAgeMin, response.data[0].interestedAgeMax]);
                 setUserGender(response.data[0].sex);
                 console.log("The date is ");
@@ -97,10 +95,8 @@ const Settings = () => {
         console.log("Submitting")
         console.log(user);
         axios.put('http://localhost:3001/user', user)
-            .then((a, b) => {
+            .then((obj) => {
                 console.log("Successful update.");
-                console.log(a);
-                console.log(b);
             });
     };
 
@@ -121,7 +117,6 @@ const Settings = () => {
                 console.log("Song Search response")
                 console.log(response.data)
                 setSongOptions(response.data);
-                // setSongs(originalSongs);
             });
     }
 
@@ -252,7 +247,7 @@ const Settings = () => {
                     <FormGroup className="submit-button-group">
                         <Button variant="secondary" type="submit">
                             Save
-                            </Button>
+                        </Button>
                     </FormGroup>
                 </form>
             </div>
