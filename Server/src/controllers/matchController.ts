@@ -6,6 +6,7 @@ import { IUser } from "../modules/userModel";
 import { Types, ObjectId } from "mongoose";
 import { IChat } from "../modules/chatModel";
 import { getUsersForMatches } from "../controllers/userController";
+import { addChatAfterMatch } from "../controllers/chatController";
 
 export const addMatch = async (req: Request, res: Response) => {
   // try {
@@ -51,25 +52,25 @@ export const updateMatch = async (req: Request, res: Response) => {
       UserId2: req.body.secondUser._id,
     };
 
-    // Send a creation request to the database.
-    await Chat.create(chat)
-      .then((val: IChatModel) => {
-        res.status(200).json({ message: "Match created and chat added" });
-      })
-      .catch((err) => {
-        res.status(500).json(err);
-      });
-  }
+    await addChatAfterMatch(req, res, chat);
+
+    // // Send a creation request to the database.
+    // await Chat.create(chat)
+    //   .then((val: IChatModel) => {
+    //     res.status(200).json({ message: "Match created and chat added" });
+    //   })
+    //   .catch((err) => {
+    //     res.status(500).json(err);
+    //   });
+  } else res.status(200).json({ message: "Match updated" })
 };
 
 export const getMatchesById = async (req: Request, res: Response) => {
   let userID = req.query.userId?.toString();
   console.log("The user id is: " + userID);
-  let objid = new Types.ObjectId(userID);
 
   // Find matches in
   if (userID !== undefined) {
-    await calcMatchesForUser(userID);
 
     await Match.findOne({
       $or: [
@@ -123,13 +124,15 @@ export const getMatchesById = async (req: Request, res: Response) => {
   }
 };
 
-export const calcMatchesForUser = async (userId: string) => {
+export const calcMatchesForUser = async (req: Request, res: Response) => {
+  let userId = req.query.userId?.toString();
   console.log("Calculating matches for : " + userId);
   let users = await getUsersForMatches();
   let currentUser = users.find((user) => user._id == userId);
 
   if (currentUser !== undefined) {
     users = users.filter((user) => user._id != currentUser?._id);
+    var newMatches = 0;
 
     const exsistsMatches = await Match.find(
       {
@@ -141,6 +144,7 @@ export const calcMatchesForUser = async (userId: string) => {
       (err: CallbackError, matches: IMatch[]) => {
         if (err) {
           console.log(err);
+          res.status(500).send(err);
         } else {
           return matches;
         }
@@ -160,11 +164,11 @@ export const calcMatchesForUser = async (userId: string) => {
         }
       }
 
-      var ageDifMs = Date.now() - new Date(1997, 11, 24).getTime();
+      var ageDifMs = Date.now() - user.birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
       var age = Math.abs(ageDate.getUTCFullYear() - 1970);
 
-      var ageDifMs = Date.now() - new Date(1998, 11, 24).getTime();
+      var ageDifMs = Date.now() - currentUser.birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
       var currentUserAge = Math.abs(ageDate.getUTCFullYear() - 1970);
 
@@ -192,9 +196,12 @@ export const calcMatchesForUser = async (userId: string) => {
         console.log(toAdd);
         const matchAdded = await Match.create(toAdd);
         console.log("Match added: " + matchAdded);
+        newMatches += 1;
       } catch (e) {
         console.log(e);
+        res.status(500).send(e);
       }
     }
-  }
+    res.status(200).send(newMatches + " Matches were added for user " + userId );
+  } else res.status(500).send("User " + userId + " not found");
 };

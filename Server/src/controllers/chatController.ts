@@ -40,6 +40,32 @@ server.listen(process.env.PORT || 8999, () => {
   );
 });
 
+export const addChatAfterMatch = async (req: Request, res: Response, newChat: IChat) => {
+  try {
+    const maxChat = await Chat.findOne().sort({ ChatId: -1 }) as IChat
+    let chatId = 1;
+    if (maxChat != null)
+      chatId = maxChat.ChatId + 1;
+
+    newChat.ChatId = chatId;
+    const chatAdded = await Chat.create(newChat);
+    console.log("chat added :" + chatAdded)
+
+    if (clients.has(newChat.UserId1)) {
+      var currWs = clients.get(newChat.UserId1) as WebSocket;
+      currWs.send(newChat.ChatId)
+    }
+    if (clients.has(newChat.UserId2)) {
+      var currWs = clients.get(newChat.UserId2) as WebSocket;
+      currWs.send(newChat.ChatId)
+    }
+    res.status(200).json({ message: "Match created and chat added" })
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("ERROR: Unable to create chat");
+  }
+};
+
 export const addChat = async (req: Request, res: Response) => {
   try {
     const userBody: IChat = req.body;
