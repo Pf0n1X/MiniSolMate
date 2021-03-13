@@ -13,9 +13,9 @@ export default function Register({ setToken }) {
     password: "",
     confirm_password: "",
     picture: "",
-    interestedAgeMin: "",
-    interestedAgeMax: "",
     ageRange: [20, 30],
+    interestedAgeMin: 20,
+    interestedAgeMax: 30,
     interestedSex: "",
   });
   const [errors, setErrors] = useState({});
@@ -84,8 +84,6 @@ export default function Register({ setToken }) {
       });
   }
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -103,6 +101,11 @@ export default function Register({ setToken }) {
       isValid = false;
       errors["name"] = "Please enter your name.";
     }
+    var pattern = new RegExp(/\b\D*?\b(?:\s+\b\D*?\b)+/);
+    if (!pattern.test(input["name"])) {
+      isValid = false;
+      errors["name"] = "Please enter valid full name .";
+    }
 
     if (!input["email"]) {
       isValid = false;
@@ -110,7 +113,7 @@ export default function Register({ setToken }) {
     }
 
     if (typeof input["email"] !== "undefined") {
-      var pattern = new RegExp(
+      pattern = new RegExp(
         /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
       );
       if (!pattern.test(input["email"])) {
