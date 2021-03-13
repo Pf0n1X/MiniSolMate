@@ -1,12 +1,10 @@
 import bcrypt from "bcrypt";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import User, { IUser, IUserModel } from "../modules/userModel";
 import * as config from "../config/config.json";
 import { CallbackError, MapReduceOptions } from "mongoose";
-import multer from "multer";
-import * as path from "path";
 import { deleteChatsOfUser } from "../controllers/chatController";
 import { deleteMatchesOfUser } from "../controllers/matchController";
 
@@ -18,8 +16,9 @@ export const registerUser = async (req: Request, res: Response) => {
     req.body.password,
     bcrypt.genSaltSync(10)
   );
-  const userBody: IUser = req.body;
-  await User.create({
+  
+  var userBody: IUser = req.body;
+  const user =await User.create({
     email: userBody.email,
     password: hashedPassword,
     firstName: userBody.firstName,
@@ -44,22 +43,7 @@ export const registerUser = async (req: Request, res: Response) => {
     expiresIn: 86400, // expires in 24 hours
   });
 
-  const storage = multer.diskStorage({
-    destination: "./uploads/",
-    filename: function (
-      req: any,
-      file: { originalname: string },
-      cb: (arg0: null, arg1: string) => void
-    ) {
-      cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
-    },
-  });
-
-  const upload = multer({
-    storage: storage,
-    limits: { fileSize: 1000000 },
-  }).single("myImage");
-  res.status(200).send({ token: token });
+  res.status(200).send({ token: token ,user:user});
 };
 
 export const authenticateUser = (
