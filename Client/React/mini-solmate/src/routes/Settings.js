@@ -49,7 +49,15 @@ const Settings = () => {
 
                     // This is done because in order fpr the selected songs to be checked in the select
                     // they must have the same object reference.
-                    setSongs(uCon.data.Songs.map(song => songOptions.find(option => option['_id'] == song['_id'])));
+                    setSongs(uCon.data.Songs.map(song => {
+                         var foundOption = songOptions.find(option => option['_id'] == song['_id']);
+
+                         if (!foundOption) {
+                             foundOption = song;
+                         }
+
+                         return foundOption;
+                    }));
                     setAgeRange([uCon.data.interestedAgeMin, uCon.data.interestedAgeMax]);
                     setUserGender(uCon.data.sex);;
                     setBirthDate(moment(uCon.data.birthday).format('YYYY-MM-DD'));
@@ -119,7 +127,6 @@ const Settings = () => {
     const deleteUser = () => {
         const userId = uCon.state.user['_id'];
 
-        console.log("Deleting user " + userId)
         setOpen(false);
         window.location.reload();
         // dispatch({ type: "LOGOUT" });
@@ -215,7 +222,6 @@ const Settings = () => {
                     <h4>Search Songs</h4>
                     <FormControl className={classes.formControl}>
                         <InputLabel>Favorite Songs</InputLabel>
-                        {console.log("he songs are")} {console.log(songs)}
                         <Select
                             labelId="demo-mutiple-name-label"
                             id="demo-mutiple-name"

@@ -10,10 +10,12 @@ import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissa
 import { userContext } from "../context/userContext";
 import useToken from "../hooks/useToken";
 import gsap from 'gsap';
+import { Dialog, DialogTitle, DialogContent, Button, DialogActions, DialogContentText } from '@material-ui/core';
 
 const Matches = () => {
   const [user, setUser] = useState();
   const [match, setMatch] = useState();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const uCon = useContext(userContext);
   const { token } = useToken();
   const [isMatchFound, setIsMatchFound] = useState(false);
@@ -42,7 +44,7 @@ const Matches = () => {
           setIsMatchFound(false);
           return;
         }
-        
+
         setIsMatchFound(true);
         console.log(response.data);
         setMatch(response.data);
@@ -77,6 +79,12 @@ const Matches = () => {
     axios.put("http://localhost:3001/match", match).then(() => {
       // Get a new match.
       console.log("Getting a new match");
+
+      if (match.Approve1 === 'accepted' && match.Approve2 === 'accepted') {
+        console.log("The dialog is being opened");
+        setIsDialogOpen(true);
+      }
+
       getMatch();
     });
   };
@@ -133,53 +141,73 @@ const Matches = () => {
     }
   }, [isMatchFound]);
 
-  return isMatchFound ? (
-    <div className="wrapper">
-      <div className="carousel-container">
-        <div className="user-name">
-          <h1>
-            {user?.firstName} {user?.lastName}
-          </h1>
-        </div>
+  return (<div className="matches-container">
+    {isMatchFound ? (
+      <div className="wrapper">
+        <div className="carousel-container">
+          <div className="user-name">
+            <h1>
+              {user?.firstName} {user?.lastName}
+            </h1>
+          </div>
 
-        <Carousel>
-          {renderCarouselItems()}
-        </Carousel>
-        <div className="swipe-buttons">
-          <div
-            className="swipe-button circle1 button-decline"
-            onClick={() => {
-              onUpdateMatchButtonClicked(false);
-            }} >
-            <SentimentVeryDissatisfiedIcon style={{ fontSize: 30 }} />
+          <Carousel>
+            {renderCarouselItems()}
+          </Carousel>
+          <div className="swipe-buttons">
+            <div
+              className="swipe-button circle1 button-decline"
+              onClick={() => {
+                onUpdateMatchButtonClicked(false);
+              }} >
+              <SentimentVeryDissatisfiedIcon style={{ fontSize: 30 }} />
+            </div>
+            <div
+              className="swipe-button circle1 button-accept"
+              onClick={() => {
+                onUpdateMatchButtonClicked(true);
+              }}
+            >
+              <SentimentVerySatisfiedIcon style={{ fontSize: 30 }} />
+            </div>
           </div>
-          <div
-            className="swipe-button circle1 button-accept"
-            onClick={() => {
-              onUpdateMatchButtonClicked(true);
-            }}
-          >
-            <SentimentVerySatisfiedIcon style={{ fontSize: 30 }} />
+        </div>
+        <div className="user-info">
+          <div className="bio">
+            <h3>Bio</h3>
+            <section>{user?.description}</section>
+            <img src={`http://localhost:3001/static/${user?.picture}`} />
+          </div>
+          <div className="top-songs">
+            <h3>Top Songs</h3>
+            <section>{renderSongs()}</section>
           </div>
         </div>
       </div>
-      <div className="user-info">
-        <div className="bio">
-          <h3>Bio</h3>
-          <section>{user?.description}</section>
-          <img src={`http://localhost:3001/static/${user?.picture}`} />
-        </div>
-        <div className="top-songs">
-          <h3>Top Songs</h3>
-          <section>{renderSongs()}</section>
-        </div>
-      </div>
-    </div>
-  )
-  : 
-  (<div className="not-found-container">
-    <h1 className="not-found-header main-header">No Matches Found.</h1>
-    <h3 className="not-found-header sub-header">Try Again Later.</h3>
+    )
+      :
+      (<div className="not-found-container">
+        <h1 className="not-found-header main-header">No Matches Found.</h1>
+        <h3 className="not-found-header sub-header">Try Again Later.</h3>
+      </div>)}
+      <Dialog
+        open={isDialogOpen}
+        onClose={() => {setIsDialogOpen(false)}}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"A Match Was Found!"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Congratulations! You can now chat with your new partner.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => {setIsDialogOpen(false)}} color="primary" autoFocus>
+            Great!
+          </Button>
+        </DialogActions>
+      </Dialog>
   </div>);
 };
 
