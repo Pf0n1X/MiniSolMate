@@ -115,9 +115,9 @@ const Matches = () => {
     <div className="wrapper">
       <div className="carousel-container">
         <div className="user-name">
-          <h2>
+          <h1>
             {user?.firstName} {user?.lastName}
-          </h2>
+          </h1>
         </div>
 
         <Carousel>
