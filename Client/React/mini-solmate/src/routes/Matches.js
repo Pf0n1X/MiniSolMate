@@ -77,14 +77,13 @@ const Matches = () => {
     }
 
     axios.put("http://localhost:3001/match", match).then(() => {
-      // Get a new match.
-      console.log("Getting a new match");
 
+      // If both users approved, show the dialog.
       if (match.Approve1 === 'accepted' && match.Approve2 === 'accepted') {
-        console.log("The dialog is being opened");
         setIsDialogOpen(true);
       }
 
+      // Get a new match.
       getMatch();
     });
   };
