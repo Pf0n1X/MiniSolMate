@@ -53,7 +53,7 @@ const App = () => {
       <main>
         <section className="glass">
           <div className="dashboard">
-            <div className="routes_container">
+            <div style={{display:"flex",width:"100%"}}>
               <Router>
                 <Switch>
                   <Route path="/login" component={Login}>
