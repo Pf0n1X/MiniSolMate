@@ -9,12 +9,20 @@ import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfie
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import { userContext } from "../context/userContext";
 import useToken from "../hooks/useToken";
+import gsap from 'gsap';
 
 const Matches = () => {
   const [user, setUser] = useState();
   const [match, setMatch] = useState();
   const uCon = useContext(userContext);
   const { token } = useToken();
+  const [isMatchFound, setIsMatchFound] = useState(false);
+
+  useEffect(() => {
+    const tl = gsap.timeline({ defaults: { ease: 'power1.out' } });
+    tl.to('.not-found-header', { delay: 5, opacity: "1", duration: 1, stagger: 0.25 });
+    // tl.to('.main-header', { opacity: "1", duration: 1, stagger: 0.25 });
+}, []);
 
   const calcNewMatches = () => {
 
@@ -35,8 +43,13 @@ const Matches = () => {
     axios
       .get("http://localhost:3001/match?userId=" + uCon.state.user["_id"])
       .then((response) => {
-        if (response.data === null || response.data === undefined) return;
-
+        if (response.data === null || response.data === undefined || response.data.length === 0) {
+          // TODO: Show a no matches found page
+          setIsMatchFound(false);
+          return;
+        }
+        
+        setIsMatchFound(true);
         console.log(response.data);
         setMatch(response.data);
 
@@ -111,7 +124,7 @@ const Matches = () => {
     }
   }, [uCon.state.user]);
 
-  return (
+  return isMatchFound ? (
     <div className="wrapper">
       <div className="carousel-container">
         <div className="user-name">
@@ -154,7 +167,12 @@ const Matches = () => {
         </div>
       </div>
     </div>
-  );
+  )
+  : 
+  (<div className="not-found-container">
+    <h1 className="not-found-header main-header">No Matches Found.</h1>
+    <h3 className="not-found-header sub-header">Try Again Later.</h3>
+  </div>);
 };
 
 export default Matches;
