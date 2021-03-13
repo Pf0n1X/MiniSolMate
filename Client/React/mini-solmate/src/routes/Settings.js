@@ -42,18 +42,19 @@ const Settings = () => {
 
     useEffect(() => {
         if (uCon.data !== null && uCon.data !== undefined && uCon.data != {}) {
-            console.log("The data is:");
-            console.log(uCon);
             setDescription(uCon.data.description);
-            setFirstName(uCon.data.firstName);
-            setLastName(uCon.data.lastName);
-            setSongs(uCon.data.Songs);
-            setAgeRange([uCon.data.interestedAgeMin, uCon.data.interestedAgeMax]);
-            setUserGender(uCon.data.sex);;
-            setBirthDate(moment(uCon.data.birthday).format('YYYY-MM-DD'));
-            setDistanceRange(uCon.data.radiusSearch);
-            setPrefGender(uCon.data.interestedSex);
-            setProfilePic(uCon.data.picture);
+                    setFirstName(uCon.data.firstName);
+                    setLastName(uCon.data.lastName);
+
+                    // This is done because in order fpr the selected songs to be checked in the select
+                    // they must have the same object reference.
+                    setSongs(uCon.data.Songs.map(song => songOptions.find(option => option['_id'] == song['_id'])));
+                    setAgeRange([uCon.data.interestedAgeMin, uCon.data.interestedAgeMax]);
+                    setUserGender(uCon.data.sex);;
+                    setBirthDate(moment(uCon.data.birthday).format('YYYY-MM-DD'));
+                    setDistanceRange(uCon.data.radiusSearch);
+                    setPrefGender(uCon.data.interestedSex);
+                    setProfilePic(uCon.data.picture);
         }
 
     }, [uCon]);
@@ -61,8 +62,6 @@ const Settings = () => {
     const onPhotoButtonClicked = (e) => {
         e.preventDefault();
         const formData = new FormData();
-        console.log("uploading pic");
-        console.log(uCon);
         formData.append("myImage", e.target.files[0]);
         formData.append("userId", uCon.state.user['email']);
 
@@ -80,7 +79,7 @@ const Settings = () => {
     }
 
     const renderSongOptions = () => {
-        return songOptions.map(option => (
+        return songOptions.map(option => (  
             <MenuItem key={option['_id']} value={option} name={option['_id']}>{option.songName}</MenuItem>
         ))
     };
@@ -102,11 +101,9 @@ const Settings = () => {
             interestedSex: prefGender
         }
 
-        console.log("Submitting")
-        console.log(user);
         axios.put('http://localhost:3001/user', user)
             .then((obj) => {
-                console.log("Successful update.");
+                
             });
     };
 
@@ -148,6 +145,25 @@ const Settings = () => {
                 setSongOptions(response.data);
             });
     }
+
+    useEffect(() => {
+        
+        // This is done because in order fpr the selected songs to be checked in the select
+        // they must have the same object reference.
+        if (!uCon.data) {
+            setSongs([]);
+            
+            return;
+        }
+        setSongs(uCon.data?.Songs.map(song => {
+            var resOption = songOptions.find(option => option['_id'] == song['_id']);
+            if (!resOption) {
+                resOption = song;
+            }
+
+            return resOption;
+        }));
+    }, [songOptions]);
 
     const useStyles = makeStyles((theme) => ({
         formControl: {
@@ -253,7 +269,19 @@ const Settings = () => {
                         InputLabelProps={{
                             shrink: true,
                         }} />
-
+                    <FormControl className={classes.formControl}>
+                        <InputLabel>Favorite Songs</InputLabel>
+                        <Select
+                            labelId="demo-mutiple-name-label"
+                            id="demo-mutiple-name"
+                            multiple
+                            value={songs}
+                            onChange={(e, val) => {setSongs(e.target.value)}}
+                            input={<Input />}
+                            renderValue={values => values.map(o => o.songName).join()} >
+                            {renderSongOptions()}
+                        </Select>
+                    </FormControl>
                     <TextField className={classes.TextField} label="Description" variant="outlined" multiline value={description} onChange={(e) => { setDescription(e.target.value); }} />
                     {/* <FormGroup controlid="formBasicRange">
                         <InputLabel>Search Range</InputLabel>
