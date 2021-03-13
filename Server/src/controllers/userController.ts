@@ -16,9 +16,9 @@ export const registerUser = async (req: Request, res: Response) => {
     req.body.password,
     bcrypt.genSaltSync(10)
   );
-  
+
   var userBody: IUser = req.body;
-  const user =await User.create({
+  const user = await User.create({
     email: userBody.email,
     password: hashedPassword,
     firstName: userBody.firstName,
@@ -43,7 +43,7 @@ export const registerUser = async (req: Request, res: Response) => {
     expiresIn: 86400, // expires in 24 hours
   });
 
-  res.status(200).send({ token: token ,user:user});
+  res.status(200).send({ token: token, user: user });
 };
 
 export const authenticateUser = (
@@ -205,11 +205,13 @@ export const getStatistics = async (req: Request, res: Response) => {
     this: MapReduceOptions<IUserModel, unknown, unknown>
   ) {
     //@ts-ignore
-    emit(this.sex, this.Songs.length);
-    // for (var key in this) {
-    //   //@ts-ignore
-    //   emit(key, null);
-    // }
+    if (this.Songs) {
+      //@ts-ignore
+      emit(this.sex, this.Songs.length);
+    } else {
+      //@ts-ignore
+      emit(this.sex, 0);
+    }
   };
 
   var reduceFunction = function (key: any, value: any) {
@@ -255,7 +257,6 @@ export const getStatistics = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-
   const userId = req.query.userId;
   console.log("Deleting user " + userId + " and dependencies");
 
@@ -276,18 +277,20 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 
   try {
-    await User.findOneAndDelete({ _id: userId })
-      .exec((err: CallbackError, user: any) => {
+    await User.findOneAndDelete({ _id: userId }).exec(
+      (err: CallbackError, user: any) => {
         if (err) {
           res.status(500).send(err);
         } else {
-          console.log("User, chats and matches deleted for user : "+ userId);
-          res.status(200).json({ message: "User, chats and matches deleted for user : "+ userId});
+          console.log("User, chats and matches deleted for user : " + userId);
+          res.status(200).json({
+            message: "User, chats and matches deleted for user : " + userId,
+          });
         }
-      });
+      }
+    );
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
 };
-
