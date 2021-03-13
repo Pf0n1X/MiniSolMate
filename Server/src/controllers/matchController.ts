@@ -43,7 +43,7 @@ export const updateMatch = async (req: Request, res: Response) => {
   });
 
   // if both users approved, create a chat.
-  if (isApprove1 && isApprove2) {
+  if (isApprove1 === 'accepted' && isApprove2 === 'accepted') {
     // Prepare the chat parameters.
     const chat: IChat = {
       ChatId: 1,
