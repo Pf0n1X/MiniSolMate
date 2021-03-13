@@ -44,26 +44,26 @@ const Settings = () => {
     useEffect(() => {
         if (uCon.data !== null && uCon.data !== undefined && uCon.data != {}) {
             setDescription(uCon.data.description);
-                    setFirstName(uCon.data.firstName);
-                    setLastName(uCon.data.lastName);
+            setFirstName(uCon.data.firstName);
+            setLastName(uCon.data.lastName);
 
-                    // This is done because in order fpr the selected songs to be checked in the select
-                    // they must have the same object reference.
-                    setSongs(uCon.data.Songs.map(song => {
-                         var foundOption = songOptions.find(option => option['_id'] == song['_id']);
+            // This is done because in order fpr the selected songs to be checked in the select
+            // they must have the same object reference.
+            setSongs(uCon.data.Songs.map(song => {
+                var foundOption = songOptions.find(option => option['_id'] == song['_id']);
 
-                         if (!foundOption) {
-                             foundOption = song;
-                         }
+                if (!foundOption) {
+                    foundOption = song;
+                }
 
-                         return foundOption;
-                    }));
-                    setAgeRange([uCon.data.interestedAgeMin, uCon.data.interestedAgeMax]);
-                    setUserGender(uCon.data.sex);;
-                    setBirthDate(moment(uCon.data.birthday).format('YYYY-MM-DD'));
-                    setDistanceRange(uCon.data.radiusSearch);
-                    setPrefGender(uCon.data.interestedSex);
-                    setProfilePic(uCon.data.picture);
+                return foundOption;
+            }));
+            setAgeRange([uCon.data.interestedAgeMin, uCon.data.interestedAgeMax]);
+            setUserGender(uCon.data.sex);;
+            setBirthDate(moment(uCon.data.birthday).format('YYYY-MM-DD'));
+            setDistanceRange(uCon.data.radiusSearch);
+            setPrefGender(uCon.data.interestedSex);
+            setProfilePic(uCon.data.picture);
         }
 
     }, [uCon]);
@@ -88,7 +88,7 @@ const Settings = () => {
     }
 
     const renderSongOptions = () => {
-        return songOptions.map(option => (  
+        return songOptions.map(option => (
             <MenuItem key={option['_id']} value={option} name={option['_id']}>{option.songName}</MenuItem>
         ))
     };
@@ -112,7 +112,7 @@ const Settings = () => {
 
         axios.put('http://localhost:3001/user', user)
             .then((obj) => {
-                
+
             });
     };
 
@@ -128,14 +128,14 @@ const Settings = () => {
         const userId = uCon.state.user['_id'];
 
         setOpen(false);
-        dispatch({ type: "LOGOUT" });
-        clearToken();
-        window.location.reload();
 
-        // axios.delete('http://localhost:3001/user?userId=' + userId)
-        //     .then((obj) => {
-        //         console.log("Successful delete of user " + userId);
-        // });
+
+        axios.delete('http://localhost:3001/user?userId=' + userId)
+            .then((obj) => {
+                dispatch({ type: "LOGOUT" });
+                clearToken();
+                window.location.reload();
+            });
     };
 
     const onSubmitSearch = (e) => {
@@ -157,12 +157,12 @@ const Settings = () => {
     }
 
     useEffect(() => {
-        
+
         // This is done because in order fpr the selected songs to be checked in the select
         // they must have the same object reference.
         if (!uCon.data) {
             setSongs([]);
-            
+
             return;
         }
         setSongs(uCon.data?.Songs.map(song => {
@@ -197,14 +197,14 @@ const Settings = () => {
             '&:hover': {
                 background: "white",
                 color: "black"
-             },
+            },
         },
         DeleteButton: {
             backgroundColor: 'grey',
             '&:hover': {
                 background: "white",
                 color: "black"
-             },
+            },
         }
     }));
 
