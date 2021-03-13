@@ -194,6 +194,7 @@ const Settings = () => {
         },
         SaveButton: {
             backgroundColor: '#be65c6',
+            margin: '5px 0px',
             '&:hover': {
                 background: "white",
                 color: "black"
@@ -201,6 +202,7 @@ const Settings = () => {
         },
         DeleteButton: {
             backgroundColor: 'grey',
+            margin: '5px 0px',
             '&:hover': {
                 background: "white",
                 color: "black"
