@@ -119,7 +119,7 @@ const Profile = () => {
   const renderSongs = () => {
     console.log(user?.Songs);
     var domSongs = [];
-    for (var i = 0; i < user?.Songs?.length && i < 3; i++) {
+    for (var i = 0; i < user?.Songs?.length; i++) {
       domSongs.push(
         <section>
           <div className="artist">
