@@ -80,7 +80,7 @@ export const getMatchesById = async (req: Request, res: Response) => {
               firstUser: userID,
             },
             {
-              Approve1: false,
+              Approve1: "waiting",
             },
           ],
         },
@@ -90,7 +90,7 @@ export const getMatchesById = async (req: Request, res: Response) => {
               secondUser: userID,
             },
             {
-              Approve2: false,
+              Approve2: "waiting",
             },
           ],
         },
@@ -192,8 +192,8 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
         const toAdd: IMatch = {
           firstUser: currentUser._id,
           secondUser: matchedUser._id,
-          Approve1: false,
-          Approve2: false,
+          Approve1: "waiting",
+          Approve2: "waiting",
         };
 
         for (let match of existsMatches) {
