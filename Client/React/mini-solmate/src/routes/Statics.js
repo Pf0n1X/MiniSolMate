@@ -229,7 +229,7 @@ const Statics = () => {
       );
   };
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       <div ref={refCol} style={{ margin: 10 }}></div>
       <div
         ref={refPie}
