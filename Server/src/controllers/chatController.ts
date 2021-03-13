@@ -138,3 +138,43 @@ export const deleteChat = async (req: Request, res: Response) => {
     res.status(500).send(e);
   }
 };
+
+export const deleteChatsOfUser = async (req: Request, res: Response) => {
+
+  var userID = req.query.userId?.toString();
+
+  const existsChats = await Chat.find(
+    {
+      $or: [
+        { UserId1: userID },
+        { UserId2: userID },
+      ],
+    },
+    (err: CallbackError, matches: IChat[]) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        return matches;
+      }
+    }
+  );
+
+  for (let chat of existsChats) {
+    try {
+      const chatDeleted = await Chat.findOneAndDelete({ 'ChatId': Number(chat.ChatId) });
+      if (clients.has(chat.UserId1)) {
+        var currWs = clients.get(chat.UserId1) as WebSocket;
+        currWs.send(chat.ChatId)
+      }
+      if (clients.has(chat.UserId2)) {
+        var currWs = clients.get(chat.UserId2) as WebSocket;
+        currWs.send(chat.ChatId)
+      }
+      console.log("chat deleted " + chatDeleted);
+
+    } catch (e) {
+      console.log(e);
+    }
+  }
+};

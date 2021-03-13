@@ -7,6 +7,8 @@ import * as config from "../config/config.json";
 import { CallbackError } from "mongoose";
 import multer from "multer";
 import * as path from "path";
+import { deleteChatsOfUser } from "../controllers/chatController";
+import { deleteMatchesOfUser } from "../controllers/matchController";
 
 export const registerUser = async (req: Request, res: Response) => {
   const hashedPassword = bcrypt.hashSync(
@@ -231,3 +233,41 @@ export const getStatistics = async (req: Request, res: Response) => {
 
   res.status(200).send(data);
 };
+
+export const deleteUser = async (req: Request, res: Response) => {
+
+  const userId = req.query.userId;
+  console.log("Deleting user " + userId + " and dependencies");
+
+  try {
+    // Delete all user chats
+    deleteChatsOfUser(req, res);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+
+  try {
+    // Delete all user chats
+    deleteMatchesOfUser(req, res);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+
+  try {
+    await User.findOneAndDelete({ _id: userId })
+      .exec((err: CallbackError, user: any) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          console.log("User, chats and matches deleted for user : "+ userId);
+          res.status(200).json({ message: "User, chats and matches deleted for user : "+ userId});
+        }
+      });
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+};
+
