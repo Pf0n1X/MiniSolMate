@@ -47,20 +47,22 @@
 
 .carousel-container {
   position: relative;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 .carousel-container .user-name {
   width: 100%;
   display: flex;
   justify-content: center;
+  position: absolute;
+  z-index: 2;
+  background: transparent;
 }
-.carousel-container .user-name h1 {
+.carousel-container .user-name h2 {
   position: absolute;
   z-index: 2;
   top: 5px;
-	font-weight: 900;
-  color: #ffffff;
-  text-shadow: 1px 1px 1px rgb(109, 0, 82), 3px 3px 5px #af20b9; }
+  color: black;
+}
 
 .swipe-buttons {
   position: absolute;
@@ -83,4 +85,16 @@
 }
 .swipe-buttons .swipe-button:hover {
   background: linear-gradient(to top right, #bebebe, #83618d);
+}
+
+.not-found-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.not-found-container .not-found-header {
+  opacity: 0;
 }/*# sourceMappingURL=Matches.css.map */
