@@ -76,8 +76,8 @@ export default function Register({ setToken }) {
       })
       .then((response) => {
         var res = uploadPic(credentials, response.data.token);
-        setToken(response.data.token);
         dispatch({ type: "SET_USER", payload: response.data.user });
+        setToken(response.data.token);
       })
       .catch((err) => {
         alert(JSON.stringify(err));
