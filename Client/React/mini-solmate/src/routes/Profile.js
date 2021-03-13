@@ -119,6 +119,9 @@ const Profile = () => {
   const renderSongs = () => {
     console.log(user?.Songs);
     var domSongs = [];
+    if (user?.Songs.length == 0) {
+      domSongs.push(<div>no songs yet</div>);
+    }
     for (var i = 0; i < user?.Songs?.length; i++) {
       domSongs.push(
         <section>
