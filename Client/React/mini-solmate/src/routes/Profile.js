@@ -119,7 +119,7 @@ const Profile = () => {
   const renderSongs = () => {
     console.log(user?.Songs);
     var domSongs = [];
-    for (var i = 0; i < user?.Songs?.length && i < 3; i++) {
+    for (var i = 0; i < user?.Songs?.length; i++) {
       domSongs.push(
         <section>
           <div className="artist">
@@ -184,7 +184,7 @@ const Profile = () => {
 
           <div>
             <Tabs id="profile-tabs" activeKey={key} onSelect={(k) => setKey(k)}>
-              <Tab eventKey="Top Artists" title="Top Songs">
+              <Tab eventKey="Top Artists" title="Songs">
                 <div className="scroll-data">
                   <div className="my-artists">
                     <div> {renderSongs()}</div>

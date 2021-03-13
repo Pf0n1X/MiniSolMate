@@ -43,7 +43,7 @@ export const updateMatch = async (req: Request, res: Response) => {
   });
 
   // if both users approved, create a chat.
-  if (isApprove1 === 'accepted' && isApprove2 === 'accepted') {
+  if (isApprove1 === "accepted" && isApprove2 === "accepted") {
     // Prepare the chat parameters.
     const chat: IChat = {
       ChatId: 1,
@@ -62,7 +62,7 @@ export const updateMatch = async (req: Request, res: Response) => {
     //   .catch((err) => {
     //     res.status(500).json(err);
     //   });
-  } else res.status(200).json({ message: "Match updated" })
+  } else res.status(200).json({ message: "Match updated" });
 };
 
 export const getMatchesById = async (req: Request, res: Response) => {
@@ -71,7 +71,6 @@ export const getMatchesById = async (req: Request, res: Response) => {
 
   // Find matches in
   if (userID !== undefined) {
-
     await Match.findOne({
       $or: [
         {
@@ -155,10 +154,9 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
 
     //  Passes on exsiting matches
     for (let match of existsMatches) {
-
       try {
         const chatDeleted = await Match.findOneAndDelete({ _id: match._id });
-        console.log("Match deleted: " + chatDeleted?._id)
+        console.log("Match deleted: " + chatDeleted?._id);
       } catch (e) {
         console.log(e);
         res.status(500).send(e);
@@ -167,7 +165,6 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
 
     // Passes on user
     for (let user of users) {
-
       var ageDifMs = Date.now() - user.birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
       var age = Math.abs(ageDate.getUTCFullYear() - 1970);
@@ -177,7 +174,8 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
       var currentUserAge = Math.abs(ageDate.getUTCFullYear() - 1970);
 
       //  If there isn't match with current user
-      if (age >= currentUser.interestedAgeMin &&
+      if (
+        age >= currentUser.interestedAgeMin &&
         age <= currentUser.interestedAgeMax &&
         user.sex == currentUser.interestedSex &&
         currentUserAge >= user.interestedAgeMin &&
@@ -197,13 +195,17 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
         };
 
         for (let match of existsMatches) {
-          if (match.firstUser == toAdd.firstUser &&
-            match.secondUser == toAdd.secondUser) {
+          if (
+            match.firstUser == toAdd.firstUser &&
+            match.secondUser == toAdd.secondUser
+          ) {
             toAdd.Approve1 = match.Approve1;
             toAdd.Approve2 = match.Approve2;
             break;
-          } else if (match.secondUser == toAdd.firstUser &&
-            match.firstUser == toAdd.secondUser) {
+          } else if (
+            match.secondUser == toAdd.firstUser &&
+            match.firstUser == toAdd.secondUser
+          ) {
             toAdd.Approve2 = match.Approve1;
             toAdd.Approve1 = match.Approve2;
             break;
@@ -223,14 +225,10 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
 };
 
 export const deleteMatchesOfUser = async (req: Request, res: Response) => {
-
   let userId = req.query.userId?.toString();
   const existsMatches = await Match.find(
     {
-      $or: [
-        { firstUser: userId },
-        { secondUser: userId },
-      ],
+      $or: [{ firstUser: userId }, { secondUser: userId }],
     },
     (err: CallbackError, matches: IMatch[]) => {
       if (err) {
@@ -244,10 +242,9 @@ export const deleteMatchesOfUser = async (req: Request, res: Response) => {
 
   //  Passes on exsiting matches
   for (let match of existsMatches) {
-
     try {
       const chatDeleted = await Match.findOneAndDelete({ _id: match._id });
-      console.log("Match deleted: " + chatDeleted?._id)
+      console.log("Match deleted: " + chatDeleted?._id);
     } catch (e) {
       console.log(e);
     }
