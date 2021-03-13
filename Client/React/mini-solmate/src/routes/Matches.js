@@ -125,6 +125,7 @@ const Matches = () => {
 
   useEffect(() => {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    uCon.fetch(uCon.state.user.email);
   }, []);
 
   useEffect(() => {
