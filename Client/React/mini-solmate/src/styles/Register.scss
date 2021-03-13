@@ -1,0 +1,37 @@
+$black: #2e2e2e;
+$cream: #fcfbf5;
+$green: #b2ca9d;
+$green-dark: #4d6638;
+$grey-light: #808080;
+$grey: #4f4f4f;
+$pink-light: #f8d8d8;
+$pink: #f0acac;
+$pink-dark: #835151;
+$white: #ffffff;
+
+.line-text {
+    // $extra-large: 11;
+    $stroke-width: 110 * 0.05;
+    position: relative;
+    display: inline-block;
+    // font-size: $extra-large;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke-width: $stroke-width;
+    -webkit-text-stroke-color: white;
+    white-space: nowrap;
+    $x: 12px;
+    $y: 15px;
+    $step: 1px;
+
+    text-shadow: $x $y $green,
+        $x + $step $y + $step $pink,
+        $x + $step * 2 $y + $step * 2 $pink,
+        $x + $step * 3 $y + $step * 3 $pink,
+        $x + $step * 4 $y + $step * 4 $pink,
+        $x + $step * 5 $y + $step * 5 $pink,
+        $x + $step * 6 $y + $step * 6 $pink,
+        $x + $step * 7 $y + $step * 7 $pink,
+}
