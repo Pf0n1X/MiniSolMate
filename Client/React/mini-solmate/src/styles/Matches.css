@@ -54,12 +54,13 @@
   display: flex;
   justify-content: center;
 }
-.carousel-container .user-name h2 {
+.carousel-container .user-name h1 {
   position: absolute;
   z-index: 2;
   top: 5px;
-  color: black;
-}
+	font-weight: 900;
+  color: #ffffff;
+  text-shadow: 1px 1px 1px rgb(109, 0, 82), 3px 3px 5px #af20b9; }
 
 .swipe-buttons {
   position: absolute;
