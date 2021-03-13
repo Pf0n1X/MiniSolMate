@@ -134,7 +134,7 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
     users = users.filter((user) => user._id != currentUser?._id);
     var newMatches = 0;
 
-    const exsistsMatches = await Match.find(
+    const existsMatches = await Match.find(
       {
         $or: [
           { firstUser: currentUser?._id },
@@ -153,16 +153,20 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
 
     let potentialUsers = [];
 
+    //  Passes on exsiting matches
+    for (let match of existsMatches) {
+
+      try {
+        const chatDeleted = await Match.findOneAndDelete({ _id: match._id });
+        console.log("Match deleted: " + chatDeleted?._id)
+      } catch (e) {
+        console.log(e);
+        res.status(500).send(e);
+      }
+    }
+
     // Passes on user
     for (let user of users) {
-      var found = false;
-      //  Passes on exsiting matches
-      for (let match of exsistsMatches) {
-        if (match.firstUser == user._id || match.secondUser == user._id) {
-          found = true;
-          break;
-        }
-      }
 
       var ageDifMs = Date.now() - user.birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
@@ -173,9 +177,7 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
       var currentUserAge = Math.abs(ageDate.getUTCFullYear() - 1970);
 
       //  If there isn't match with current user
-      if (
-        found == false &&
-        age >= currentUser.interestedAgeMin &&
+      if (age >= currentUser.interestedAgeMin &&
         age <= currentUser.interestedAgeMax &&
         user.sex == currentUser.interestedSex &&
         currentUserAge >= user.interestedAgeMin &&
@@ -193,7 +195,21 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
           Approve1: false,
           Approve2: false,
         };
-        console.log(toAdd);
+
+        for (let match of existsMatches) {
+          if (match.firstUser == toAdd.firstUser &&
+            match.secondUser == toAdd.secondUser) {
+            toAdd.Approve1 = match.Approve1;
+            toAdd.Approve2 = match.Approve2;
+            break;
+          } else if (match.secondUser == toAdd.firstUser &&
+            match.firstUser == toAdd.secondUser) {
+            toAdd.Approve2 = match.Approve1;
+            toAdd.Approve1 = match.Approve2;
+            break;
+          }
+        }
+
         const matchAdded = await Match.create(toAdd);
         console.log("Match added: " + matchAdded);
         newMatches += 1;
@@ -202,6 +218,6 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
         res.status(500).send(e);
       }
     }
-    res.status(200).send(newMatches + " Matches were added for user " + userId );
+    res.status(200).send(newMatches + " Matches were added for user " + userId);
   } else res.status(500).send("User " + userId + " not found");
 };
