@@ -18,12 +18,6 @@ const Matches = () => {
   const { token } = useToken();
   const [isMatchFound, setIsMatchFound] = useState(false);
 
-  useEffect(() => {
-    const tl = gsap.timeline({ defaults: { ease: 'power1.out' } });
-    tl.to('.not-found-header', { delay: 5, opacity: "1", duration: 1, stagger: 0.25 });
-    // tl.to('.main-header', { opacity: "1", duration: 1, stagger: 0.25 });
-}, []);
-
   const calcNewMatches = () => {
 
     // Add new matches
@@ -64,12 +58,20 @@ const Matches = () => {
   };
 
   const onUpdateMatchButtonClicked = (isAccept) => {
-    if (match === null) return;
+    var value;
+    if (match === null)
+      return;
+
+    if (isAccept) {
+      value = 'accepted';
+    } else {
+      value = 'declined';
+    }
 
     if (match.firstUser._id === uCon.state.user["_id"]) {
-      match.Approve1 = isAccept;
+      match.Approve1 = value;
     } else {
-      match.Approve2 = isAccept;
+      match.Approve2 = value;
     }
 
     axios.put("http://localhost:3001/match", match).then(() => {
@@ -124,6 +126,13 @@ const Matches = () => {
     }
   }, [uCon.state.user]);
 
+  useEffect(() => {
+    if (!isMatchFound) {
+      const tl = gsap.timeline({ defaults: { ease: 'power1.out' } });
+      tl.to('.not-found-header', { delay: 5, opacity: "1", duration: 1, stagger: 0.25 });
+    }
+  }, [isMatchFound]);
+
   return isMatchFound ? (
     <div className="wrapper">
       <div className="carousel-container">
@@ -141,8 +150,7 @@ const Matches = () => {
             className="swipe-button circle1 button-decline"
             onClick={() => {
               onUpdateMatchButtonClicked(false);
-            }}
-          >
+            }} >
             <SentimentVeryDissatisfiedIcon style={{ fontSize: 30 }} />
           </div>
           <div
