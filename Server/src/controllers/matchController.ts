@@ -80,7 +80,7 @@ export const getMatchesById = async (req: Request, res: Response) => {
               firstUser: userID,
             },
             {
-              Approve1: false,
+              Approve1: "waiting",
             },
           ],
         },
@@ -90,7 +90,7 @@ export const getMatchesById = async (req: Request, res: Response) => {
               secondUser: userID,
             },
             {
-              Approve2: false,
+              Approve2: "waiting",
             },
           ],
         },
@@ -192,8 +192,8 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
         const toAdd: IMatch = {
           firstUser: currentUser._id,
           secondUser: matchedUser._id,
-          Approve1: false,
-          Approve2: false,
+          Approve1: "waiting",
+          Approve2: "waiting",
         };
 
         for (let match of existsMatches) {
@@ -220,4 +220,36 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
     }
     res.status(200).send(newMatches + " Matches were added for user " + userId);
   } else res.status(500).send("User " + userId + " not found");
+};
+
+export const deleteMatchesOfUser = async (req: Request, res: Response) => {
+
+  let userId = req.query.userId?.toString();
+  const existsMatches = await Match.find(
+    {
+      $or: [
+        { firstUser: userId },
+        { secondUser: userId },
+      ],
+    },
+    (err: CallbackError, matches: IMatch[]) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        return matches;
+      }
+    }
+  );
+
+  //  Passes on exsiting matches
+  for (let match of existsMatches) {
+
+    try {
+      const chatDeleted = await Match.findOneAndDelete({ _id: match._id });
+      console.log("Match deleted: " + chatDeleted?._id)
+    } catch (e) {
+      console.log(e);
+    }
+  }
 };

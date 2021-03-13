@@ -3,8 +3,8 @@ import { model, Schema, Document, Mongoose, Types } from "mongoose";
 export interface IMatch {
   firstUser: String;
   secondUser: String;
-  Approve1: boolean;
-  Approve2: boolean;
+  Approve1: String;
+  Approve2: String;
 }
 export interface IMatchModel extends Document, IMatch {}
 
