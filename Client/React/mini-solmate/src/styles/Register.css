@@ -1,0 +1,13 @@
+.line-text {
+  position: relative;
+  display: inline-block;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke-width: 5.5;
+  -webkit-text-stroke-color: white;
+  white-space: nowrap;
+  text-shadow: 12px 15px #b2ca9d, 13px 16px #f0acac, 14px 17px #f0acac, 15px 18px #f0acac, 16px 19px #f0acac, 17px 20px #f0acac, 18px 21px #f0acac, 19px 22px #f0acac;
+}
+/*# sourceMappingURL=Register.css.map */
