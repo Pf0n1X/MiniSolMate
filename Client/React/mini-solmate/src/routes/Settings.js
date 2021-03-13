@@ -128,10 +128,10 @@ const Settings = () => {
         const userId = uCon.state.user['_id'];
 
         setOpen(false);
+        dispatch({ type: "LOGOUT" });
+        clearToken();
         window.location.reload();
-        // dispatch({ type: "LOGOUT" });
-        // clearToken();
-        // dispatch({ type: "LOGOUT" });
+
         // axios.delete('http://localhost:3001/user?userId=' + userId)
         //     .then((obj) => {
         //         console.log("Successful delete of user " + userId);
