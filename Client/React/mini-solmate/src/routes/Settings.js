@@ -188,6 +188,12 @@ const Settings = () => {
             minWidth: 250,
             maxWidth: 400
 
+        },
+        SaveButton: {
+            backgroundColor: '#be65c6'
+        },
+        DeleteButton: {
+            backgroundColor: 'grey'
         }
     }));
 
@@ -327,10 +333,10 @@ const Settings = () => {
                         <FormControlLabel key={1} value={1} control={<MyRadioButton />} label="Female" />
                     </RadioGroup>
                     <FormGroup className="submit-button-group">
-                        <Button variant="contained" color="primary" type="submit">
+                        <Button className={classes.SaveButton} variant="contained" color="primary" type="submit">
                             Save
                         </Button>
-                        <Button variant="contained" color="secondary" onClick={handleClickOpen}>
+                        <Button className={classes.DeleteButton} variant="contained" color="secondary" onClick={handleClickOpen}>
                             Delete user
                     </Button>
                     </FormGroup>
