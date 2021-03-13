@@ -193,10 +193,18 @@ const Settings = () => {
 
         },
         SaveButton: {
-            backgroundColor: '#be65c6'
+            backgroundColor: '#be65c6',
+            '&:hover': {
+                background: "white",
+                color: "black"
+             },
         },
         DeleteButton: {
-            backgroundColor: 'grey'
+            backgroundColor: 'grey',
+            '&:hover': {
+                background: "white",
+                color: "black"
+             },
         }
     }));
 
