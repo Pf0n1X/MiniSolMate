@@ -34,6 +34,7 @@ const Settings = () => {
     const [open, setOpen] = React.useState(false);
     const uCon = useContext(userContext);
     const { state, dispatch } = useContext(userContext);
+    const { clearToken } = useToken();
 
     useEffect(() => {
         uCon.fetch(uCon.state.user.email);
@@ -127,8 +128,10 @@ const Settings = () => {
         const userId = uCon.state.user['_id'];
 
         setOpen(false);
+        dispatch({ type: "LOGOUT" });
+        clearToken();
         window.location.reload();
-        // dispatch({ type: "LOGOUT" });
+
         // axios.delete('http://localhost:3001/user?userId=' + userId)
         //     .then((obj) => {
         //         console.log("Successful delete of user " + userId);
@@ -281,7 +284,7 @@ const Settings = () => {
                         InputLabelProps={{
                             shrink: true,
                         }} />
-                    <FormControl className={classes.formControl}>
+                    {/* <FormControl className={classes.formControl}>
                         <InputLabel>Favorite Songs</InputLabel>
                         <Select
                             labelId="demo-mutiple-name-label"
@@ -293,7 +296,7 @@ const Settings = () => {
                             renderValue={values => values.map(o => o.songName).join()} >
                             {renderSongOptions()}
                         </Select>
-                    </FormControl>
+                    </FormControl> */}
                     <TextField className={classes.TextField} label="Description" variant="outlined" multiline value={description} onChange={(e) => { setDescription(e.target.value); }} />
                     {/* <FormGroup controlid="formBasicRange">
                         <InputLabel>Search Range</InputLabel>
