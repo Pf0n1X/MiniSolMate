@@ -17,8 +17,8 @@ const Login = ({ setToken }) => {
         headers: { "Content-Type": "application/json" },
       })
       .then(async (response) => {
-        setToken(response.data.token);
         dispatch({ type: "SET_USER", payload: response.data.user });
+        setToken(response.data.token);
       })
       .catch((error) => alert(error));
   }
