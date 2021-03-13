@@ -10,8 +10,6 @@ import { userContext } from "../context/userContext";
 import useToken from "../hooks/useToken";
 
 const Profile = () => {
-  // TODO: Replace with the actual id of the connected user.
-  const CONNECTED_USER_ID = "adibigler@gmail.com";
   // const { token } = useToken();
   const inputEl = useRef(null);
   const uploadEl = useRef(null);
@@ -24,7 +22,6 @@ const Profile = () => {
 
   const fetchData = async () => {
     try {
-      // debugger;
       const res = await axios.get("http://localhost:3001/user", {
         params: {
           UserEmail: state.user["email"],
