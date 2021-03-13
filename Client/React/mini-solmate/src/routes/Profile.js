@@ -184,7 +184,7 @@ const Profile = () => {
 
           <div>
             <Tabs id="profile-tabs" activeKey={key} onSelect={(k) => setKey(k)}>
-              <Tab eventKey="Top Artists" title="Top Songs">
+              <Tab eventKey="Top Artists" title="Songs">
                 <div className="scroll-data">
                   <div className="my-artists">
                     <div> {renderSongs()}</div>
