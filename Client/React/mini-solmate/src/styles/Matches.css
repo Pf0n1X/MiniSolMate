@@ -57,11 +57,13 @@
   z-index: 2;
   background: transparent;
 }
-.carousel-container .user-name h2 {
+.carousel-container .user-name h1 {
   position: absolute;
   z-index: 2;
   top: 5px;
-  color: black;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 3px 3px 3px rgb(73, 0, 55), 5px 3px 5px #af20b9;
 }
 
 .swipe-buttons {
