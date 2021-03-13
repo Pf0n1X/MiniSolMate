@@ -137,7 +137,7 @@ const Matches = () => {
   useEffect(() => {
     if (!isMatchFound) {
       const tl = gsap.timeline({ defaults: { ease: 'power1.out' } });
-      tl.to('.not-found-header', { delay: 5, opacity: "1", duration: 1, stagger: 0.25 });
+      tl.to('.not-found-header', { delay: 3, opacity: "1", duration: 1, stagger: 0.25 });
     }
   }, [isMatchFound]);
 

@@ -61,7 +61,15 @@ $header_color: #be65c6;
       h2 {
           padding: 0rem 2rem;
           margin-bottom: 0rem;
-      }
+      };
+  }
+
+  .link:hover {
+    font-weight: bolder;
+    color: #603664;
+    h2 {
+      color: #603664;
+    }
   }
 
   .routes_container {

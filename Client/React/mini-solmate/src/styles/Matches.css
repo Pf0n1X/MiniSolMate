@@ -7,36 +7,19 @@
 
 .user-info {
   padding: 15px 15px;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  -webkit-box-align: space-between;
-      -ms-flex-align: space-between;
-          align-items: space-between;
+  flex-wrap: wrap;
+  align-items: space-between;
 }
-
 .user-info .bio {
-  -webkit-box-flex: 50%;
-      -ms-flex: 50%;
-          flex: 50%;
-  display: -webkit-box;
-  display: -ms-flexbox;
+  flex: 50%;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  align-items: center;
+  flex-direction: column;
 }
-
 .user-info .bio section {
   text-align: center;
 }
-
 .user-info .bio img {
   margin: 40px 0px;
   width: 200px;
@@ -45,31 +28,19 @@
   -o-object-fit: cover;
      object-fit: cover;
 }
-
 .user-info .top-songs {
-  -webkit-box-flex: 50%;
-      -ms-flex: 50%;
-          flex: 50%;
-  display: -webkit-box;
-  display: -ms-flexbox;
+  flex: 50%;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  align-items: center;
+  flex-direction: column;
 }
-
 .user-info .top-songs section .song img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   margin-right: 10px;
   margin-bottom: 10px;
-  -webkit-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
-          box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
   -o-object-fit: cover;
      object-fit: cover;
 }
@@ -78,20 +49,14 @@
   position: relative;
   margin-bottom: 10px;
 }
-
 .carousel-container .user-name {
   width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  justify-content: center;
   position: absolute;
   z-index: 2;
   background: transparent;
 }
-
 .carousel-container .user-name h2 {
   position: absolute;
   z-index: 2;
@@ -101,63 +66,35 @@
 
 .swipe-buttons {
   position: absolute;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
+  flex-direction: row;
+  justify-content: space-evenly;
   width: 120px;
   bottom: -20px;
   margin: 0 20px;
 }
-
 .swipe-buttons .swipe-button {
-  background: -webkit-gradient(linear, left bottom, right top, from(#ffffff), to(#b985c7));
   background: linear-gradient(to top right, #ffffff, #b985c7);
-  -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-          box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  justify-content: center;
+  align-items: center;
 }
-
 .swipe-buttons .swipe-button:hover {
-  background: -webkit-gradient(linear, left bottom, right top, from(#bebebe), to(#83618d));
   background: linear-gradient(to top right, #bebebe, #83618d);
 }
 
 .not-found-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   width: 100%;
   height: 100%;
 }
-
 .not-found-container .not-found-header {
   opacity: 0;
 }
@@ -171,8 +108,6 @@
   position: absolute;
   z-index: 2;
   top: 5px;
-  font-weight: bold;
   color: #ffffff;
   text-shadow: 3px 3px 3px #6d0052, 5px 3px 5px #85178d;
-}
-/*# sourceMappingURL=Matches.css.map */
+}/*# sourceMappingURL=Matches.css.map */
