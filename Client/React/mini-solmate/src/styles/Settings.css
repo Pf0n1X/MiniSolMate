@@ -54,9 +54,23 @@
   outline-width: 0px;
 }
 
+.MuiFormControl-root{
+  max-width: 300px !important;
+  margin-top: 2vh !important;
+}
+
+.search-button-group {
+  display: flex;
+  justify-content: center !important;
+}
+
 .submit-button-group {
   display: flex;
-  justify-content: center;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+}
+.submit-button-group Button {
+  width: 140px;
 }
 
 .MuiSlider-root {

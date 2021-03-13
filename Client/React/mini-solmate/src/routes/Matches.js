@@ -9,21 +9,43 @@ import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfie
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import { userContext } from "../context/userContext";
 import useToken from "../hooks/useToken";
+import gsap from 'gsap';
+import { Dialog, DialogTitle, DialogContent, Button, DialogActions, DialogContentText } from '@material-ui/core';
 
 const Matches = () => {
   const [user, setUser] = useState();
   const [match, setMatch] = useState();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const uCon = useContext(userContext);
   const { token } = useToken();
+  const [isMatchFound, setIsMatchFound] = useState(false);
+
+  const calcNewMatches = () => {
+
+    // Add new matches
+    axios
+      .post("http://localhost:3001/match/calc/?userId=" + uCon.state.user["_id"])
+      .then((response) => {
+        if (response.data === null || response.data === undefined) return;
+
+        console.log(response.data);
+        getMatch();
+      });
+  };
 
   const getMatch = () => {
-    
+
     // Get the match from the server.
     axios
       .get("http://localhost:3001/match?userId=" + uCon.state.user["_id"])
       .then((response) => {
-        if (response.data === null || response.data === undefined) return;
+        if (response.data === null || response.data === undefined || response.data.length === 0) {
+          // TODO: Show a no matches found page
+          setIsMatchFound(false);
+          return;
+        }
 
+        setIsMatchFound(true);
         console.log(response.data);
         setMatch(response.data);
 
@@ -38,17 +60,31 @@ const Matches = () => {
   };
 
   const onUpdateMatchButtonClicked = (isAccept) => {
-    if (match === null) return;
+    var value;
+    if (match === null)
+      return;
+
+    if (isAccept) {
+      value = 'accepted';
+    } else {
+      value = 'declined';
+    }
 
     if (match.firstUser._id === uCon.state.user["_id"]) {
-      match.Approve1 = isAccept;
+      match.Approve1 = value;
     } else {
-      match.Approve2 = isAccept;
+      match.Approve2 = value;
     }
 
     axios.put("http://localhost:3001/match", match).then(() => {
       // Get a new match.
       console.log("Getting a new match");
+
+      if (match.Approve1 === 'accepted' && match.Approve2 === 'accepted') {
+        console.log("The dialog is being opened");
+        setIsDialogOpen(true);
+      }
+
       getMatch();
     });
   };
@@ -70,78 +106,109 @@ const Matches = () => {
 
   const renderCarouselItems = () => {
     if (user?.Media.length > 0) {
-        return user?.Media.map((pic, index) => 
-            (<Carousel.Item key={index}>
-                <img
-                className="d-block w-100 carousel-img"
-                src={`http://localhost:3001/static/${pic}`}
-                />
-            </Carousel.Item>)
-            );
+      return user?.Media.map((pic, index) =>
+      (<Carousel.Item key={index}>
+        <img
+          className="d-block w-100 carousel-img"
+          src={`http://localhost:3001/static/${pic}`}
+        />
+      </Carousel.Item>)
+      );
     } else {
-        return (<Carousel.Item key="random_key">
-                <img
-                className="d-block w-100 carousel-img"
-                src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"
-                />
-            </Carousel.Item>)
+      return (<Carousel.Item key="random_key">
+        <img
+          className="d-block w-100 carousel-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"
+        />
+      </Carousel.Item>)
     }
   }
 
-    useEffect(() => {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-    }, []);
+  useEffect(() => {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+  }, []);
 
-    useEffect(() => {
-        if (uCon.state.user) {
-            getMatch();
-        }
-    }, [uCon.state.user]);
+  useEffect(() => {
+    if (uCon.state.user) {
+      calcNewMatches();
+    }
+  }, [uCon.state.user]);
 
-  return (
-    <div className="wrapper">
-      <div className="carousel-container">
-        <div className="user-name">
-          <h2>
-            {user?.firstName} {user?.lastName}
-          </h2>
-        </div>
-        
-        <Carousel>
-          {renderCarouselItems()}
-        </Carousel>
-        <div className="swipe-buttons">
-          <div
-            className="swipe-button circle1 button-decline"
-            onClick={() => {
-              onUpdateMatchButtonClicked(false);
-            }}
-          >
-            <SentimentVeryDissatisfiedIcon style={{ fontSize: 30 }} />
+  useEffect(() => {
+    if (!isMatchFound) {
+      const tl = gsap.timeline({ defaults: { ease: 'power1.out' } });
+      tl.to('.not-found-header', { delay: 5, opacity: "1", duration: 1, stagger: 0.25 });
+    }
+  }, [isMatchFound]);
+
+  return (<div className="matches-container">
+    {isMatchFound ? (
+      <div className="wrapper">
+        <div className="carousel-container">
+          <div className="user-name">
+            <h1>
+              {user?.firstName} {user?.lastName}
+            </h1>
           </div>
-          <div
-            className="swipe-button circle1 button-accept"
-            onClick={() => {
-              onUpdateMatchButtonClicked(true);
-            }}
-          >
-            <SentimentVerySatisfiedIcon style={{ fontSize: 30 }} />
+
+          <Carousel>
+            {renderCarouselItems()}
+          </Carousel>
+          <div className="swipe-buttons">
+            <div
+              className="swipe-button circle1 button-decline"
+              onClick={() => {
+                onUpdateMatchButtonClicked(false);
+              }} >
+              <SentimentVeryDissatisfiedIcon style={{ fontSize: 30 }} />
+            </div>
+            <div
+              className="swipe-button circle1 button-accept"
+              onClick={() => {
+                onUpdateMatchButtonClicked(true);
+              }}
+            >
+              <SentimentVerySatisfiedIcon style={{ fontSize: 30 }} />
+            </div>
+          </div>
+        </div>
+        <div className="user-info">
+          <div className="bio">
+            <h3>Bio</h3>
+            <section>{user?.description}</section>
+            <img src={`http://localhost:3001/static/${user?.picture}`} />
+          </div>
+          <div className="top-songs">
+            <h3>Top Songs</h3>
+            <section>{renderSongs()}</section>
           </div>
         </div>
       </div>
-      <div className="user-info">
-        <div className="bio">
-          <h3>Bio</h3>
-          <section>{user?.description}</section>
-          <img src={`http://localhost:3001/static/${user?.picture}`} />
-        </div>
-        <div className="top-songs">
-          <h3>Top Songs</h3>
-          <section>{renderSongs()}</section>
-        </div>
-      </div>
-    </div>
-  );
+    )
+      :
+      (<div className="not-found-container">
+        <h1 className="not-found-header main-header">No Matches Found.</h1>
+        <h3 className="not-found-header sub-header">Try Again Later.</h3>
+      </div>)}
+      <Dialog
+        open={isDialogOpen}
+        onClose={() => {setIsDialogOpen(false)}}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"A Match Was Found!"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Congratulations! You can now chat with your new partner.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => {setIsDialogOpen(false)}} color="primary" autoFocus>
+            Great!
+          </Button>
+        </DialogActions>
+      </Dialog>
+  </div>);
 };
 
 export default Matches;

@@ -47,12 +47,15 @@
 
 .carousel-container {
   position: relative;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 .carousel-container .user-name {
   width: 100%;
   display: flex;
   justify-content: center;
+  position: absolute;
+  z-index: 2;
+  background: transparent;
 }
 .carousel-container .user-name h2 {
   position: absolute;
@@ -82,4 +85,21 @@
 }
 .swipe-buttons .swipe-button:hover {
   background: linear-gradient(to top right, #bebebe, #83618d);
+}
+
+.not-found-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.not-found-container .not-found-header {
+  opacity: 0;
+}
+
+.matches-container {
+  width: 100%;
+  height: 100%;
 }/*# sourceMappingURL=Matches.css.map */

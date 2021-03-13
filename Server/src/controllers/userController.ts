@@ -4,7 +4,12 @@ import jwt from "jsonwebtoken";
 import passport from "passport";
 import User, { IUser, IUserModel } from "../modules/userModel";
 import * as config from "../config/config.json";
-import { CallbackError } from "mongoose";
+import { CallbackError, MapReduceOptions } from "mongoose";
+import { deleteChatsOfUser } from "../controllers/chatController";
+import { deleteMatchesOfUser } from "../controllers/matchController";
+
+///<reference path="../../../node_modules/@types/mongodb/index.d.ts" />
+///<reference path="../../../node_modules/@types/mongoose/index.d.ts" />
 
 export const registerUser = async (req: Request, res: Response) => {
   const hashedPassword = bcrypt.hashSync(
@@ -182,7 +187,9 @@ export const getUsersForMatches = async () => {
   });
   return users;
 };
+// declare function emit(k, v);
 
+//@ts-ignore
 export const getStatistics = async (req: Request, res: Response) => {
   const keys = ["Male", "Female"];
   const groupKey = "Num of songs";
@@ -194,24 +201,93 @@ export const getStatistics = async (req: Request, res: Response) => {
     { [groupKey]: "50", Male: 0, Female: 0 },
   ];
 
-  const data = await User.aggregate([
+  var mapFunction = function (
+    this: MapReduceOptions<IUserModel, unknown, unknown>
+  ) {
+    //@ts-ignore
+    emit(this.sex, this.Songs.length);
+    // for (var key in this) {
+    //   //@ts-ignore
+    //   emit(key, null);
+    // }
+  };
+
+  var reduceFunction = function (key: any, value: any) {
+    // return value;
+    return Array.isArray(value) ? value.reduce((a, b) => a + b) : value.length;
+  };
+
+  const options: MapReduceOptions<IUserModel, unknown, unknown> = {
+    map: mapFunction,
+    reduce: reduceFunction,
+    out: { replace: "map_reduce_customers" },
+    verbose: true,
+  };
+
+  let docs_send: any[] = [];
+  let newPromise = new Promise(async (resolve, reject) => {
+    const data = await User.mapReduce(options, async (err, res) => {
+      if (err) console.log("what?", err);
+      console.log("after");
+      let cool = await res.collection
+        .find({})
+        .toArray(function (err: any, docs: any[]) {
+          if (err) console.log("what?", err);
+          docs_send = docs;
+          console.log("the docs", docs);
+          resolve(docs);
+        });
+    });
+  });
+
+  const data1 = await User.aggregate([
     {
       $group: {
         _id: "$sex",
-        obj: { $push: { Songs: "$Songs" } },
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $let: {
-            vars: { obj: [{ k: { $substr: ["$_id", 0, -1] }, v: "$obj" }] },
-            in: { $arrayToObject: "$$obj" },
-          },
-        },
+        count: { $sum: 1 },
       },
     },
   ]);
 
-  res.status(200).send(data);
+  await newPromise;
+
+  res.status(200).send({ docs_send, data1 });
 };
+
+export const deleteUser = async (req: Request, res: Response) => {
+
+  const userId = req.query.userId;
+  console.log("Deleting user " + userId + " and dependencies");
+
+  try {
+    // Delete all user chats
+    deleteChatsOfUser(req, res);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+
+  try {
+    // Delete all user chats
+    deleteMatchesOfUser(req, res);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+
+  try {
+    await User.findOneAndDelete({ _id: userId })
+      .exec((err: CallbackError, user: any) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          console.log("User, chats and matches deleted for user : "+ userId);
+          res.status(200).json({ message: "User, chats and matches deleted for user : "+ userId});
+        }
+      });
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+};
+

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from 'react';
+import { userContext } from "./context/userContext";
 import profile_pic from "./images/profile_pic.jpg";
 import "./App.css";
 import {
@@ -21,6 +22,31 @@ import { Redirect } from "react-router-dom";
 
 const App = () => {
   const { isTokenSet, setToken, token } = useToken();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [profilePic, setProfilePic] = useState("");
+
+  const uCon = useContext(userContext);
+
+  useEffect(() => {
+    if (uCon.state.user) {
+      uCon.fetch(uCon.state.user.email);
+    }
+  }, [uCon.state.user]);
+
+  useEffect(() => {
+
+    if (uCon.data !== null && uCon.data !== undefined && uCon.data != {}) {
+      setFirstName(uCon.data.firstName);
+      setLastName(uCon.data.lastName);
+      setProfilePic(uCon.data.picture);
+    }
+
+  }, [uCon]);
+
+  const openChat = () => {
+    window.open('http://localhost:4200/', '_blank');
+  };
 
   if (!isTokenSet) {
     return (
@@ -55,9 +81,8 @@ const App = () => {
           <section className="glass">
             <div className="dashboard">
               <div className="user">
-                <img className="profile_img" src={profile_pic} />
-                <h3>Tomer Erusalimsky</h3>
-                <p>Plays The Ukulele</p>
+                <img className="profile_img" src={`http://localhost:3001/static/${profilePic}`} />
+                <h3>{firstName} {lastName}</h3>
               </div>
               <div className="links">
                 <Link to="/" className="link">
@@ -72,7 +97,7 @@ const App = () => {
                   <FaCalculator size="25px" />
                   <h2>Statistics</h2>
                 </Link>
-                <Link to="/chat" className="link">
+                <Link to="" onClick={openChat} className="link">
                   <FaMailBulk size="25px" />
                   <h2>Chat</h2>
                 </Link>

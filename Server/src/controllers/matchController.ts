@@ -43,7 +43,7 @@ export const updateMatch = async (req: Request, res: Response) => {
   });
 
   // if both users approved, create a chat.
-  if (isApprove1 && isApprove2) {
+  if (isApprove1 === "accepted" && isApprove2 === "accepted") {
     // Prepare the chat parameters.
     const chat: IChat = {
       ChatId: 1,
@@ -62,7 +62,7 @@ export const updateMatch = async (req: Request, res: Response) => {
     //   .catch((err) => {
     //     res.status(500).json(err);
     //   });
-  } else res.status(200).json({ message: "Match updated" })
+  } else res.status(200).json({ message: "Match updated" });
 };
 
 export const getMatchesById = async (req: Request, res: Response) => {
@@ -71,7 +71,6 @@ export const getMatchesById = async (req: Request, res: Response) => {
 
   // Find matches in
   if (userID !== undefined) {
-
     await Match.findOne({
       $or: [
         {
@@ -80,7 +79,7 @@ export const getMatchesById = async (req: Request, res: Response) => {
               firstUser: userID,
             },
             {
-              Approve1: false,
+              Approve1: "waiting",
             },
           ],
         },
@@ -90,7 +89,7 @@ export const getMatchesById = async (req: Request, res: Response) => {
               secondUser: userID,
             },
             {
-              Approve2: false,
+              Approve2: "waiting",
             },
           ],
         },
@@ -134,7 +133,7 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
     users = users.filter((user) => user._id != currentUser?._id);
     var newMatches = 0;
 
-    const exsistsMatches = await Match.find(
+    const existsMatches = await Match.find(
       {
         $or: [
           { firstUser: currentUser?._id },
@@ -153,17 +152,19 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
 
     let potentialUsers = [];
 
+    //  Passes on exsiting matches
+    for (let match of existsMatches) {
+      try {
+        const chatDeleted = await Match.findOneAndDelete({ _id: match._id });
+        console.log("Match deleted: " + chatDeleted?._id);
+      } catch (e) {
+        console.log(e);
+        res.status(500).send(e);
+      }
+    }
+
     // Passes on user
     for (let user of users) {
-      var found = false;
-      //  Passes on exsiting matches
-      for (let match of exsistsMatches) {
-        if (match.firstUser == user._id || match.secondUser == user._id) {
-          found = true;
-          break;
-        }
-      }
-
       var ageDifMs = Date.now() - user.birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
       var age = Math.abs(ageDate.getUTCFullYear() - 1970);
@@ -174,7 +175,6 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
 
       //  If there isn't match with current user
       if (
-        found == false &&
         age >= currentUser.interestedAgeMin &&
         age <= currentUser.interestedAgeMax &&
         user.sex == currentUser.interestedSex &&
@@ -190,10 +190,28 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
         const toAdd: IMatch = {
           firstUser: currentUser._id,
           secondUser: matchedUser._id,
-          Approve1: false,
-          Approve2: false,
+          Approve1: "waiting",
+          Approve2: "waiting",
         };
-        console.log(toAdd);
+
+        for (let match of existsMatches) {
+          if (
+            match.firstUser == toAdd.firstUser &&
+            match.secondUser == toAdd.secondUser
+          ) {
+            toAdd.Approve1 = match.Approve1;
+            toAdd.Approve2 = match.Approve2;
+            break;
+          } else if (
+            match.secondUser == toAdd.firstUser &&
+            match.firstUser == toAdd.secondUser
+          ) {
+            toAdd.Approve2 = match.Approve1;
+            toAdd.Approve1 = match.Approve2;
+            break;
+          }
+        }
+
         const matchAdded = await Match.create(toAdd);
         console.log("Match added: " + matchAdded);
         newMatches += 1;
@@ -202,6 +220,33 @@ export const calcMatchesForUser = async (req: Request, res: Response) => {
         res.status(500).send(e);
       }
     }
-    res.status(200).send(newMatches + " Matches were added for user " + userId );
+    res.status(200).send(newMatches + " Matches were added for user " + userId);
   } else res.status(500).send("User " + userId + " not found");
+};
+
+export const deleteMatchesOfUser = async (req: Request, res: Response) => {
+  let userId = req.query.userId?.toString();
+  const existsMatches = await Match.find(
+    {
+      $or: [{ firstUser: userId }, { secondUser: userId }],
+    },
+    (err: CallbackError, matches: IMatch[]) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err);
+      } else {
+        return matches;
+      }
+    }
+  );
+
+  //  Passes on exsiting matches
+  for (let match of existsMatches) {
+    try {
+      const chatDeleted = await Match.findOneAndDelete({ _id: match._id });
+      console.log("Match deleted: " + chatDeleted?._id);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 };

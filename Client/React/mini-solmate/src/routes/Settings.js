@@ -8,6 +8,11 @@ import AddAPhotoRoundedIcon from '@material-ui/icons/AddAPhotoRounded';
 import { userContext } from "../context/userContext";
 import moment from "moment";
 import useToken from '../hooks/useToken';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const Settings = () => {
 
@@ -26,57 +31,63 @@ const Settings = () => {
     const [songArtistParam, setSongArtistParam] = useState("");
     const [songAlbumParam, setSongAlbumParam] = useState("");
     const [profilePic, setProfilePic] = useState("");
+    const [open, setOpen] = React.useState(false);
     const uCon = useContext(userContext);
-    const {token} = useToken();
+    const { state, dispatch } = useContext(userContext);
 
     useEffect(() => {
-        getUser();
+        uCon.fetch(uCon.state.user.email);
         getSongsAccordingToParams("", "", "");
     }, []);
 
-    const getUser = () => {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-        axios.get('http://localhost:3001/user?UserEmail=' + uCon.state.user.email)
-            .then((response) => {
-                if (response.data === null || response.data === undefined)
-                    return;
+    useEffect(() => {
+        if (uCon.data !== null && uCon.data !== undefined && uCon.data != {}) {
+            setDescription(uCon.data.description);
+                    setFirstName(uCon.data.firstName);
+                    setLastName(uCon.data.lastName);
 
-                setDescription(response.data[0].description);
-                setFirstName(response.data[0].firstName);
-                setLastName(response.data[0].lastName);
-                setSongs(response.data[0].Songs);
-                setAgeRange([response.data[0].interestedAgeMin, response.data[0].interestedAgeMax]);
-                setUserGender(response.data[0].sex);;
-                setBirthDate(moment(response.data[0].birthday).format('YYYY-MM-DD'));
-                setDistanceRange(response.data[0].radiusSearch);
-                setPrefGender(response.data[0].interestedSex);
-                setProfilePic(response.data[0].picture);
-            });
-    }
+                    // This is done because in order fpr the selected songs to be checked in the select
+                    // they must have the same object reference.
+                    setSongs(uCon.data.Songs.map(song => {
+                         var foundOption = songOptions.find(option => option['_id'] == song['_id']);
+
+                         if (!foundOption) {
+                             foundOption = song;
+                         }
+
+                         return foundOption;
+                    }));
+                    setAgeRange([uCon.data.interestedAgeMin, uCon.data.interestedAgeMax]);
+                    setUserGender(uCon.data.sex);;
+                    setBirthDate(moment(uCon.data.birthday).format('YYYY-MM-DD'));
+                    setDistanceRange(uCon.data.radiusSearch);
+                    setPrefGender(uCon.data.interestedSex);
+                    setProfilePic(uCon.data.picture);
+        }
+
+    }, [uCon]);
 
     const onPhotoButtonClicked = (e) => {
         e.preventDefault();
         const formData = new FormData();
-        console.log("uploading pic");
-        console.log(uCon);
         formData.append("myImage", e.target.files[0]);
         formData.append("userId", uCon.state.user['email']);
-    
+
         const config = {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
+            headers: {
+                "content-type": "multipart/form-data",
+            },
         };
         axios
-          .post("http://localhost:3001/user/uploadProfile", formData, config)
-          .then((response) => {
-            getUser();
-          })
-          .catch((error) => {});
+            .post("http://localhost:3001/user/uploadProfile", formData, config)
+            .then((response) => {
+                uCon.fetch(uCon.state.user.email);
+            })
+            .catch((error) => { });
     }
 
     const renderSongOptions = () => {
-        return songOptions.map(option => (
+        return songOptions.map(option => (  
             <MenuItem key={option['_id']} value={option} name={option['_id']}>{option.songName}</MenuItem>
         ))
     };
@@ -98,12 +109,30 @@ const Settings = () => {
             interestedSex: prefGender
         }
 
-        console.log("Submitting")
-        console.log(user);
         axios.put('http://localhost:3001/user', user)
             .then((obj) => {
-                console.log("Successful update.");
+                
             });
+    };
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const deleteUser = () => {
+        const userId = uCon.state.user['_id'];
+
+        setOpen(false);
+        window.location.reload();
+        // dispatch({ type: "LOGOUT" });
+        // axios.delete('http://localhost:3001/user?userId=' + userId)
+        //     .then((obj) => {
+        //         console.log("Successful delete of user " + userId);
+        // });
     };
 
     const onSubmitSearch = (e) => {
@@ -124,6 +153,25 @@ const Settings = () => {
             });
     }
 
+    useEffect(() => {
+        
+        // This is done because in order fpr the selected songs to be checked in the select
+        // they must have the same object reference.
+        if (!uCon.data) {
+            setSongs([]);
+            
+            return;
+        }
+        setSongs(uCon.data?.Songs.map(song => {
+            var resOption = songOptions.find(option => option['_id'] == song['_id']);
+            if (!resOption) {
+                resOption = song;
+            }
+
+            return resOption;
+        }));
+    }, [songOptions]);
+
     const useStyles = makeStyles((theme) => ({
         formControl: {
             //   margin: theme.spacing(1),
@@ -136,10 +184,16 @@ const Settings = () => {
             maxWidth: 400
         },
         Slider: {
-                margin: "16px 0",
-                minWidth: 250,
-                maxWidth: 400
-            
+            margin: "16px 0",
+            minWidth: 250,
+            maxWidth: 400
+
+        },
+        SaveButton: {
+            backgroundColor: '#be65c6'
+        },
+        DeleteButton: {
+            backgroundColor: 'grey'
         }
     }));
 
@@ -162,23 +216,53 @@ const Settings = () => {
                 <img src={`http://localhost:3001/static/${profilePic}`} />
                 <input id="profileImageUpload"
                     className="upload-input"
-                        type="file"
-                        name="profileImageUpload"
-                        accept="image/png, image/jpeg"
-                        onChange={onPhotoButtonClicked} />
-                <label className="file-label" htmlFor="profileImageUpload"><AddAPhotoRoundedIcon/></label>
+                    type="file"
+                    name="profileImageUpload"
+                    accept="image/png, image/jpeg"
+                    onChange={onPhotoButtonClicked} />
+                <label className="file-label" htmlFor="profileImageUpload"><AddAPhotoRoundedIcon /></label>
                 <div className="song-params">
                     <h4>Search Songs</h4>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel>Favorite Songs</InputLabel>
+                        <Select
+                            labelId="demo-mutiple-name-label"
+                            id="demo-mutiple-name"
+                            multiple
+                            value={songs}
+                            onChange={(e, val) => { setSongs(e.target.value) }}
+                            input={<Input />}
+                            renderValue={values => values.map(o => o.songName).join()} >
+                            {renderSongOptions()}
+                        </Select>
+                    </FormControl>
                     <form className={classes.container} onSubmit={onSubmitSearch}>
                         <TextField name="song-name-param" className={classes.TextField} label="Song Name" value={songNameParam} onChange={(e, val1) => setSongNameParam(e.target.value)} type="text" />
                         <TextField name="song-artist-param" className={classes.TextField} label="Artist Name" value={songArtistParam} onChange={(e, val1) => setSongArtistParam(e.target.value)} type="text" />
                         <TextField name="song-album-param" className={classes.TextField} label="Album Name" value={songAlbumParam} onChange={(e, val1) => setSongAlbumParam(e.target.value)} type="text" />
-                        <FormGroup className="submit-button-group">
-                            <Button type="submit">
+                        <FormGroup className="search-button-group">
+                            <Button variant="contained" type="submit">
                                 Search
                             </Button>
                         </FormGroup>
                     </form>
+
+                    <Dialog
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete your profile?"}</DialogTitle>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="primary">
+                                No
+                                </Button>
+                            <Button onClick={deleteUser} color="primary" autoFocus>
+                                Yes
+                                </Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
             </div>
             <div className="preferences-wrapper">
@@ -211,7 +295,7 @@ const Settings = () => {
                         </Select>
                     </FormControl>
                     <TextField className={classes.TextField} label="Description" variant="outlined" multiline value={description} onChange={(e) => { setDescription(e.target.value); }} />
-                    <FormGroup controlid="formBasicRange">
+                    {/* <FormGroup controlid="formBasicRange">
                         <InputLabel>Search Range</InputLabel>
                         <Slider
                             className={classes.Slider}
@@ -224,7 +308,7 @@ const Settings = () => {
                             max={50}
                         // marks={true}
                         />
-                    </FormGroup>
+                    </FormGroup> */}
                     <FormGroup controlid="formBasicRange">
                         <InputLabel>Ages</InputLabel>
                         <Slider
@@ -249,9 +333,12 @@ const Settings = () => {
                         <FormControlLabel key={1} value={1} control={<MyRadioButton />} label="Female" />
                     </RadioGroup>
                     <FormGroup className="submit-button-group">
-                        <Button type="submit">
+                        <Button className={classes.SaveButton} variant="contained" color="primary" type="submit">
                             Save
                         </Button>
+                        <Button className={classes.DeleteButton} variant="contained" color="secondary" onClick={handleClickOpen}>
+                            Delete user
+                    </Button>
                     </FormGroup>
                 </form>
             </div>
