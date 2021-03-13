@@ -85,7 +85,7 @@ const App = () => {
                 <h3>{firstName} {lastName}</h3>
               </div>
               <div className="links">
-                <Link to="/" className="link">
+                <Link to="/matches" className="link">
                   <FaHeart size="25px" />
                   <h2>Matches</h2>
                 </Link>
@@ -109,9 +109,6 @@ const App = () => {
             </div>
             <div className="routes_container">
               <Switch>
-                <Route path="/profile" component={Profile}>
-                  <Profile />
-                </Route>
                 <Route path="/statics">
                   <Statics />
                 </Route>
@@ -124,8 +121,11 @@ const App = () => {
                 <Redirect from='/register' to="/" >
                   <Matches />
                 </Redirect>
-                <Route path="/">
+                <Route path="/matches">
                   <Matches />
+                </Route>
+                <Route path="/" component={Profile}>
+                  <Profile />
                 </Route>
               </Switch>
             </div>
