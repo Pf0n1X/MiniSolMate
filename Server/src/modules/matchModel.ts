@@ -28,10 +28,10 @@ const schema = new Schema({
     ref: 'users'
   },
   Approve1: {
-    type: Boolean,
+    type: String,
   },
   Approve2: {
-    type: Boolean,
+    type: String,
   },
 });
 
